@@ -1,0 +1,805 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STA200-Statistics II</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Calibri, sans-serif;
+      display: flex;
+      background-color: #f9f9f9;
+      background-image: url('img/BgImg.jpg');
+    }
+
+    /* Navigation Panel */
+    .nav-panel {
+      width: 300px;
+      background-color: #591140;
+      color: white;
+      padding: 20px;
+      position: fixed;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .nav-panel img {
+      width: 100px;
+      height: 100px;
+      border-radius: 40%;
+      display: block;
+      margin: 0 auto 20px;
+      border: 3px solid gold;
+    }    
+      
+    .nav-panel h1 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 1px;
+      color:  gold;
+    }
+    .nav-panel h2 {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 1px;
+      color:  gold;
+    }
+      
+    .nav-panel p {
+      text-align: center;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+   .nav-panel p0 {
+      text-align: left;
+       color: gold;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .nav-panel a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    .nav-panel a:hover {
+      color: #1e90ff;
+    }
+
+    /* Content Panel */
+    .content-panel {
+      margin-left: 290px;
+      padding: 20px;
+      color: #333;
+      max-width: 800px;
+    }
+
+    .content-panel h2 {
+      color: #1e90ff;
+      font-size: 28px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #87ceeb;
+      padding-bottom: 10px;
+    }
+
+    .content-panel h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .content-panel h4 {
+      font-size: 18px;
+      margin-bottom: 1.0px;
+      color: #591140;
+    }
+      
+    .content-panel p, .content-panel ul {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .content-panel ul {
+      padding-left: 20px;
+    }
+
+    .content-panel .section {
+      margin-bottom: 40px;
+    }
+
+    .content-panel .section:not(:last-child) {
+      border-bottom: 2px solid #87ceeb;
+      padding-bottom: 20px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .nav-panel {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 10px;
+      }
+      .nav-panel img {
+        width: 100px;
+        height: 100px;
+      }
+      .content-panel {
+        margin-left: 0;
+        padding: 10px;
+      }
+    }
+      
+    img[src*="freevisitorcounters.com"] {
+  width: 100px;
+  height: auto;
+}  
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  /* Optional: Ensure table doesn't take up 100% width */
+  width: 75%; 
+ /* To change only vertical (row) spacing: */
+  border-collapse: separate;
+  border-spacing: -2px; /* 0px horizontal, 1px vertical */
+
+      }
+      
+  </style>
+    
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>   
+         <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+    
+</head>
+     
+<body>
+    
+
+ <table  style="width: 85%; background-color:#FFFFE0;" border="3" bordercolor="E39A21">
+   <tbody>
+    <TR>            
+       <TD>     
+    
+  <!-- Navigation Panel -->
+  <div class="nav-panel">
+    <img src="portrait.jpg" alt="Gold Ram">
+    <h2>STA200 STATISTICS II</h2>
+      <center><b>Spring 2027</b></center>
+      
+    <h2>Dr. Cheng Peng</h2>
+    <center>
+    <p0><b>Email</b>: cpeng@wcupa.edu
+    <br><b>Office</b>: UNA107
+    <br><font color = "white"><b>Office Hours</b><br>Tu/Th: 9:30 am - 11:30 am 
+    <br>Wed: 2:00 pm - 3:00 pm (Zoom only) </font></p0>
+    </center>
+      <hr color="gold">
+      
+    <h2>Useful Links</h2>
+    <table border = "0" bordercolor = "gold"><tr>
+    <td width = 25% align = "left">  <a href="STA200-Summer2025-Syllabus.pdf" target="popup"  onclick="window.open('STA200-Summer2025-Syllabus.pdf', 'name','width=900,height=500')"><font color ="skyblue"><b>Syllabus </b></font></a><td>
+    <!--td width = 25% align = "left"><a href="https://d2l.wcupa.edu/d2l/login" target="popup"  onclick="window.open('https://d2l.wcupa.edu/d2l/login', 'name','width=900,height=500')"><font color ="skyblue"><b>D2L</b></font></a></td-->
+
+    <td width = 25% align = "left"><a href="https://pengdsci.github.io/MAT121W5/w00/w00-statstables.pdf" target="popup"  onclick="window.open('https://pengdsci.github.io/MAT121W5/w00/w00-statstables.pdf', 'name','width=900,height=500')"><font color ="skyblue"><b> Tables</b></font></a></td>
+
+    <td width = 25% align = "right"><a href="https://ramportal.wcupa.edu/" target="popup"  onclick="window.open('https://ramportal.wcupa.edu/', 'name','width=900,height=500')"><font color ="skyblue"><b>Zoom </b></font></a></td>
+
+    <td width = 25% align = "right"><a href="https://pengdsci.github.io/STA200/TI84.html" target="popup"  onclick="window.open('https://pengdsci.github.io/STA200/TI84.html, 'name','width=900,height=500')"><font color ="skyblue"><b>TI-84</b></font></a></td>
+     </tr></table> 
+      
+      <hr color="gold">    
+      
+    <h2>Course Materials</h2>
+    <center>
+    <table border = "0.5" bordercolor = "gold">
+    <!--tr>
+    <td width = 33% align = "left">
+        <!--a href="STA200-Summer2025-Syllabus.pdf" target="popup"  onclick="window.open('STA200-Summer2025-Syllabus.pdf', 'name','width=900,height=500')"><font color ="skyblue"><b>Syllabus </b></font></a>
+        <!--a href="#syllabus"><font color ="skyblue"><b>Syllabus</b></font></a>    
+
+     <a href="#week01"><font color ="skyblue"><b>Week 1</b></font></a>
+          </td>   
+    <td width = 33% align = "right">
+        <a href="#week02"><font color ="skyblue"><b>Week 2</b></font></a>
+       
+        <a href="#week03"><font color ="skyblue"><b>Week 3</b></font></a>
+          </td>   
+    <td width = 33% align = "right">
+        <a href="#week04"><font color ="skyblue"><b>Week 4</b></font></a>       
+        <a href="#week05"><font color ="skyblue"><b>Week 5</b></font></a>
+        </td>    
+    </tr-->
+    <tr><td width = 100% align = "left"><a href="#topic01"></a><font color ="skyblue"><b>1. Logistic and Software</b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic01"></a><font color ="skyblue"><b>2. Review of Basic Stats</b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic02"></a><font color ="skyblue"><b>3. SLR Revisited</b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic03"></a><font color ="skyblue"><b>4. $\chi^2$ Goodness-of-fit Test</b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic04"></a><font color ="skyblue"><b>5. $\chi^2$ Independence Tests</b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic05"></a><font color ="skyblue"><b>6. SLR: One-Sample test </b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic06"></a><font color ="skyblue"><b>7. SLR: Two-Sample Test</b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic07"></a><font color ="skyblue"><b>8. Principles of DOE</b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic08"></a><font color ="skyblue"><b>9. One-Way ANOVA</b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic09"></a><font color ="skyblue"><b>10. Two-Way ANOVA</b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic10"></a><font color ="skyblue"><b>11. General ANONA Models</b></font></a></td></tr>
+    <tr><td width = 100% align = "left"><a href="#topic11"></a><font color ="skyblue"><b>12. General ANCOVA: Basics</b></font></a></td></tr>
+    <!--tr><td width = 100% align = "left"><a href="#topic12"></a><font color ="skyblue"><b>13. Term Mini Project</b></font></a></td></tr-->
+    <!--tr><td width = 100% align = "left"><font color ="skyblue"><b>14.</b></font></a></td></tr-->
+      </table>
+    </center>
+<!--div class="line-footer"></div-->
+<!--footer id="footer"-->
+<div style="margin-bottom: -2em;"></div>
+      <center>
+    <a href='http://www.freevisitorcounters.com'>&nbsp;</a> <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+<script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script>
+          <div style="margin-bottom: -2.5em;"></div>
+
+		    <br><font size=2 color = "gold"> <b>  Copyright &copy; C. Peng 2019-<script>document.write(new Date().getFullYear());</script>  <br>
+                All Rights Reserved.</b></font></center>
+	        <!--/div-->  
+  <p></p>  
+  </div>
+<!-- end of navigation -->
+
+           
+           
+  <!-- Content Panel -->
+  <div class="content-panel">
+    
+    <!-- Week #1 -->
+    <div id="week01" class="section">
+      <h2>Week 1: Computing Software and Review of Introductory Statistics</h2>
+         <center><font color = "red"><b>Zoom Office Hours</b>: Tuesday/Wednesday/Thursday 3:00 PM - 5:00 PM</font></center>
+      <p>
+         <h4>1. Course Information and Learning Advice</h4>
+        <p> <font color ="navy"><b>Note:</b></font> |<a href="module00-CourseInfoLogistics.html" target="popup"  onclick="window.open('module00-CourseInfoLogistics.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+         <a href="module00-CourseInfoLogistics.pdf" target="popup"  onclick="window.open('module00-CourseInfoLogistics.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|
+        </p>
+        
+          <h4>2. Getting started with R and RStudio</h4>
+            <p><font color ="navy"><b>Lecture Note:</b></font> 
+             |<a href="module00-R-RStudio.html" target="popup"  onclick="window.open('module00-R-RStudio.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+         <a href="module00-R-RStudio.pdf" target="popup"  onclick="window.open('module00-R-RStudio.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>| 
+           </p>
+                    
+             <ul>
+                  <li>Install the current version of R. It is freely available at <a href="https://www.r-project.org/">https://www.r-project.org/</a></li>
+                  <li>Install the free version of RStudio. The downloading site is at <a href="https://posit.co/products/open-source/rstudio/?sid=1">https://posit.co/products/open-source/rstudio/?sid=1</a></li>
+                 <li>Use R as a super graphing calculator</li>
+                 <li>Bult-in R functions for descriptive statistics</li>
+                 <li>Base R packages</li>
+                 <li>Writing simple and re-usable R scripts </li>
+             </ul>
+        
+        <h4>3. Basic statistics review</h4>
+            <p><font color ="navy"><b>Lecture Note:</b></font> 
+              |<a href="module01-StatsReview.html" target="popup"  onclick="window.open('module01-StatsReview.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+         <a href="module01-StatsReview.pdf" target="popup"  onclick="window.open('module01-StatsReview.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|   
+        </p>
+             <ul>
+               <li>Sampling distributions and Central Limit Theorem (CLT)</li>
+               <li>Confidence intervals of sample means: normal and t distributions</li>
+               <li>Testing hypothesis: logic, steps, p-value</li>
+             </ul> 
+        
+           <h4>4. Least square simple linear regression (SLR): inference and applications</h4>
+            <p><font color ="navy"><b>Lecture Note:</b></font> 
+                |<a href="Module02-RegressionReview.html" target="popup"  onclick="window.open('Module02-RegressionReview.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+         <a href="Module02-RegressionReview.pdf" target="popup"  onclick="window.open('Module02-RegressionReview.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|    
+            </p>        
+        
+             <ul>
+                 <li>Structure, interpretation of coeffcients with an emphasis on the slope parameters</li>
+                 <li>Assumptions and model diagnostics (validation)</li>
+                 <li>R functions for creating various residual diagnostic plots</li>
+                 <li>Clear understanding of R output and know hoe to use the information to</li>
+                   <ul>
+                    <li> perform hypothesis testing on the slope</li>
+                    <li> construct confidence interval of the slope</li>
+                    <li> assess the goodness-of-fit using R<sup>2</sup></li>
+                  </ul>
+             </ul>
+
+
+           <h4><font color = "red"><b>5. Review Cards </b></font><font color = "blue">[Please review these cards before taking the exam]</font></h4>      
+             <p>
+               <ul>
+               <li><font color ="navy"><b>Basic Statistics Review:</b></font>
+               |<a href="Module01-review-cards.html" target="popup"  onclick="window.open('Module01-review-cards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+                    
+               <li><font color ="navy"><b>Least Square Regression Review:</b></font> |<a href="Module02-reg-review-cards.html" target="popup"  onclick="window.open('Module02-reg-review-cards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+              </ul>   
+            </p> 
+
+            
+            <h4>6. Weekly Exam #1 </h4>      
+             <p>
+                <ul>
+               <li><font color ="navy"><b>Information:</b></font>
+               |<a href="Exam01.pdf" target="popup"  onclick="window.open('Exam01.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>| </li>
+               <li><font color ="red"><b>Answer Key and Summary of Exam #1:</b></font> |<a href="WeeklyExam/Exam01-key.pdf" target="popup"  onclick="window.open('WeeklyExam/Exam01-key.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>| </li>
+              </ul>   
+            </p>                
+      </p>
+    </div>  
+      
+      
+      
+    <!-- Week #2 -->
+    <div id="week02" class="section">
+      <h2>Week 2: Chi-square Tests for Goodness-of-fit and Independence </h2>
+        <center><font color = "red"><b>Zoom Office Hours</b>: Tuesday/Wednesday/Thursday 3:00 PM - 5:00 PM</font></center>
+        
+       <p> 
+          <h4>1. Chi-square Distribution and Goodness-of-fit Test</h4>
+            <p><font color ="navy"><b>Lecture Note:</b></font> 
+                |<a href="module03-Chisq-Goodness-of-fit.html" target="popup"  onclick="window.open('module03-Chisq-Goodness-of-fit.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+         <a href="module03-Chisq-Goodness-of-fit.pdf" target="popup"  onclick="window.open('module03-Chisq-Goodness-of-fit.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|   
+            </p>  
+        
+            <ul>
+             <li>Chi-square Distribution</li>
+               <ul>
+                 <li>Chi-square distribution density curve: skewed to the right</li>
+                 <li> Finding right-tail probability: related to p-value of chi-square tests</li>
+                 <li> Find percentile: related to critical value.</li>
+                 <li> Two R built-in functions</li>
+                  <ul>
+                    <li>right-tail probability: pchisq(x, df, lower.tail = FALSE)</li>
+                    <li>percentile: qchisq(p, df, lower.tail = TRUE)</li>
+                  </ul>
+               </ul>
+                
+             <li>Chi-square Goodness-of-fit Test</li>
+                <ul>
+                 <li>Setting up Hypothesis</li>
+                    <ul>
+                     <li> H<sub>0</sub>: The data follows the given distribution p = (p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>k</sub>) </li>
+                    <li> H<sub>a</sub>: The data NOT follow the given distribution p = (p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>k</sub>) </li>
+                    </ul>
+                    <li> Calculate expected frequencies under H<sub>0</sub></li>
+                    <uL>
+                     <li>Find the total number of observations (i.e.,sample size)  denoted by n</li>
+                     <li> Expected observation of j-th cell: E<sub>j</sub> = n* p<sub>j</sub></li>
+                    </uL>
+                    <li>Test statistics: $G^2= \sum_{j=1}^k (O_j - E_j)^2/E_j \rightarrow \chi^2_{k-1}$</li>   
+                </ul>
+                <li>Implementation in R: <i>chisq.test(obs.freq, p)</i></li>
+                 <ul>
+                  <li>Observed Frequency: obs.freq = $(n_1, n_2, \cdots, n_k)$ </li>
+                  <li>Hypothetical probability distribution: $p=(p_1, p_2, \cdots, p_k)$</li>
+                </ul>
+            </ul>    
+          <h4>2. Chi-square Test of Independence</h4>
+         <p><font color ="navy"><b>Lecture Note:</b></font> 
+                |<a href="module04-Chisq-Test-Independence.html" target="popup"  onclick="window.open('module04-Chisq-Test-Independence.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+         <a href="module04-Chisq-Test-Independence.pdf" target="popup"  onclick="window.open('module04-Chisq-Test-Independence.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|    
+            </p>  
+            <ul>
+              <li>Study Designs</li>
+                <ul>
+                  <li>Retropsective corhort study design (look at histoorical data)</li>
+                  <li>Prospective corhort study design (follow-up study)</li>
+                  <li>Cross-sectional study (look at the current data, a snapshot observations)</li>
+                </ul>
+                <li>Measures of Association</li>
+                 <ul>
+                  <li>Absolute risk, relative risk, and attributable risk</li>
+                  <li>Odds ratio</li>
+                  <li>Risk measures vs study designs</li>
+                 </ul>
+                <li>$\chi^2$ test of independence between two categorical variables</li>
+                 <ul>
+                   <li>Observed two-way contingency tables: I rows and J columns</li>
+                   <li>Null hypothesis: $H_0$ - <i>two categorical variables are independent</i>.</li>
+                   <li>Expected frequencies under $H_0$: </li>
+                     <ul>
+                         <li>Expected frequency of i-th row and j-th column: $E_{ij}=\text{i-th row total}\times \text{j-th column total}/\text{grand total}$</li>
+                     </ul>
+                   <li>Test statistic: $G^2 = \sum_{i=1}^I\sum_{j=1}^J (O_{ij}-E_{ij})^2/E_{ij} \rightarrow \chi^2_{(I-1)(J-1)}$</li>
+                 </ul>
+                  <li>Implementation in R: <i>chisq.test()</i></li>
+                   <ul>
+                     <li>Using observed contingency table: <i>chisq.test(obs.table)</i> </li>
+                     <li>Using two categorical variables directly: <i>chisq.test(x,y)</i></li>
+                   </ul>
+            </ul>
+
+             
+           <h4><font color = "red"><b>3. Review Cards </b></font><font color = "blue">[Please review these cards before taking the exam]</font></h4>      
+             <p>
+               <ul>
+               <li><font color ="navy"><b>Goodness-of-fit Test Review:</b></font>
+               |<a href="module03-Chisq-Goodness-of-git-Cards.html" target="popup"  onclick="window.open('module03-Chisq-Goodness-of-git-Cards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+                    
+               <li><font color ="navy"><b>Chi-Square Test of Independence Review:</b></font> |<a href="Module04-ChisquareIndependenceReviewCards.html" target="popup"  onclick="window.open('Module04-ChisquareIndependenceReviewCards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+              </ul>   
+            </p> 
+
+
+          <h4>4. Weekly Exam #2 Information </h4>
+             <ul>
+             <li> <b>Open</b>: Friday at noon</li>
+             <li><b>Close</b>: Sunday at midnight</li>
+             <li><b>Guideline</b>: |<a href="Exam02Info.pdf" target="popup"  onclick="window.open('Exam02Info.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>| </li>
+             <li><font color = "red"><b>Answer Key and Summary</b></font> |<a href="WeeklyExam/Exam02-key.pdf" target="popup"  onclick="window.open('WeeklyExam/Exam02-key.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|</li>
+            </ul>
+       </p>
+    </div>
+          
+      
+      
+      
+     <!-- Week #3 -->     
+      
+       <div id="week03" class="section">
+      <h2>Week 3: Parametric and Nonparametric One- and Two-Sample Tests </h2>
+           <center><font color = "red"><b>Zoom Office Hours</b>: Tuesday/Wednesday/Thursday 3:00 PM - 5:00 PM</font></center>
+        
+       <p> 
+          <h4>1. One-Sample Tests</h4>
+           <p><font color ="navy"><b>Lecture Note:</b></font> 
+                |<a href="module05-OneSampleTest4Location.html" target="popup"  onclick="window.open('module05-OneSampleTest4Location.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+                 <a href="module05-OneSampleTest4Location.pdf" target="popup"  onclick="window.open('module05-OneSampleTest4Location.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|    
+              </p> 
+           
+              <ul>
+           
+               <li>Data Structure</li> 
+                   <ul>
+                    <li>R dataframe structure: row and column indices</li>
+                    <li>Access the data frame using row and column indices</li>
+                    <li>Selecting columns and rows</li>
+                    <li>Conditional selection: R function <code>which()</code></li>
+                  </ul>
+               <li>One-Sample t-test Revisited</li>
+               <ul>
+                 <li>Basic assumptions</li>
+                   <ul>
+                    <li>Data are independently observed</li>
+                    <li>The population is normally distributed</li>
+                    <li>Population variance is unknown</li>
+                   </ul>
+                 <li>Manual calculation based on descriptive statistics using R commands</li>
+                 <li> Calling the R function <code>t.test()</code> from the base R package <b>stats</b></li>
+                 </ul>
+                  
+                <li>Linear Regression Approach to One-Sample t Test</li>
+                <ul>
+                  <li>Linear regression Assumption review</li>
+                   <ul>
+                    <li>Data are independently observed</li>
+                    <li>The population is normally distributed</li>
+                    <li>Population variance is unknown</li>
+                   </ul>
+                 <li>Regression with only intercept: $y = \beta_0 + \epsilon$</li>
+                   <ul>
+                    <li>General set-up in R: <code>lm(y ~ 1, data = dataset.name)</code></li>
+                    <li>Regression set-up for one-sample t test in R:<code>lm(I(y-mu_0) ~ 1, data = dataset.name)</code></li>
+                    </ul>
+                    
+                    <li>Nonparametric One-Sample Test for <b>Median</b></li>
+                   <ul>
+                      <li>Binomial distribution: R functions<code>pbinom()</code> and <code>qbinom()</code></li>
+                      <li>Test procedure formulation</li>
+                       <li>Exact method: binomial critical value and p-value - built-in function <code>binom.test()</code> and <code>SIGN.test()</code></li>
+                        <li>Normal approximation</li>
+                        
+                    </ul>
+                 </ul>
+                  
+           </ul>
+           
+                 
+           
+           
+           
+          <h4>2. Two-Sample Tests </h4>
+           <p><font color ="navy"><b>Lecture Note:</b></font> 
+                |<a href="module06-TwoSampleTest4Location.html" target="popup"  onclick="window.open('module06-TwoSampleTest4Location.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+                <a href="module06-TwoSampleTest4Location.pdf" target="popup"  onclick="window.open('module06-TwoSampleTest4Location.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|     </p> 
+            <ul>
+            <li>Two-Sample t Test Revisited</li> 
+                   <ul>
+                    <li>Assumptions: independent samples, normal populations, unknown but equal variances</li>
+                    <li>Manual calculation: pooled variance and test statistic (TS and its distribution, degrees of freedom)</li>
+                    <li>Built-in function: <code>t.test()</code></li>
+                  </ul>
+               <li>Linear Regression Approach to Two-Sample t Test</li>
+                  <ul>
+                  <li>Response variable and group variable must be either in a dataframe or defined separately.</li>
+                  <li>The group variable must be a factor: R function <code>factor(group.variable)</code></li>
+                  <li>Model formula in R: <code>lm(y ~ factor(x), data = dataset.name)</code></li>
+                 <li>Understand the output of the regression model: estimated difference of the two population means, TS, p-value, and degrees of freedom.</li>
+                 </ul>
+                
+                <li>Non-parametric Two-Sample Test: Wilcoxon Signed Rank Test</li>
+                  <ul>
+                  <li>Two-tailed Wilcoxon signed rank test: What is the null hypothesis?</li>
+                  <li>Formulation of the test procedure and basic steps</li>
+                      <ul>
+                        <li> Exact approach: requires tabulation of critical values based on given significance levels</li>
+                        <li> Normal approximation approach</li>
+                      </ul>
+                  <li>Implementation in R: <code>wilcox.test()</code></li>
+                  <li>Understand the output of <code>wilcox.test()</code></li>
+                 </ul>
+                <li>Two-Paired-Sample Tests</li>
+                 <ul>
+                  <li>Paired t-test: assumptions and R function <code>t.test()</code></li>
+                    <li>
+                        Nonparametric two-paired-sample test: <b>Wilcoxon Signed Rank Test</b> - <code>wilcox.test()</code>
+                  </li>
+                 </ul>
+           
+           </ul>
+           
+          <h4><font color = "red"><b>3. Review Cards </b></font><font color = "blue">[Please review these cards before taking the exam]</font></h4>      
+             <p>
+               <ul>
+               <li><font color ="navy"><b>One-sample Tests Review:</b></font>
+               |<a href="Module05-OnSampleTests-ReviewCards.html" target="popup"  onclick="window.open('Module05-OnSampleTests-ReviewCards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+                    
+               <li><font color ="navy"><b>Two-sample Tests Review:</b></font> |<a href="Module06-TwoSampleTests-ReviewCards.html" target="popup"  onclick="window.open('Module06-TwoSampleTests-ReviewCards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+              </ul>   
+            </p> 
+
+          <h4>3.Weekly Exam #3 Information</h4>
+           
+             <ul>
+             <li> <b>Open</b>: Friday at noon</li>
+             <li><b>Close</b>: Sunday at midnight</li>
+             <li><b>Guideline</b>: |<a href="Exam03Info.pdf" target="popup"  onclick="window.open('Exam03Info.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>| </li>
+            </ul>
+           
+            <ul>                    
+               <li><font color ="red"><b>Answer Key and Summary:</b></font> |<a href="WeeklyExam/Exam03-key.pdf" target="popup"  onclick="window.open('WeeklyExam/Exam03-key.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>| </li>
+              </ul>  
+       </p>
+    </div>   
+      
+      
+      
+ 
+      
+      
+      
+      
+     <!-- Week #4 -->
+    <div id="week04" class="section">
+      <h2>Week 4: Principles of Experimental Designs and Analysis of Variance (ANOVA)</h2>
+                   <center><font color = "red"><b>Zoom Office Hours</b>: Tuesday/Wednesday/Thursday 3:00 PM - 5:00 PM</font></center>
+      <p>
+    
+       <h4>1. Principles of Experimental Designs</h4>
+          <p><font color ="navy"><b>Lecture Note:</b></font> 
+                |<a href="module07-DOE.html" target="popup"  onclick="window.open('module07-DOE.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+                 <a href="module07-DOE.pdf" target="popup"  onclick="window.open('module07-DOE.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|    
+              </p> 
+          
+            <ul>
+               <li>Rationale and Logical Process of Experimental Design</li>
+               <ul>
+                  <li>Research questions and objective: Ssetting up hypotheses</li>
+                  <li>Identify the response variable and Factor variables</li>
+                  <li>Commonly used experimental designs</li>
+                   <!--ul>
+                      <li><b>Completely Randomized Design (CRD)</b></li>
+                      <li><b>Randomly Block Designs (RBD) with and without replicates</b></li>
+                   </ul-->
+                  <li>Roles of randomization, blinding, and assignment of experimental units</li>
+                   <li>Sampling plans and data collection</li>
+                     <ul>
+                         <li>Simple random sampling</li>
+                         <li>Stratified sampling</li>
+                         <li>Systematic sampling</li>
+                         <li>Clustering sampling</li>
+                     </ul>
+                </ul>
+                <li>Completely Random Design and Randomized Block Design</li>
+                  <ul>
+                   <li>Completely random design (CRD)</li>
+                   <li>Randomized block design (RBD) with and without replicates</li>
+                  </ul>
+          </ul>
+
+          
+       <h4>2. One-way Analysis of Variance (ANOVA)</h4>
+          <p><font color ="navy"><b>Lecture Note:</b></font> 
+                |<a href="module08-ANOVA4CBD.html" target="popup"  onclick="window.open('module08-ANOVA4CBD.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+                 <a href="module08-ANOVA4CBD.pdf" target="popup"  onclick="window.open('module08-ANOVA4CBD.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|    
+              </p> 
+          
+                    
+          <ul>
+             <li>Objective and Logic of Analyzing CRD Data</li>
+               <ul>
+                 <li>The objective and logic of analyzing CRD data</li>
+                 <li>Measuring Discrepancy between the null and alternative hypotheses: sum of squares decomposition</li>
+                 <li>Basics of F-distribution</li>
+                 <li>R commands for F-distribution</li>
+               </ul>
+              <li>One-way ANOVA</li>
+              <ul>
+                <li>One-way ANOVA table structure</li>
+                <li>Understanding the statistics for testing the null hypothesis</li>
+                <li>Preparing data for ANOVA analysis using R </li>
+                <li>R function <code>aov()</code> for one-way ANOVA testing</li>
+              </ul>
+              <li>Multiple Comparisons</li>
+               <ul>
+                  <li>Simultaneous comparisons between factor levels (treatment levels)</li>
+                  <li>Understanding family significance level (observed type I error): avoiding inflation of type I error</li>
+                  <li>Tukey's HSD and Bonferoni procedures</li>
+                  <li>Steps for implementing Tukey's HSD using <code>TukeyHSD()</code></li>
+               </ul>
+          </ul>
+        
+       <h4>3. Two-way Analysis of Variance (ANOVA)</h4>
+          <p><font color ="navy"><b>Lecture Note:</b></font> 
+                |<a href="module09-2-WayANOVA4CBD.html" target="popup"  onclick="window.open('module09-2-WayANOVA4CBD.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+                 <a href="module09-2-WayANOVA4CBD.pdf" target="popup"  onclick="window.open('module09-2-WayANOVA4CBD.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|    
+              </p> 
+          <ul>
+             <li>Types of Null Hypotheses in two-way ANOVA with replicated RBD data</li>
+              <ul>
+                 <li> Testing main effect only RBD with no replicates </li>
+                 <li> Testing interactive effects  with replicated RBD</li>
+              </ul>
+             <li>Understanding the structure of two-way ANOVA</li>
+              <ul>
+                 <li>The structure of two-way ANOVA</li>
+                 <li>Identify test statistics for testing appropriate hypotheses</li>
+                 <li>Implementing two-way ANOVA with R</li>
+                </ul>
+              <li>Multiple Comparison: Post-hoc Tests</li>
+                <ul>
+                 <li>Tukey's HSD </li>
+                 <li>Main effect: comparing levels within that factor</li>
+                 <li>Interactive effect: comparing one factor within levels of another</li>
+                 <li> Using R to implement Tukey's HSD</li>
+                 <li> Visual presentation of post-hoc comparisons</li>
+                </ul>
+          </ul>
+          
+        <h4><font color = "red"><b>4. Review Cards </b></font><font color = "blue">[Please review these cards before taking the exam]</font></h4>      
+             <p>
+               <ul>
+              <li><font color ="navy"><b>Design of Experiments (DOE) Review:</b></font>
+               |<a href="Module07-DOE-ReviewCards.html" target="popup"  onclick="window.open('Module07-DOE-ReviewCards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+                  
+
+               <li><font color ="navy"><b>One-way ANOVA Review:</b></font>
+               |<a href="Module08-OneWayANOVA-ReviewCards.html" target="popup"  onclick="window.open('Module08-OneWayANOVA-ReviewCards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+                  
+                
+               <li><font color ="navy"><b>Two-way ANOVA Review:</b></font> 
+                |<a href="Module09-TwoWayANOVA-ReviewCards.html" target="popup"  onclick="window.open('Module09-TwoWayANOVA-ReviewCards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+              
+              </ul>   
+            </p> 
+
+
+       <h4>5. Weekly Exam #4</h4>
+       <ul>
+             <li> <b>Open</b>: Friday at noon</li>
+             <li><b>Close</b>: Sunday at midnight</li>
+             <li><b>Guideline</b>: |<a href="Exam04Info.pdf" target="popup"  onclick="window.open('Exam04Info.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>| </li>
+            </ul>
+        
+                  <ul>                    
+               <li><font color ="red"><b>Answer Key and Summary:</b></font> |<a href="WeeklyExam/Exam04-key.pdf" target="popup"  onclick="window.open('WeeklyExam/Exam04-key.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>| </li>
+              </ul>    
+
+       </p>
+    </div>
+     
+      
+
+    
+     <!-- Week #5 -->
+    <div id="week05" class="section">
+      <h2>Week 5: A Brief Introduction to Multiple Linear Regression with Applications</h2>
+        <center><font color = "red"><b>Zoom Office Hours</b>: Tuesday/Wednesday/Thursday 3:00 PM - 5:00 PM</font></center>
+        
+       <p>
+      
+       <h4>1. Multiple Linear Regression Models with Categorical Predictors: ANOVA Regression</h4>
+          <p><font color ="navy"><b>Lecture Note:</b></font> 
+                |<a href="module10-MLR-Intro.html" target="popup"  onclick="window.open('module10-MLR-Intro.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+                 <a href="module10-MLR-Intro.pdf" target="popup"  onclick="window.open('module10-MLR-Intro.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|    
+              </p> 
+          <ul>
+            <li>Simple Linear Regression Model</li>
+              <ul>
+                 <li> Model structure and interpretations of the model coefficients</li>
+                 <li> Assumptions and model diagnostics</li>
+               </ul>
+            <li>Linear Regression Model with Single Multiple-category Categorical Variable</li>
+               <ul>
+                <li>How regression models handle multi-category categorical variables</li>
+                <li>Interpretation of coefficients of dummy variables: comparisons between non-baseline categories with the reference.</li>
+                <li>Linear regression approach to one-way ANOVA</li>
+                <il>Understand the outputs of <code>lm()</code> and <code>TukeyHSD()</code></il>
+               </ul>
+            <li>Multiple Linear Regression Model with Multiple Categorical Variables</li>
+              <ul>
+                <li>Model structure: main effect</li>
+                <li>How regression coefficients are estimated from the original data table </li>
+                <li>Interpretation of regression coefficients: Main effect and interaction effect</li>
+                <li>Understand the statistics in the <code>TukeyHSD()</code></li>
+                <li>Connections between regression coefficients and TukeyHSD outputs</li>
+              </ul>
+              
+          </ul>
+          
+       <h4>2. A Brief Introduction of General Linear Regression Models: Polynomial and ANCOVA Regression</h4>
+        <p><font color ="navy"><b>Lecture Note:</b></font> 
+                |<a href="module11-MLR-generalIntro.html" target="popup"  onclick="window.open('module11-MLR-generalIntro.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>|
+                 <a href="module11-MLR-generalIntro.pdf" target="popup"  onclick="window.open('module11-MLR-generalIntro.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>|    
+              </p>   
+          
+             <ul>
+               <li>Overview of types Multiple Linear Regression Models</li>
+               <li>Polynomial Regression Models</li>
+                 <ul>
+                    <li>Model structure: Nonlinear relationship between response and predictor, but linear relationship among regression coefficients</li>
+                    <li>Multicollinearity issue in polynomial regression and remedy</li>
+                    <li>If a high-order term is significant, all lower degree terms must be retained in the model</li>
+                 </ul>
+               <li>Analysis of Covariance (ANCOVA) Models</li>   
+                 <ul>
+                   <li>Handling categorical variables in multiple linear regression model</li>
+                   <li>Understand and correctly interpret interaction terms in ANCOVA</li>
+                   <li>Understand the visual representation of interaction effect</li>
+                 </ul>
+             </ul>
+        
+       <h4><font color = "red"><b>3. Review Cards </b></font><font color = "blue">[Please review these cards before taking the exam]</font></h4>      
+             <p>
+               <ul>
+              <li><font color ="navy"><b>Multiple Linear Regression (MLR) Review:</b></font>
+               |<a href="Module10-MLR-ReviewCards.html" target="popup"  onclick="window.open('Module10-MLR-ReviewCards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+                  
+
+               <li><font color ="navy"><b>General Linear Regression (GLR) Review:</b></font>
+               |<a href="Module11-GenIntroMLR-ReviewCards.html" target="popup"  onclick="window.open('Module11-GenIntroMLR-ReviewCards.html', 'name','width=900,height=500')"><font color ="blue">HTML</font></a>| </li>
+                  
+              </ul>   
+            </p> 
+
+
+          
+        <h4>4. Final Exam: <font color = "red">Sunday 3:30 PM - 5:30 PM, 06/28/2026</font></h4>
+          <br>
+         <center><font color = "blue" ><b>Important Note</b>: The final exam is cumulative. Everyone is required to take it. Failure to do so will result in a failing grade for the course.</font></center>
+         <ul>
+             <li> <b>Open</b>: Sunday at 3:30 PM <font color = "red">(starting time for <b>everyone</b>!)</font></li>
+             <li> <b>Close</b>: Sunday at 5:30 PM <font color = "red">(6:30 PM for students who have submitted accommodations through OEA)</font></li>
+            <li><b>Guideline</b>: |<a href="Exam05Info.pdf" target="popup"  onclick="window.open('Exam05Info.pdf', 'name','width=900,height=500')"><font color ="blue">PDF</font></a>| </li>
+            </ul>               
+       </p>
+    </div>
+
+    </div>
+
+ </TD></TR>
+ </TBODY></TABLE>
+
+
+</body>
+</html>
