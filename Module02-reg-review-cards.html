@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SLR · Reference Cards | Inference & R Code</title>
+    <!-- MathJax for beautiful formulas -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* CORE COLOR: purple #6E3061 with accessibility contrast */
+        body {
+            background-color: #6E3061;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+            transition: background-color 0.25s ease, color 0.2s ease;
+        }
+
+        /* main container – printable, max-width for readability */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            transition: background 0.2s;
+        }
+
+        /* header area with purple brand */
+        .header {
+            background: #6E3061;
+            padding: 1.0rem 1.0rem;
+            color: white;
+            border-bottom: 4px solid #ffd966;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+         .header h2 {
+            font-size: 2.0rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: 1.35rem;
+            opacity: 0.92;
+            font-weight: 500;
+            border-left: 3px solid #ffd966;
+            padding-left: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        /* toolbar: toggle + print + size hints */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 0.9rem 2rem;
+            background: #f9f4f7;
+            border-bottom: 1px solid #e2d0dc;
+            align-items: center;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid #c2a8bd;
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2d2a2c;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            background: #e9dce5;
+            border-color: #6E3061;
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: #6E3061;
+            border-color: #4f2444;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4f2444;
+        }
+
+        /* CARDS GRID: two per row on desktop, responsive */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.8rem;
+            padding: 2rem 2rem;
+        }
+
+        /* responsive: on narrow screens, single column */
+        @media (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            body {
+                padding: 1rem;
+            }
+        }
+
+        /* reference card style */
+        .card {
+            background: #fefcff;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px #6E3061;
+            /*box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);*/
+            transition: all 0.2s;
+            border: 1px solid #ecdde6;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card-header {
+            background: #6E3061;
+            padding: 1rem 1.4rem;
+            border-bottom: 2px solid #dbbdce;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+            /*color: #2c1b27;  */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .card-header span {
+            background: #6E306110;
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: normal;
+            font-family: monospace;
+        }
+        .card-body {
+            padding: 1.3rem 1.4rem 1.6rem;
+            flex: 1;
+        }
+        .formula-block {
+            background: #f5f0f3;
+            padding: 0.9rem;
+            border-radius: 18px;
+            margin: 0.8rem 0;
+            font-size: 1rem;
+            overflow-x: auto;
+            text-align: center;
+        }
+        /* R code block: left-aligned with proper indentation, using "=" assignment */
+        .r-code {
+            background: #1e2a2f;
+            color: #d6deeb;
+            padding: 1rem;
+            border-radius: 16px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.78rem;
+            margin: 0.7rem 0;
+            overflow-x: auto;
+            white-space: pre;
+            tab-size: 4;
+            line-height: 1.45;
+            text-align: left;
+        }
+        .r-code code {
+            display: block;
+            white-space: pre;
+            font-family: inherit;
+        }
+        .check-row {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 0.7rem;
+            border-top: 1px dashed #e2d0dc;
+            padding-top: 0.8rem;
+            font-size: 0.85rem;
+        }
+        .check-row input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #6E3061;
+        }
+        .badge {
+            background: #e2d0dc;
+            border-radius: 30px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        footer {
+            background: #f3eaf0;
+            padding: 1.2rem 2rem;
+            font-size: 0.8rem;
+            color: #3f2d38;
+            border-top: 1px solid #e1cfda;
+            /*display: flex;*/
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        /* Dark mode overrides */
+        body.dark {
+            background-color: #2c1a27;
+        }
+        body.dark .container {
+            background: #1f1a1d;
+        }
+        body.dark .card {
+            background: #2b2428;
+            border-color: #4d3a44;
+        }
+        body.dark .card-header {
+            background: #6E3061;
+            color: white;
+            /*color: #f1e4ec;  */
+            border-bottom-color: #6E3061;
+        }
+        body.dark .card-body {
+            color: #efeaed;
+        }
+        body.dark .formula-block {
+            background: #3a2e35;
+            color: #f3e6ef;
+        }
+        body.dark .r-code {
+            background: #0e181c;
+            color: #bbd4f0;
+        }
+        body.dark .toolbar {
+            background: #2a2126;
+            border-bottom-color: #4b3942;
+        }
+        body.dark .btn {
+            background: #3f2f37;
+            border-color: #6E3061;
+            color: #f0e3ea;
+        }
+        body.dark .btn-primary {
+            background: #6E3061;
+            color: white;
+        }
+        body.dark footer {
+            background: #2c2228;
+            color: #cfc1ca;
+            border-top-color: #4a3842;
+        }
+        body.dark .badge {
+            background: #4a3842;
+        }
+        /* print styles: A3 & Letter support */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            body.dark .container, .container {
+                background: white;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .toolbar {
+                display: none;
+            }
+            .cards-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .check-row input {
+                opacity: 1;
+                border: 1px solid black;
+            }
+            footer {
+                background: #f5f5f5;
+                color: black;
+            }
+            .btn, .toolbar .btn {
+                display: none;
+            }
+            body.dark .card-header, body.dark .card-body {
+                color: black;
+                background: #fff;
+            }
+            body.dark .r-code {
+                background: #f0f0f0;
+                color: #1e1e1e;
+                border: 1px solid #aaa;
+            }
+            .formula-block {
+                background: #f7f7f7;
+            }
+            @page {
+                size: A3;
+            }
+            @page letter {
+                size: letter;
+            }
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        @media print and (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        .site-meter {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>STA 200 STATISTICS II</h1>
+        <h2>📊 Module 02: Simple Linear Regression Inference Review Cards</h2>
+        <div class="subtitle">📌 Key inferential procedures, formulas & R code </div>
+    </div>
+    <div class="toolbar">
+        <button class="btn" id="darkModeToggle">🌓 Dark / Light mode</button>
+        <button class="btn btn-primary" id="printPdfBtn">🖨️ Print / Save as PDF</button>
+    </div>
+
+    <div class="cards-grid">
+        <!-- CARD 1: t-test for slope (β₁) -->
+        <div class="card">
+            <div class="card-header">
+                🔬 t-test for slope \( \beta_1 \) <span>H₀: β₁ = 0</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    H_0: \beta_1 = 0 \quad \text{vs} \quad H_a: \beta_1 \neq 0
+                    \]
+                    \[
+                    TS = \frac{b_1 - 0}{SE(b_1)} \;\sim\; t_{n-2}
+                    \]
+                </div>
+                <div class="r-code"><code># Fit linear model (using "=" assignment)
+model = lm(grade ~ study_hours, data = df)
+
+# Extract t-statistic from summary
+summary(model)
+
+# Manual computation
+b1 = coef(model)[2]
+se_b1 = sqrt(diag(vcov(model)))[2]
+t_stat = b1 / se_b1
+
+# Two-tailed p-value (n = sample size)
+n = nrow(df)
+p_value = 2 * pt(abs(t_stat), df = n-2, lower.tail = FALSE)</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>✓ Reviewed t‑test procedure & formula</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: Confidence Interval for Slope -->
+        <div class="card">
+            <div class="card-header">
+                📐 Confidence Interval for \( \beta_1 \) <span>95% CI</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    b_1 \;\pm\; t_{\alpha/2,\, df=n-2} \times SE(b_1)
+                    \]
+                    \[
+                    \text{Critical value: } t_{0.975,\, n-2}
+                    \]
+                </div>
+                <div class="r-code"><code># Built-in CI
+confint(model, parm = "study_hours", level = 0.95)
+
+# Manual calculation
+b1 = coef(model)[2]
+se = sqrt(diag(vcov(model)))[2]
+crit = qt(0.975, df = df.residual(model))
+ci_lower = b1 - crit * se
+ci_upper = b1 + crit * se</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📏 CI construction & critical value (t-dist)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: Fitted values & Residuals -->
+        <div class="card">
+            <div class="card-header">
+                📈 Estimated model & residuals <span>\(\hat{Y} = b_0 + b_1 X\)</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \hat{Y}_i = b_0 + b_1 X_i, \quad e_i = Y_i - \hat{Y}_i
+                    \]
+                    \[
+                    RSS = \sum_{i=1}^{n} e_i^2
+                    \]
+                </div>
+                <div class="r-code"><code># Extract fitted values and residuals
+fitted_vals = fitted(model)
+residuals_vals = resid(model)
+
+# Diagnostic plots
+plot(model, which = 1)  # Residuals vs Fitted
+qqnorm(resid(model))
+qqline(resid(model), col = "#6E3061")</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>🔍 Residual extraction & diagnostic plots</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 4: Standard error of slope -->
+        <div class="card">
+            <div class="card-header">
+                ⚙️ Standard Error \(SE(b_1)\) <span>inference core</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    SE(b_1) = \frac{\hat{\sigma}}{\sqrt{\sum (X_i - \bar{X})^2}}, \quad 
+                    \hat{\sigma} = \sqrt{\frac{RSS}{n-2}}
+                    \]
+                </div>
+                <div class="r-code"><code># Extract SE(b1) directly
+se_b1 = summary(model)$coefficients[2, "Std. Error"]
+
+# Residual standard error (sigma hat)
+sigma_hat = summary(model)$sigma</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📌 SE formula & residual std error σ̂</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 5: R-squared & F-test -->
+        <div class="card">
+            <div class="card-header">
+                📊 R² & F-test <span>model fit & slope test</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    R^2 = \frac{SS_{reg}}{SS_{tot}} = 1 - \frac{RSS}{SS_{tot}}
+                    \]
+                    \[
+                    F = \frac{SS_{reg}/1}{RSS/(n-2)} \sim F_{1,\, n-2}
+                    \]
+                </div>
+                <div class="r-code"><code># R-squared and F-statistic
+summary(model)$r.squared
+summary(model)$fstatistic
+
+# For SLR: F = t_stat^2
+t_stat = coef(summary(model))[2, "t value"]
+f_stat = t_stat^2</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📈 R² interpretation & F-test relation to t-test</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 6: Influence & Leverage (Cook's distance) -->
+        <div class="card">
+            <div class="card-header">
+                🎯 Influence diagnostics <span>Cook's Distance</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    D_i = \frac{e_i^2}{p \cdot MSE} \cdot \frac{h_{ii}}{(1-h_{ii})^2}
+                    \]
+                    <small>\(h_{ii}\) = leverage, \(p\) = #parameters (2 in SLR)</small>
+                </div>
+                <div class="r-code"><code># Cook's distance
+cooksD = cooks.distance(model)
+plot(cooksD, type = "h", main = "Cook's Distance")
+
+# Leverage values
+leverage = hatvalues(model)
+
+# Rule of thumb: D_i > 4/n is influential</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>⚠️ Detect outliers & high-leverage points</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 7: Normality of residuals -->
+        <div class="card">
+            <div class="card-header">
+                🧪 Normality of residuals <span>QQ-plot & test</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \varepsilon_i \sim N(0,\sigma^2) \quad \text{(required for inference)}
+                    \]
+                </div>
+                <div class="r-code"><code># Q-Q plot visual check
+qqnorm(resid(model), main = "Normal Q-Q Plot")
+qqline(resid(model), col = "#6E3061", lwd = 2)
+
+# Shapiro-Wilk test for normality
+shapiro.test(resid(model))</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>✅ Check normality assumption before inference</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 8: Homoscedasticity -->
+        <div class="card">
+            <div class="card-header">
+                🌊 Homoscedasticity <span>constant error variance</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \text{Var}(\epsilon_i \mid X) = \sigma^2 \quad \forall i
+                    \]
+                </div>
+                <div class="r-code"><code># Residuals vs Fitted plot
+plot(model, which = 1, main = "Residuals vs Fitted")
+
+# Breusch-Pagan test (requires lmtest package)
+# install.packages("lmtest")
+library(lmtest)
+bptest(model)</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📉 Detect heteroscedasticity (fan-shaped pattern)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 9: Prediction intervals -->
+        <div class="card">
+            <div class="card-header">
+                🔮 Prediction & Confidence intervals <span>new X</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \hat{Y}_h \pm t_{\alpha/2,n-2} \times SE(\hat{Y}_h) \quad\text{(mean response)}
+                    \]
+                    \[
+                    \hat{Y}_h \pm t_{\alpha/2,n-2} \times \sqrt{MSE + [SE(\hat{Y}_h)]^2} \quad\text{(prediction)}
+                    \]
+                </div>
+                <div class="r-code"><code># Create new data
+new_data = data.frame(study_hours = c(8, 10))
+
+# Confidence interval for mean response
+predict(model, newdata = new_data, interval = "confidence")
+
+# Prediction interval for individual observation
+predict(model, newdata = new_data, interval = "prediction")</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📦 Prediction for new observations</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 10: Leverage & Studentized residuals -->
+        <div class="card">
+            <div class="card-header">
+                ⚡ Leverage & Studentized residuals <span>outlier detection</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    h_{ii} = \frac{1}{n} + \frac{(X_i - \bar{X})^2}{\sum (X_j - \bar{X})^2}
+                    \]
+                    \[
+                    \text{Studentized residual} = \frac{e_i}{\hat{\sigma}\sqrt{1-h_{ii}}}
+                    \]
+                </div>
+                <div class="r-code"><code># Leverage values
+leverage = hatvalues(model)
+
+# Rule of thumb: high leverage > 2p/n = 4/n
+
+# Externally studentized residuals
+rstudent(model)
+
+# Identify outliers: |rstudent| > 2 or 3</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>🎯 Identify high leverage & influential outliers</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 11: P-value calculation -->
+        <div class="card">
+            <div class="card-header">
+                📉 p-value calculation <span>two-tailed test</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    p\text{-value} = 2 \times P(T_{n-2} > |t_{obs}|)
+                    \]
+                </div>
+                <div class="r-code"><code># Given t-statistic and degrees of freedom
+t_obs = 24.02   # example from course grade data
+df = 8          # n - 2 = 10 - 2
+
+# Compute two-tailed p-value
+p_value = 2 * pt(abs(t_obs), df = df, lower.tail = FALSE)
+
+# Output: ~9.62e-09 (highly significant)</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>🧮 Exact p-value from t-distribution</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 12: Linearity assumption -->
+        <div class="card">
+            <div class="card-header">
+                📉 Linearity check <span>scatter plot + residual pattern</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    E[Y \mid X] = \beta_0 + \beta_1 X
+                    \]
+                </div>
+                <div class="r-code"><code># Scatter plot with regression line
+plot(x = df$study_hours, y = df$grade,
+     main = "Scatter Plot with Regression Line",
+     xlab = "Study Hours", ylab = "Course Grade")
+abline(model, col = "#6E3061", lwd = 2)
+
+# Check residuals vs fitted for non-linearity
+plot(model, which = 1)</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📌 Visual inspection for linear relationship</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ <footer>
+        <center> 
+       <div class="copyright">
+       <p>© 2019-<span id="currentYear"></span>  C. Peng @ West Chester University, USA. All rights reserved.</p>
+            <!-- Copyright Statement -->
+ 
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script><a href='http://www.freevisitorcounters.com'><img src="img/blackdot.jpg" width="1" height="1"></a><br>
+    
+           <div class="license">
+              <p>📄 Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer"><font color = "red">Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</font></a></p>
+              <p>You are free to share and adapt for non-commercial purposes with appropriate credit.</p>
+            </div>
+         </div>
+       </center> 
+    </footer>
+</div>
+
+    <script>
+         // Set current year in copyright
+        document.getElementById('currentYear').textContent = new Date().getFullYear();   
+        
+    (function(){
+        // dark mode toggle with localStorage
+        const darkToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        if(localStorage.getItem('slr-theme') === 'dark') {
+            body.classList.add('dark');
+        }
+        darkToggle.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            const isDark = body.classList.contains('dark');
+            localStorage.setItem('slr-theme', isDark ? 'dark' : 'light');
+        });
+
+        // Print to PDF with correct sizing (A3 / Letter supported)
+        const printBtn = document.getElementById('printPdfBtn');
+        printBtn.addEventListener('click', () => {
+            window.print();
+        });
+
+        // interactive checkboxes: save state to localStorage for persistence
+        const allChecks = document.querySelectorAll('.check-row input');
+        function saveCheckboxStates() {
+            const states = [];
+            allChecks.forEach((cb) => {
+                states.push(cb.checked);
+            });
+            localStorage.setItem('slr-checkboxes-v4', JSON.stringify(states));
+        }
+        function loadCheckboxStates() {
+            const saved = localStorage.getItem('slr-checkboxes-v4');
+            if(saved) {
+                const states = JSON.parse(saved);
+                if(states.length === allChecks.length) {
+                    allChecks.forEach((cb, idx) => {
+                        cb.checked = states[idx];
+                    });
+                }
+            }
+        }
+        allChecks.forEach(cb => {
+            cb.addEventListener('change', saveCheckboxStates);
+        });
+        loadCheckboxStates();
+
+        // Ensure MathJax renders properly
+        if(window.MathJax) {
+            MathJax.typesetPromise().catch(e => console.log("MathJax loaded"));
+        }
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Ref Cards: Chi‑Square Independence & Risk Measures | R Code</title>
+    <!-- MathJax for beautiful formulas -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* CORE COLOR: purple #6E3061 with accessibility contrast */
+        body {
+            background-color: #512d6d;/*  #6E3061;  */
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+            transition: background-color 0.25s ease, color 0.2s ease;
+        }
+
+        /* main container – printable, max-width for readability */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            transition: background 0.2s;
+        }
+
+        /* header area with purple brand */
+        .header {
+            background: #6E3061;
+            padding: 1.0rem 1.0rem;
+            color: white;
+            border-bottom: 4px solid #ffd966;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+         .header h2 {
+            font-size: 2.0rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: 1.35rem;
+            opacity: 0.92;
+            font-weight: 500;
+            border-left: 3px solid #ffd966;
+            padding-left: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        /* toolbar: toggle + print + size hints */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 0.9rem 2rem;
+            background: #f9f4f7;
+            border-bottom: 1px solid #e2d0dc;
+            align-items: center;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid #c2a8bd;
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2d2a2c;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            background: #e9dce5;
+            border-color: #6E3061;
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: #6E3061;
+            border-color: #4f2444;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4f2444;
+        }
+
+        /* CARDS GRID: two per row on desktop, responsive */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.8rem;
+            padding: 2rem 2rem;
+        }
+
+        /* responsive: on narrow screens, single column */
+        @media (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            body {
+                padding: 1rem;
+            }
+        }
+
+        /* reference card style */
+        .card {
+            background: #fefcff;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px #6E3061;
+            /*box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);*/
+            transition: all 0.2s;
+            border: 1px solid #ecdde6;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card-header {
+            background: #6E3061;
+            padding: 0.9rem 1.4rem;
+            border-bottom: 2px solid #dbbdce;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .card-header span:first-child {
+            font-size: 1.2rem;
+            background: transparent;
+            padding: 0;
+        }
+        .card-header .badge {
+            background: rgba(0,0,0,0.25);
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: normal;
+            font-family: monospace;
+            color: white;
+        }
+        .card-body {
+            padding: 1.3rem 1.4rem 1.6rem;
+            flex: 1;
+        }
+        .formula-block {
+            background: #f5f0f3;
+            padding: 0.9rem;
+            border-radius: 18px;
+            margin: 0.8rem 0;
+            font-size: 1rem;
+            overflow-x: auto;
+            text-align: center;
+        }
+        /* R code block: left-aligned with proper indentation, using "=" assignment */
+        .r-code {
+            background: #1e2a2f;
+            color: #d6deeb;
+            padding: 0.5rem;
+            border-radius: 16px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.78rem;
+            margin: 0.7rem 0;
+            overflow-x: auto;
+            white-space: pre;
+            tab-size: 2;
+            line-height: 1.45;
+            text-align: left;
+        }
+        .r-code code {
+            display: block;
+            white-space: pre;
+            font-family: inherit;
+        }
+        .check-row {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 0.7rem;
+            border-top: 1px dashed #e2d0dc;
+            padding-top: 0.8rem;
+            font-size: 0.85rem;
+        }
+        .check-row input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #6E3061;
+        }
+        .badge {
+            background: #e2d0dc;
+            border-radius: 30px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        footer {
+            background: #f3eaf0;
+            padding: 1.2rem 2rem;
+            font-size: 0.8rem;
+            color: #3f2d38;
+            border-top: 1px solid #e1cfda;
+            /*display: flex; */
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        /* Dark mode overrides */
+        body.dark {
+            background-color: #2c1a27;
+        }
+        body.dark .container {
+            background: #1f1a1d;
+        }
+        body.dark .card {
+            background: #2b2428;
+            border-color: #4d3a44;
+        }
+        body.dark .card-header {
+            background: #6E3061;
+            color: white;
+            border-bottom-color: #8a5479;
+        }
+        body.dark .card-body {
+            color: #efeaed;
+        }
+        body.dark .formula-block {
+            background: #3a2e35;
+            color: #f3e6ef;
+        }
+        body.dark .r-code {
+            background: #0e181c;
+            color: #bbd4f0;
+        }
+        body.dark .toolbar {
+            background: #2a2126;
+            border-bottom-color: #4b3942;
+        }
+        body.dark .btn {
+            background: #3f2f37;
+            border-color: #6E3061;
+            color: #f0e3ea;
+        }
+        body.dark .btn-primary {
+            background: #6E3061;
+            color: white;
+        }
+        body.dark footer {
+            background: #2c2228;
+            color: #cfc1ca;
+            border-top-color: #4a3842;
+        }
+        body.dark .badge {
+            background: #4a3842;
+        }
+        /* print styles: A3 & Letter support */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            body.dark .container, .container {
+                background: white;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .toolbar {
+                display: none;
+            }
+            .cards-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .check-row input {
+                opacity: 1;
+                border: 1px solid black;
+            }
+            footer {
+                background: #f5f5f5;
+                color: black;
+            }
+            .btn, .toolbar .btn {
+                display: none;
+            }
+            body.dark .card-header, body.dark .card-body {
+                color: black;
+                background: #fff;
+            }
+            body.dark .r-code {
+                background: #f0f0f0;
+                color: #1e1e1e;
+                border: 1px solid #aaa;
+            }
+            .formula-block {
+                background: #f7f7f7;
+            }
+            @page {
+                size: var(--print-paper, A3);
+            }
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        @media print and (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        .site-meter {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>STA 200 STATISTICS II</h1>
+        <h2>📊 Chi‑Square Independence & Risk Measures</h2>
+        <div class="subtitle">Reference cards: contingency tables, expected frequencies, Risk Ratios, R Code</div>
+    </div>
+    <div class="toolbar">
+        <button class="btn" id="darkModeToggle">🌓 Dark / Light Mode</button>
+        <select id="paperSizeSelect" class="btn">
+            <option value="Letter">📄 Letter Paper</option>
+            <option value="A3">📐 A3 Paper</option>
+        </select>
+        <button class="btn btn-primary" id="printPdfBtn">🖨️ Print / Save as PDF</button>
+    </div>
+
+    <div class="cards-grid">
+        <!-- CARD 1: Chi-square test of independence -->
+        <div class="card">
+            <div class="card-header">
+                <span>📐 χ² Test of Independence</span>
+                <span class="badge">formula + R</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    H_0: \text{Row variable independent of Column variable}
+                    \]
+                    \[
+                    E_{ij} = \frac{(\text{row total}_i)(\text{col total}_j)}{\text{grand total}}
+                    \]
+                    \[
+                    \chi^2 = \sum_{i=1}^{r}\sum_{j=1}^{c} \frac{(O_{ij} - E_{ij})^2}{E_{ij}} \sim \chi^2_{(r-1)(c-1)}
+                    \]
+                </div>
+                <div class="r-code">
+                    <code>
+# Build contingency table (values by row)
+cell.vec = c(68, 106, 131, 40, 119, 103, 127, 81, 70, 52, 51, 52)
+cont.table = matrix(cell.vec, nrow = 3, byrow = TRUE)
+rownames(cont.table) = c("0-10", "11-20", "More Than 20")
+colnames(cont.table) = c("Humanities", "SocSci", "Business", "Engineering")
+# Perform chi-square test
+chisq.test(cont.table)
+                    </code>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="check1"> <label for="check1">✔️ Understand expected freq & test statistic</label>
+                </div>
+                <div class="badge" style="margin-top: 8px;">📌 Reject H0 if p-value ≤ α</div>
+            </div>
+        </div>
+
+        <!-- CARD 2: Relative Risk & Odds Ratio -->
+        <div class="card">
+            <div class="card-header">
+                <span>⚠️ Risk Measures: RR & OR (2×2)</span>
+                <span class="badge">cohort / case-control</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    AR_{\text{exp}} = \frac{a}{a+b},\quad AR_{\text{unexp}} = \frac{c}{c+d}
+                    \]
+                    \[
+                    RR = \frac{AR_{\text{exp}}}{AR_{\text{unexp}}} = \frac{a/(a+b)}{c/(c+d)},\qquad
+                    OR = \frac{a/b}{c/d} = \frac{ad}{bc}
+                    \]
+                    <strong>Interpretation:</strong> \(=1\) no association; \(>1\) risk factor; \(<1\) protective.
+                </div>
+                <div class="r-code">
+                    <code>
+# Calculate RR and OR using "=" assignment
+a = 30; b = 10; c = 15; d = 25
+risk_exp = a/(a+b)
+risk_unexp = c/(c+d)
+RR = risk_exp / risk_unexp
+OR = (a*d)/(b*c)
+print(paste("RR =", RR, "| OR =", OR))
+                    </code>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="check2"> <label for="check2">📊 Interpret RR vs OR appropriately</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: Expected Table Construction Step-by-Step -->
+        <div class="card">
+            <div class="card-header">
+                <span>📋 Expected Table Under H₀</span>
+                <span class="badge">step-by-step</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    <strong>Step 1:</strong> Marginal probabilities \(p_{i.}= \frac{\text{row total}_i}{n}\), \(p_{.j}= \frac{\text{col total}_j}{n}\)<br>
+                    <strong>Step 2:</strong> Under independence: \(\hat{p}_{ij} = p_{i.} \times p_{.j}\)<br>
+                    <strong>Step 3:</strong> Expected frequency \(E_{ij} = \hat{p}_{ij} \times n\)
+                </div>
+                <div class="r-code">
+                    <code>
+# Attendance vs performance (2x2)
+observed = matrix(c(25, 2, 8, 15), nrow = 2, byrow = TRUE)
+rownames(observed) = c("Good", "Poor")
+colnames(observed) = c("Pass", "Fail")
+row_tot = rowSums(observed)
+col_tot = colSums(observed)
+n_total = sum(observed)
+expected = (row_tot %*% t(col_tot)) / n_total
+# quick check with chisq.test
+chisq.test(observed)$expected
+                    </code>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="check3"> <label for="check3">📐 Can compute expected table manually</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 4: R chisq.test from raw variables -->
+        <div class="card">
+            <div class="card-header">
+                <span>💻 R: χ² Test with Data Frames</span>
+                <span class="badge">raw vectors</span>
+            </div>
+            <div class="card-body">
+                <div class="r-code">
+                    <code>
+# Two categorical vectors (outlook vs sport decision)
+outlook = c("Sunny", "Sunny", "Overcast", "Rain", "Rain", "Rain",
+            "Overcast", "Sunny", "Sunny", "Rain")
+sport.decision = c("No", "No", "Yes", "Yes", "Yes", "No",
+                   "Yes", "No", "Yes", "Yes")
+# Direct test
+chisq.test(outlook, sport.decision)
+# Using contingency table
+contingency = table(outlook, sport.decision)
+chisq.test(contingency)   # same result
+                    </code>
+                </div>
+                <div class="formula-block" style="margin-top: 0;">
+                    ⚡ Assignment uses "=" throughout. Both aggregated and raw methods match.
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="check4"> <label for="check4">🖥️ Proficient with chisq.test() in R</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 5: Study Design & Association Measure -->
+        <div class="card">
+            <div class="card-header">
+                <span>📁 Study Design → Measure</span>
+                <span class="badge">epidemiology</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block" style="text-align: left;">
+                    <ul style="margin-left: 1.2rem;">
+                        <li><strong>Cohort</strong> → Relative Risk (RR)</li>
+                        <li><strong>Case-Control</strong> → Odds Ratio (OR)</li>
+                        <li><strong>Cross-Sectional</strong> → Prevalence Ratio</li>
+                        <li><strong>RCT</strong> → Risk Ratio / OR</li>
+                    </ul>
+                    \[
+                    \begin{array}{c|cc}
+                    & \text{Disease+} & \text{Disease-} \\ \hline
+                    \text{Exposed+} & a & b \\
+                    \text{Exposed-} & c & d
+                    \end{array}
+                    \]
+                </div>
+                <div class="r-code">
+                    <code>
+# Compute both measures from 2x2 matrix
+tab = matrix(c(45, 15, 30, 40), nrow = 2, byrow = TRUE)
+OR_val = (tab[1,1]*tab[2,2])/(tab[1,2]*tab[2,1])
+RR_val = (tab[1,1]/(tab[1,1]+tab[1,2])) / (tab[2,1]/(tab[2,1]+tab[2,2]))
+cat("Odds Ratio =", OR_val, "\nRelative Risk =", RR_val)
+                    </code>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="check5"> <label for="check5">📖 Choose correct measure per design</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 6: Critical Value & Decision Rule -->
+        <div class="card">
+            <div class="card-header">
+                <span>🔍 Critical Value & p‑value</span>
+                <span class="badge">decision rule</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    df = (r-1)(c-1), \quad \text{Reject if } \chi^2 > \chi^2_{\alpha, df}
+                    \]
+                    \[
+                    p\text{-value} = P(\chi^2_{df} \geq TS)
+                    \]
+                    <strong>Example (2×2):</strong> \(\chi^2_{0.05,1} \approx 3.841\)
+                </div>
+                <div class="r-code">
+                    <code>
+# Critical value
+qchisq(0.95, df = 1)   # 3.841459
+# p-value from test statistic
+ts = 17.75
+p_value = 1 - pchisq(ts, df = 1)
+# Tire quality example
+tire_data = matrix(c(106,124,123,67,85,115,37,72,112), nrow = 3, byrow = TRUE)
+chisq.test(tire_data)
+                    </code>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="check6"> <label for="check6">📈 Interpret p‑value & reject H₀ correctly</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 7: Condiment & Gender Practice (α=10%) -->
+        <div class="card">
+            <div class="card-header">
+                <span>🌭 Practice: Condiment Preference</span>
+                <span class="badge">baseball example</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    Gender vs Condiment (Ketchup/Mustard/Relish)<br>
+                    Male: 15,23,10 &nbsp;&nbsp; Female: 25,19,8 <br>
+                    \(H_0\): independence, \(\alpha = 0.10\)
+                </div>
+                <div class="r-code">
+                    <code>
+cond_table = matrix(c(15,23,10,25,19,8), nrow = 2, byrow = TRUE)
+rownames(cond_table) = c("Male", "Female")
+colnames(cond_table) = c("Ketchup", "Mustard", "Relish")
+test_res = chisq.test(cond_table)
+test_res
+# Expected frequencies
+test_res$expected
+# Decision: p-value < 0.10 => reject independence
+                    </code>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="check7"> <label for="check7">🥨 Solve baseball park example (α=10%)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 8: Goodness-of-Fit vs Independence & R style -->
+        <div class="card">
+            <div class="card-header">
+                <span>⚙️ Goodness-of-Fit vs Independence</span>
+                <span class="badge">comparison</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    <strong>Goodness‑of‑fit:</strong> one categorical variable vs hypothesized proportions.<br>
+                    <strong>Test of independence:</strong> two categorical variables – tests association.<br>
+                    df: \(k-1\) vs \((r-1)(c-1)\)
+                </div>
+                <div class="r-code">
+                    <code>
+# Goodness-of-Fit (using "=")
+observed_freq = c(42, 38, 20)
+expected_prob = c(0.4, 0.4, 0.2)
+chisq.test(observed_freq, p = expected_prob)
+# Independence test example
+my_matrix = matrix(c(18,12,9,21), nrow = 2)
+indep_test = chisq.test(my_matrix)
+indep_test$p.value
+                    </code>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" id="check8"> <label for="check8">📚 Distinguish two inferential procedures</label>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <center> 
+       <div class="copyright">
+       <p>© 2019-<span id="currentYear"></span>  C. Peng @ West Chester University, USA. All rights reserved.</p>
+            <!-- Copyright Statement -->
+ 
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script><a href='http://www.freevisitorcounters.com'><img src="img/blackdot.jpg" width="1" height="1"></a><br>
+    
+           <div class="license">
+              <p>📄 Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer"><font color = "red">Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</font></a></p>
+              <p>You are free to share and adapt for non-commercial purposes with appropriate credit.</p>
+            </div>
+         </div>
+       </center> 
+
+    <script>
+         // Set current year in copyright
+        document.getElementById('currentYear').textContent = new Date().getFullYear();   
+    
+        
+    // Dark/light mode toggle
+    const toggleBtn = document.getElementById('darkModeToggle');
+    const bodyEl = document.body;
+    function setTheme(theme) {
+        if (theme === 'dark') {
+            bodyEl.classList.add('dark');
+            localStorage.setItem('refCardTheme', 'dark');
+        } else {
+            bodyEl.classList.remove('dark');
+            localStorage.setItem('refCardTheme', 'light');
+        }
+    }
+    const savedTheme = localStorage.getItem('refCardTheme');
+    if (savedTheme === 'dark') bodyEl.classList.add('dark');
+    else if (savedTheme === 'light') bodyEl.classList.remove('dark');
+    else bodyEl.classList.remove('dark');
+    
+    toggleBtn.addEventListener('click', () => {
+        if (bodyEl.classList.contains('dark')) setTheme('light');
+        else setTheme('dark');
+    });
+    
+    // Print PDF with A3 / Letter support
+    const printBtn = document.getElementById('printPdfBtn');
+    const paperSelect = document.getElementById('paperSizeSelect');
+    
+    function setPrintPaperSize(size) {
+        let style = document.getElementById('print-paper-style');
+        if (!style) {
+            style = document.createElement('style');
+            style.id = 'print-paper-style';
+            document.head.appendChild(style);
+        }
+        style.textContent = `@media print { @page { size: ${size} !important; margin: 1.2cm; } }`;
+    }
+    setPrintPaperSize('Letter');
+    paperSelect.value = 'Letter';
+    paperSelect.addEventListener('change', (e) => {
+        setPrintPaperSize(e.target.value);
+    });
+    
+    printBtn.addEventListener('click', () => {
+        const selectedPaper = paperSelect.value;
+        setPrintPaperSize(selectedPaper);
+        window.print();
+    });
+    
+    // Ensure MathJax renders formulas
+    if (window.MathJax) {
+        MathJax.typesetPromise().catch(console.warn);
+    }
+</script>
+</body>
+</html>

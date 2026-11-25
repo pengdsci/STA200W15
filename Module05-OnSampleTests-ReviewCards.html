@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>STATS II: One-Sample Tests | Reference Cards</title>
+    <!-- MathJax for beautiful formulas -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* CORE COLOR: purple #6E3061 with accessibility contrast */
+        body {
+            background-color: #512d6d;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+            transition: background-color 0.25s ease, color 0.2s ease;
+        }
+
+        /* main container – printable, max-width for readability */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            transition: background 0.2s;
+        }
+
+        /* header area with purple brand */
+        .header {
+            background: #6E3061;
+            padding: 1.0rem 1.0rem;
+            color: white;
+            border-bottom: 4px solid #ffd966;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header h2 {
+            font-size: 2.0rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: 1.35rem;
+            opacity: 0.92;
+            font-weight: 500;
+            border-left: 3px solid #ffd966;
+            padding-left: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        /* toolbar: toggle + print + size hints */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 0.9rem 2rem;
+            background: #f9f4f7;
+            border-bottom: 1px solid #e2d0dc;
+            align-items: center;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid #c2a8bd;
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2d2a2c;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            background: #e9dce5;
+            border-color: #6E3061;
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: #6E3061;
+            border-color: #4f2444;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4f2444;
+        }
+
+        /* CARDS GRID: two per row on desktop, responsive */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.8rem;
+            padding: 2rem 2rem;
+        }
+
+        /* responsive: on narrow screens, single column */
+        @media (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            body {
+                padding: 1rem;
+            }
+        }
+
+        /* reference card style */
+        .card {
+            background: #fefcff;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(110, 48, 97, 0.2);
+            transition: all 0.2s;
+            border: 1px solid #ecdde6;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card-header {
+            background: #6E3061;
+            padding: 1rem 1.4rem;
+            border-bottom: 2px solid #dbbdce;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .card-header span {
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: normal;
+            font-family: monospace;
+        }
+        .card-body {
+            padding: 1.3rem 1.4rem 1.6rem;
+            flex: 1;
+        }
+        .formula-block {
+            background: #f5f0f3;
+            padding: 0.9rem;
+            border-radius: 18px;
+            margin: 0.8rem 0;
+            font-size: 1rem;
+            overflow-x: auto;
+            text-align: center;
+        }
+        /* R code block: left-aligned with indentation, using "=" assignment */
+        .r-code {
+            background: #1e2a2f;
+            color: #d6deeb;
+            padding: 1rem;
+            border-radius: 16px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.78rem;
+            margin: 0.7rem 0;
+            overflow-x: auto;
+            white-space: pre;
+            tab-size: 4;
+            line-height: 1.45;
+            text-align: left;
+        }
+        .r-code code {
+            display: block;
+            white-space: pre;
+            font-family: inherit;
+        }
+        .check-row {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 0.7rem;
+            border-top: 1px dashed #e2d0dc;
+            padding-top: 0.8rem;
+            font-size: 0.85rem;
+        }
+        .check-row input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #6E3061;
+        }
+        .badge {
+            background: #e2d0dc;
+            border-radius: 30px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        footer {
+            background: #f3eaf0;
+            padding: 1.2rem 2rem;
+            font-size: 0.8rem;
+            color: #3f2d38;
+            border-top: 1px solid #e1cfda;
+            /*display: flex;*/
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        /* Dark mode overrides */
+        body.dark {
+            background-color: #2c1a27;
+        }
+        body.dark .container {
+            background: #1f1a1d;
+        }
+        body.dark .card {
+            background: #2b2428;
+            border-color: #4d3a44;
+        }
+        body.dark .card-header {
+            background: #6E3061;
+            color: white;
+            border-bottom-color: #6E3061;
+        }
+        body.dark .card-body {
+            color: #efeaed;
+        }
+        body.dark .formula-block {
+            background: #3a2e35;
+            color: #f3e6ef;
+        }
+        body.dark .r-code {
+            background: #0e181c;
+            color: #bbd4f0;
+        }
+        body.dark .toolbar {
+            background: #2a2126;
+            border-bottom-color: #4b3942;
+        }
+        body.dark .btn {
+            background: #3f2f37;
+            border-color: #6E3061;
+            color: #f0e3ea;
+        }
+        body.dark .btn-primary {
+            background: #6E3061;
+            color: white;
+        }
+        body.dark footer {
+            background: #2c2228;
+            color: #cfc1ca;
+            border-top-color: #4a3842;
+        }
+        body.dark .badge {
+            background: #4a3842;
+        }
+        /* print styles: A3 & Letter support */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            body.dark .container, .container {
+                background: white;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .toolbar {
+                display: none;
+            }
+            .cards-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .check-row input {
+                opacity: 1;
+                border: 1px solid black;
+            }
+            footer {
+                background: #f5f5f5;
+                color: black;
+            }
+            .btn, .toolbar .btn {
+                display: none;
+            }
+            body.dark .card-header, body.dark .card-body {
+                color: black;
+                background: #fff;
+            }
+            body.dark .r-code {
+                background: #f0f0f0;
+                color: #1e1e1e;
+                border: 1px solid #aaa;
+            }
+            .formula-block {
+                background: #f7f7f7;
+            }
+            @page {
+                size: A3;
+            }
+            @page letter {
+                size: letter;
+            }
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        @media print and (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        .site-meter {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>STA200 STATISTICS II </h1>
+        <h2>One‑Sample Tests for Location</h2>
+        <div class="subtitle">📚 Reference Cards: t‑test • Sign Test • Regression Approach</div>
+    </div>
+    
+    <div class="toolbar">
+        <button class="btn" id="darkModeToggle">🌓 Dark / Light Toggle</button>
+        <button class="btn btn-primary" id="printPdfBtn">🖨️ Print / Save as PDF (A3/Letter)</button>
+        <!--div class="badge">📄 supports A3 · Letter</div-->
+    </div>
+
+    <div class="cards-grid">
+        <!-- CARD 1: One-Sample t-Test (manual + built-in) -->
+        <div class="card">
+            <div class="card-header">
+                🧪 One‑Sample t‑Test
+                <span>parametric</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    H_0: \mu = \mu_0 \quad \text{vs} \quad H_a: \mu \neq \mu_0
+                    \]
+                    \[
+                    TS = \frac{\bar{y} - \mu_0}{s / \sqrt{n}} \;\sim\; t_{n-1}
+                    \]
+                    \[
+                    p\text{-value} = 2 \cdot P(t_{n-1} \ge |TS|)
+                    \]
+                </div>
+                <div class="r-code"><code># manual calculation (R as calculator)
+BMI = PimaIndiaDiabetes$mass
+n = length(BMI)
+xbar = mean(BMI)
+s = sd(BMI)
+mu0 = 30
+TS = (xbar - mu0) / (s / sqrt(n))
+pvalue = 2 * pt(abs(TS), df = n-1, lower.tail = FALSE)
+cbind(xbar, TS, df = n-1, pvalue)
+
+# built-in t.test()
+t.test(x = BMI, alternative = "two.sided", mu = 30, conf.level = 0.95)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>✔️ Master t‑test assumptions & interpretation</label>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>📈 Normality needed (robust for large n)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: Regression Approach to One-Sample t-Test -->
+        <div class="card">
+            <div class="card-header">
+                🔄 Regression View
+                <span>GLM unification</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    y = \beta_0 + \epsilon, \quad H_0: \beta_0 = \mu_0
+                    \]
+                    \[
+                    \text{Transform: } y - \mu_0 = \alpha_0 + \epsilon,\quad H_0:\alpha_0 = 0
+                    \]
+                    \[
+                    TS = \frac{\hat{\alpha}_0}{se(\hat{\alpha}_0)} \sim t_{n-1}
+                    \]
+                </div>
+                <div class="r-code"><code># Equivalent t-test via linear model (intercept only)
+# using I() to shift response
+one.sample.t.reg = lm(I(BMI - 30) ~ 1, data = PimaIndiaDiabetes)
+summary(one.sample.t.reg)
+
+# identical t-value and p-value as t.test()
+# estimate = mean(BMI) - 30 = 3.086, t = 8.695</code></div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>📌 Intercept = sample mean, t-test = regression t-test</label>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>⚙️ General linear model framework</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: One-Sample Sign Test (Nonparametric for median) -->
+        <div class="card">
+            <div class="card-header">
+                ✍️ Sign Test (Median)
+                <span>distribution‑free</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    H_0: M = M_0 \quad\text{vs}\quad H_a: M \neq M_0
+                    \]
+                    \[
+                    D_i = Y_i - M_0,\quad S = \#\{D_i > 0\}
+                    \]
+                    \[
+                    S \sim \text{Binomial}(n, p=0.5),\quad n = \text{non-zero diffs}
+                    \]
+                    \[
+                    \text{If } n\ge 25:\quad Z = \frac{S - 0.5n}{0.5\sqrt{n}} \approx N(0,1)
+                    \]
+                </div>
+                <div class="r-code"><code># manual sign test example (reaction times)
+reaction.time = c(230,245,252,248,255,260,235,240,250,242,238,258,245,248,253)
+pos.sign = sum(reaction.time - 250 > 0)
+neg.sign = sum(reaction.time - 250 < 0)
+n = pos.sign + neg.sign
+pval = 2 * pbinom(min(pos.sign, neg.sign), size = n, prob = 0.5)
+pval
+
+# exact binomial test
+binom.test(x = pos.sign, n = n, p = 0.5, alternative = "two.sided")
+
+# using BSDA::SIGN.test (if installed)
+# install.packages("BSDA"); library(BSDA)
+# SIGN.test(reaction.time, md = 250)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>✅ No normality assumption, robust vs outliers</label>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>🔢 Median inference for skewed data</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 4: Binomial Distribution for Sign Test + p-value logic -->
+        <div class="card">
+            <div class="card-header">
+                📊 Binomial Tools
+                <span>p‑values & quantiles</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    P(X = k) = \binom{n}{k} p^k (1-p)^{n-k},\quad p=0.5
+                    \]
+                    \[
+                    \text{Sign test p-value (two-tailed)} = 2 \times P(S \le \min(s, n-s))
+                    \]
+                </div>
+                <div class="r-code"><code># binomial probabilities & quantiles
+# P(X > 3) with n=10, p=0.5
+pbinom(3, size = 10, prob = 0.5, lower.tail = FALSE)
+
+# 90th percentile for Binom(20,0.5)
+qbinom(0.9, size = 20, prob = 0.5)
+
+# two-tailed sign test p-value manual:
+s_obs = 5; n_trials = 14
+p_binomial = 2 * pbinom(5, size = 14, prob = 0.5)
+p_binomial</code></div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>🎲 Understand binomial test logic</label>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>📐 Normal approximation when n ≥ 25</label>
+                </div>
+            </div>
+        </div>
+
+<!-- CARD 5: Practical Example – Pima Indians BMI t-test -->
+        <div class="card">
+            <div class="card-header">
+                🧬 Real‑Data Workflow
+                <span>BMI obesity test</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    H_0: \mu = 30 \;(\text{not obese})\quad vs \quad H_a: \mu \neq 30
+                    \]
+                    \[
+                    \text{BMI data: } \bar{x}=33.09,\; s=7.09,\; n=392,\; t=8.695,\; p \approx 0
+                    \]
+                </div>
+                <div class="r-code"><code># load data and one-sample t-test
+Pima = read.csv("https://pengdsci.github.io/STA200/dataset/PimaIndiaDiabetes.csv")
+BMI = Pima$mass
+t.test(BMI, mu = 30, alternative = "two.sided")
+# Conclusion: Reject H0 → evidence that true mean BMI ≠ 30
+# 95% CI: (32.39, 33.78)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>🏥 NHANES benchmark: BMI >30 indicates obesity</label>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>📌 Strong evidence against null</label>
+                </div>
+            </div>
+        </div>
+
+ <!-- CARD 6: Sign Test – Complete Example with Interpretation -->
+        <div class="card">
+            <div class="card-header">
+                📌 Sign Test in Action
+                <span>median reaction time</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    H_0: M = 250 \quad vs \quad H_a: M \neq 250
+                    \]
+                    \[
+                    \text{positive signs} = 5,\; \text{negative}=9,\; n=14
+                    \]
+                    \[
+                    p\text{-value} = 2\times P(S\le 5) = 0.424
+                    \]
+                </div>
+                <div class="r-code"><code># reaction time example (from slides)
+rt = c(230, 245, 252, 248, 255, 260, 235, 240, 250, 242, 238, 258, 245, 248, 253)
+SIGN.test = if(require(BSDA, quietly = TRUE)) {
+  BSDA::SIGN.test(rt, md = 250)
+} else {
+  cat("Install BSDA for full median CI\n")
+}
+# Using binom.test directly
+pos = sum(rt > 250); n_nonzero = sum(rt != 250)
+binom.test(pos, n_nonzero, p = 0.5, conf.level = 0.95)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>🧠 No normality, robust median inference</label>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>📉 p-value > 0.05 → fail to reject H0</label>
+                </div>
+            </div>
+        </div>
+        
+ <!-- Additional card: Assumptions & when to use which test -->
+        <div class="card">
+            <div class="card-header">
+                ⚖️ t‑test vs Sign Test
+                <span>choice guide</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \textbf{t-test (mean)}: \text{Normal dist or large n} \quad 
+                    \]
+                    \[
+                    \textbf{Sign test (median)}: \text{Any distribution, robust}
+                    \]
+                </div>
+                <div class="r-code"><code># t-test more powerful when normality holds
+# sign test more robust to outliers and heavy tails
+# Regression view: t-test = intercept model
+# Sign test = binomial proportion test on signs</code></div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>📌 Use t-test for symmetric/light-tail data</label>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>🛡️ Sign test for skewed/ordinal data</label>
+                </div>
+            </div>
+        </div>
+
+ <!-- CARD 8: Quick R functions summary for one-sample inference -->
+        <div class="card">
+            <div class="card-header">
+                🧰 R Function Cheatsheet
+                <span>base + BSDA</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \text{t.test() – parametric mean test} 
+                    \]
+                    \[
+                    \text{binom.test() – exact sign test (median)} 
+                    \]
+                    \[
+                    \text{lm() – regression equivalent of t-test}
+                    \]
+                </div>
+                <div class="r-code"><code># quick one-sample t-test
+t.test(data_vector, mu = hypothesized_mean)
+
+# exact sign test for median:
+binom.test(sum(data > M0), n = sum(data != M0), p = 0.5)
+
+# Regression equivalent:
+lm(I(response - mu0) ~ 1, data = mydata)
+
+# Sign test from BSDA (gives median CI)
+# library(BSDA); SIGN.test(x, md = M0)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>📦 BSDA::SIGN.test gives median confidence intervals</label>
+                </div>
+                <div class="check-row">
+                    <input type="checkbox" class="study-checkbox"> <label>💡 Always check sample size for normal approx</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <center> 
+       <div class="copyright">
+       <p>© 2019-<span id="currentYear"></span>  C. Peng @ West Chester University, USA. All rights reserved.</p>
+            <!-- Copyright Statement -->
+ 
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script><a href='http://www.freevisitorcounters.com'><img src="img/blackdot.jpg" width="1" height="1"></a><br>
+    
+           <div class="license">
+              <p>📄 Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer"><font color = "red">Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</font></a></p>
+              <p>You are free to share and adapt for non-commercial purposes with appropriate credit.</p>
+            </div>
+         </div>
+       </center> 
+        
+    <script>
+         // Set current year in copyright
+        document.getElementById('currentYear').textContent = new Date().getFullYear();   
+    
+    // Dark mode toggle functionality
+    const darkToggle = document.getElementById('darkModeToggle');
+    darkToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+        // store preference in localStorage
+        if (document.body.classList.contains('dark')) {
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    });
+    
+    // load saved dark mode preference
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem('darkMode') === 'disabled') {
+        document.body.classList.remove('dark');
+    }
+
+    // Print to PDF with sizing support (A3/Letter recognized in @media print)
+    const printBtn = document.getElementById('printPdfBtn');
+    printBtn.addEventListener('click', () => {
+        window.print();
+    });
+
+    // All checkboxes are independent and stay clickable; they remain functional
+    // we also add event listeners to store checkbox states across dark/light and print?
+    // but that's optional. we just keep them working, no extra persistence needed but nice.
+    // optional: store checkbox states in localStorage to save progress
+    const checkboxes = document.querySelectorAll('.study-checkbox');
+    function loadCheckboxStates() {
+        checkboxes.forEach((cb, idx) => {
+            const saved = localStorage.getItem(`checkbox_${idx}`);
+            if (saved === 'true') cb.checked = true;
+            else if (saved === 'false') cb.checked = false;
+        });
+    }
+    function saveCheckboxStates() {
+        checkboxes.forEach((cb, idx) => {
+            localStorage.setItem(`checkbox_${idx}`, cb.checked);
+        });
+    }
+    loadCheckboxStates();
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', saveCheckboxStates);
+    });
+    
+    // optional: ensure that MathJax rerenders after dynamic changes (but fine)
+    if (window.MathJax) {
+        MathJax.typesetPromise();
+    }
+</script>
+</body>
+</html>
