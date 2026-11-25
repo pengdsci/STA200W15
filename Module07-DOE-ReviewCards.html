@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>DOE Review Cards | CRD · RBD · ANOVA · Reference</title>
+    <!-- MathJax for beautiful formulas -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* CORE COLOR: purple #6E3061 with accessibility contrast */
+        body {
+            background-color: #512d6d;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+            transition: background-color 0.25s ease, color 0.2s ease;
+        }
+
+        /* main container – printable, max-width for readability */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            transition: background 0.2s;
+        }
+
+        /* header area with purple brand */
+        .header {
+            background: #6E3061;
+            padding: 1.0rem 1.0rem;
+            color: white;
+            border-bottom: 4px solid #ffd966;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header h2 {
+            font-size: 2.0rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: 1.35rem;
+            opacity: 0.92;
+            font-weight: 500;
+            border-left: 3px solid #ffd966;
+            padding-left: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        /* toolbar: toggle + print + size hints */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 0.9rem 2rem;
+            background: #f9f4f7;
+            border-bottom: 1px solid #e2d0dc;
+            align-items: center;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid #c2a8bd;
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2d2a2c;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            background: #e9dce5;
+            border-color: #6E3061;
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: #6E3061;
+            border-color: #4f2444;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4f2444;
+        }
+
+        /* CARDS GRID: two per row on desktop */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.8rem;
+            padding: 2rem 2rem;
+        }
+
+        @media (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            body {
+                padding: 1rem;
+            }
+        }
+
+        /* reference card style */
+        .card {
+            background: #fefcff;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(110, 48, 97, 0.2);
+            transition: all 0.2s;
+            border: 1px solid #ecdde6;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card-header {
+            background: #6E3061;
+            padding: 1rem 1.4rem;
+            border-bottom: 2px solid #dbbdce;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .card-header span {
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: normal;
+            font-family: monospace;
+        }
+        .card-body {
+            padding: 1.3rem 1.4rem 1.6rem;
+            flex: 1;
+        }
+        .formula-block {
+            background: #f5f0f3;
+            padding: 0.9rem;
+            border-radius: 18px;
+            margin: 0.8rem 0;
+            font-size: 1rem;
+            overflow-x: auto;
+            text-align: center;
+        }
+        /* R code block: left-aligned with proper indentation, using "=" assignment */
+        .r-code {
+            background: #1e2a2f;
+            color: #d6deeb;
+            padding: 1rem;
+            border-radius: 16px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.78rem;
+            margin: 0.7rem 0;
+            overflow-x: auto;
+            white-space: pre;
+            tab-size: 4;
+            line-height: 1.45;
+            text-align: left;
+        }
+        .r-code code {
+            display: block;
+            white-space: pre;
+            font-family: inherit;
+        }
+        .check-row {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 0.7rem;
+            border-top: 1px dashed #e2d0dc;
+            padding-top: 0.8rem;
+            font-size: 0.85rem;
+        }
+        .check-row input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #6E3061;
+        }
+        .badge {
+            background: #e2d0dc;
+            border-radius: 30px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        footer {
+            background: #f3eaf0;
+            padding: 1.2rem 2rem;
+            font-size: 0.8rem;
+            color: #3f2d38;
+            border-top: 1px solid #e1cfda;
+            /* display: flex; */
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        /* Dark mode overrides */
+        body.dark {
+            background-color: #2c1a27;
+        }
+        body.dark .container {
+            background: #1f1a1d;
+        }
+        body.dark .card {
+            background: #2b2428;
+            border-color: #4d3a44;
+        }
+        body.dark .card-header {
+            background: #6E3061;
+            color: white;
+            border-bottom-color: #6E3061;
+        }
+        body.dark .card-body {
+            color: #efeaed;
+        }
+        body.dark .formula-block {
+            background: #3a2e35;
+            color: #f3e6ef;
+        }
+        body.dark .r-code {
+            background: #0e181c;
+            color: #bbd4f0;
+        }
+        body.dark .toolbar {
+            background: #2a2126;
+            border-bottom-color: #4b3942;
+        }
+        body.dark .btn {
+            background: #3f2f37;
+            border-color: #6E3061;
+            color: #f0e3ea;
+        }
+        body.dark .btn-primary {
+            background: #6E3061;
+            color: white;
+        }
+        body.dark footer {
+            background: #2c2228;
+            color: #cfc1ca;
+            border-top-color: #4a3842;
+        }
+        body.dark .badge {
+            background: #4a3842;
+        }
+        /* print styles: A3 & Letter support */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            body.dark .container, .container {
+                background: white;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .toolbar {
+                display: none;
+            }
+            .cards-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #aaa;
+            }
+            .check-row input {
+                opacity: 1;
+                border: 1px solid black;
+            }
+            footer {
+                background: #f5f5f5;
+                color: black;
+            }
+            .btn, .toolbar .btn {
+                display: none;
+            }
+            body.dark .card-header, body.dark .card-body {
+                color: black;
+                background: #fff;
+            }
+            body.dark .r-code {
+                background: #f0f0f0;
+                color: #1e1e1e;
+                border: 1px solid #aaa;
+            }
+            .formula-block {
+                background: #f7f7f7;
+            }
+            @page {
+                size: A3;
+            }
+            @page letter {
+                size: letter;
+            }
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        @media print and (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        .site-meter {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>STA 200 STATISTICS II</h1>
+        <h2>📊 Design of Experiments</h2>
+        <div class="subtitle">Reference & Review Cards: CRD · RBD · ANOVA · Inferential procedures + R code</div>
+    </div>
+    <div class="toolbar">
+        <button class="btn" id="darkmodeToggleBtn">🌓 Dark / Light</button>
+        <button class="btn btn-primary" id="printPdfBtn">🖨️ Print / Save as PDF (A3/Letter)</button>
+        <!--span class="badge">📄 A3 · Letter ready</span-->
+    </div>
+
+    <!-- CARDS GRID: 2 per row, each card = key procedure -->
+    <div class="cards-grid" id="cardsGrid">
+        <!-- CARD 1: One-way ANOVA (CRD) -->
+        <div class="card">
+            <div class="card-header">
+                📈 One‑way ANOVA (CRD)
+                <span>F‑test</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    F = \frac{MS_{\text{treatments}}}{MS_{\text{error}}} = \frac{SS_{\text{tr}}/(k-1)}{SS_{\text{error}}/(N-k)}
+                    \]
+                    <div style="font-size:0.85rem; margin-top:5px;">\(H_0: \mu_1 = \mu_2 = \dots = \mu_k\) vs \(H_a\): at least one difference</div>
+                </div>
+                <div class="r-code"><code># CRD one-way ANOVA (balanced/unbalanced)
+model_crd = aov(response ~ treatment, data = crd_data)
+summary(model_crd)
+# post-hoc Tukey HSD
+TukeyHSD(model_crd)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="card1Check"> <label for="card1Check">✔️ Mastered / reviewed</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: Randomized Block Design (RBD) without replication: two-way ANOVA -->
+        <div class="card">
+            <div class="card-header">
+                🧱 RBD (no replication)
+                <span>Block + Treatment</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    Y_{ij} = \mu + \tau_i + \beta_j + \varepsilon_{ij}
+                    \]
+                    \[
+                    F_{\text{treat}} = \frac{MS_{\text{treat}}}{MS_{\text{error}}},\quad 
+                    F_{\text{block}} = \frac{MS_{\text{block}}}{MS_{\text{error}}}
+                    \]
+                </div>
+                <div class="r-code"><code># RBD (each block contains each treatment once)
+model_rbd = aov(response ~ treatment + block, data = rbd_data)
+summary(model_rbd)
+# model assumptions: residuals and diagnostics
+plot(model_rbd)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="card2Check"> <label for="card2Check">✅ Understood & practiced</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: Factorial Design (2x2) main effects + interaction -->
+        <div class="card">
+            <div class="card-header">
+                🔬 Factorial Design
+                <span>Interaction</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    Y_{ijk} = \mu + A_i + B_j + (AB)_{ij} + \varepsilon_{ijk}
+                    \]
+                    <small>Test for interaction: \(H_0\): no interaction, \(F = MS_{AB}/MS_{error}\)</small>
+                </div>
+                <div class="r-code"><code># two-way factorial with interaction
+model_fact = aov(response ~ factorA * factorB, data = factorial_data)
+summary(model_fact)
+# interaction plot
+interaction.plot(x.factor = factorA, trace.factor = factorB, response = response)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="card3Check"> <label for="card3Check">🎯 Interaction mastered</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 4: Repeated measures (within-subjects) -->
+        <div class="card">
+            <div class="card-header">
+                🔁 Repeated Measures
+                <span>Within-subject</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    F = \frac{MS_{\text{time}}}{MS_{\text{error}}}, \quad \text{sphericity assumed}
+                    \]
+                    Subjects as random factor, controls individual differences.
+                </div>
+                <div class="r-code"><code># repeated measures ANOVA (using aov with Error)
+model_rm = aov(response ~ condition + Error(subject/condition), data = rm_data)
+summary(model_rm)
+# alternative: car::Anova(type=3) for more options</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="card4Check"> <label for="card4Check">📌 Within-subject design</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 5: CRD contrast / post-hoc comparison -->
+        <div class="card">
+            <div class="card-header">
+                ⚖️ Contrasts & Post‑hoc
+                <span>Multiple comparisons</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \psi = \sum_{i=1}^{k} c_i \bar{Y}_{i\cdot} , \quad SE(\psi) = \sqrt{MS_{error} \sum \frac{c_i^2}{n_i}}
+                    \]
+                    \(t\)-test for planned contrasts. Tukey HSD controls FWER.
+                </div>
+                <div class="r-code"><code># Custom contrast and TukeyHSD
+library(multcomp)
+contrast_matrix = rbind("New vs Old" = c(1, -1, 0))
+model_crd = aov(yield ~ fertilizer, data = data)
+summary(glht(model_crd, linfct = contrast_matrix))
+# Tukey HSD for all pairwise
+TukeyHSD(model_crd)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="card5Check"> <label for="card5Check">⭐ Contrasts ready</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 6: RBD with replication (replicated blocks) -->
+        <div class="card">
+            <div class="card-header">
+                📦 RBD with Replicates
+                <span>Block × Treatment interaction?</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    Y_{ijk} = \mu + \tau_i + \beta_j + (\tau\beta)_{ij} + \varepsilon_{ijk}
+                    \]
+                    Replication (\(p>1\)) allows interaction and pure error estimation.
+                </div>
+                <div class="r-code"><code># replicated RBD: multiple obs per block×treatment
+model_reprbd = aov(response ~ treatment * block, data = rep_rbd_data)
+summary(model_reprbd)
+# check interaction term significance
+# if interaction not significant, fit additive model</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="card6Check"> <label for="card6Check">🔁 Replicated design done</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 7: Assumption diagnostics & residual analysis -->
+        <div class="card">
+            <div class="card-header">
+                📐 ANOVA Diagnostics
+                <span>Normality · Homoscedasticity</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \text{Levene test: } H_0: \sigma^2_1 = \sigma^2_2 = \dots = \sigma^2_k
+                    \]
+                    Shapiro–Wilk for residuals normality.
+                </div>
+                <div class="r-code"><code># residual plots and homogeneity tests
+model = aov(response ~ treatment, data = data)
+par(mfrow = c(1,2))
+plot(model, which = 1:2)
+# Levene's test (car package)
+library(car)
+leveneTest(response ~ treatment, data = data)
+shapiro.test(residuals(model))</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="card7Check"> <label for="card7Check">📊 Diagnostics confirmed</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 8: Balanced vs Unbalanced CRD & Effect Size -->
+        <div class="card">
+            <div class="card-header">
+                📏 Effect Size (η², ω²)
+                <span>Practical significance</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \eta^2 = \frac{SS_{\text{treatment}}}{SS_{\text{total}}}, \quad 
+                    \omega^2 = \frac{SS_{\text{tr}} - (df_{tr}) \cdot MS_{error}}{SS_{\text{total}} + MS_{error}}
+                    \]
+                </div>
+                <div class="r-code"><code># Eta-squared from ANOVA
+model = aov(yield ~ fertilizer, data = crop_data)
+summary(model)
+ss_total = sum((crop_data$yield - mean(crop_data$yield))^2)
+eta_sq = summary(model)[[1]]$`Sum Sq`[1] / ss_total
+# or use effectsize package
+library(effectsize)
+eta_squared(model)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="card8Check"> <label for="card8Check">🎯 Effect size understood</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 9: Randomization & Assignment concept with code simulation -->
+        <div class="card">
+            <div class="card-header">
+                🎲 Randomization
+                <span>CRD simulation</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    <strong>Simple random assignment:</strong> each unit has equal probability. Block randomization via `sample()`.
+                </div>
+                <div class="r-code"><code># Completely randomized assignment (balanced)
+units = 1:30
+treatment = rep(c("A","B","C"), each = 10)
+assigned = sample(treatment)   # random permutation
+# Block randomization (strata)
+library(blockrand)
+block_assign = blockrand(n = 30, num.levels = 3, levels = c("Control","Trt1","Trt2"))</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="card9Check"> <label for="card9Check">✔️ Randomization techniques</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 10: Mixed model approach for RBD (random block) -->
+        <div class="card">
+            <div class="card-header">
+                🧠 Mixed Model (RBD)
+                <span>Block as random effect</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    Y_{ij} = \mu + \tau_i + \beta_j + \varepsilon_{ij},\quad \beta_j \sim N(0, \sigma^2_{\text{block}})
+                    \]
+                    Mixed models generalize RBD when blocks sampled from larger population.
+                </div>
+                <div class="r-code"><code>library(lmerTest)
+# block as random factor
+mixed_model = lmer(response ~ treatment + (1 | block), data = rbd_data)
+anova(mixed_model)   # F-tests with Satterthwaite
+summary(mixed_model)</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="card10Check"> <label for="card10Check">📈 Mixed model ready</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer>
+        <center> 
+       <div class="copyright">
+       <p>© 2019-<span id="currentYear"></span>  C. Peng @ West Chester University, USA. All rights reserved.</p>
+            <!-- Copyright Statement -->
+ 
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script><a href='http://www.freevisitorcounters.com'><img src="img/blackdot.jpg" width="1" height="1"></a><br>
+    
+           <div class="license">
+              <p>📄 Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer"><font color = "red">Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</font></a></p>
+              <p>You are free to share and adapt for non-commercial purposes with appropriate credit.</p>
+            </div>
+         </div>
+       </center> 
+
+    <script>
+         // Set current year in copyright
+        document.getElementById('currentYear').textContent = new Date().getFullYear();   
+    
+    // Dark/Light toggle 
+    const toggleBtn = document.getElementById('darkmodeToggleBtn');
+    const body = document.body;
+    // Check local storage
+    if (localStorage.getItem('doe-dark-mode') === 'enabled') {
+        body.classList.add('dark');
+    }
+    toggleBtn.addEventListener('click', () => {
+        if (body.classList.contains('dark')) {
+            body.classList.remove('dark');
+            localStorage.setItem('doe-dark-mode', 'disabled');
+        } else {
+            body.classList.add('dark');
+            localStorage.setItem('doe-dark-mode', 'enabled');
+        }
+    });
+
+    // Print to PDF with correct sizing (A3/Letter support via CSS)
+    const printBtn = document.getElementById('printPdfBtn');
+    printBtn.addEventListener('click', () => {
+        window.print();
+    });
+
+    // Ensure all checkboxes are interactive and preserve state across re-renders (simple)
+    // But we also keep checkboxes state in localStorage (optional)
+    function saveCheckboxStates() {
+        const allCheckboxes = document.querySelectorAll('.check-row input[type="checkbox"]');
+        const states = {};
+        allCheckboxes.forEach((cb, idx) => {
+            states[cb.id] = cb.checked;
+        });
+        localStorage.setItem('doe_checkbox_states', JSON.stringify(states));
+    }
+    function loadCheckboxStates() {
+        const saved = localStorage.getItem('doe_checkbox_states');
+        if (saved) {
+            const states = JSON.parse(saved);
+            for (let [id, checked] of Object.entries(states)) {
+                const cb = document.getElementById(id);
+                if (cb) cb.checked = checked;
+            }
+        }
+    }
+    // attach event listeners to save states
+    function bindCheckboxEvents() {
+        const allCheckboxes = document.querySelectorAll('.check-row input[type="checkbox"]');
+        allCheckboxes.forEach(cb => {
+            cb.addEventListener('change', saveCheckboxStates);
+        });
+    }
+    loadCheckboxStates();
+    bindCheckboxEvents();
+
+    // Fix for MathJax rendering after dynamic content (not needed as content static)
+    if (window.MathJax) {
+        MathJax.typesetPromise().catch(err => console.log(err));
+    }
+
+    // On print, make sure MathJax formulas are fully typeset (already)
+    // Also note for R code indentation and assignment "=" we have all code using "=" not "<-" .
+    // The R code examples respect that style.
+    
+    // Additional small adjustment: The card code blocks are manually styled 
+    // just enforce left alignment with indentations 
+    // all r-code examples show clearly "=" assignment
+
+    // small manual correction for any leftover arrow assignments (none)
+    // Also we guarantee the footer and header semantics.
+    
+    // Add a small helper for optional page size info (Letter/A3)
+    console.log("DOE reference cards ready — dark mode, print using browser print dialog (supports A3/Letter via @page)");
+</script>
+</body>
+</html>
