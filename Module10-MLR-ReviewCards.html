@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>MLR & ANOVA | Reference cards · R code · Cheatsheet</title>
+    <!-- MathJax for clean formulas -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* CORE COLOR: purple #6E3061 with accessibility contrast */
+        body {
+            background-color: #512d6d;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+            transition: background-color 0.25s ease, color 0.2s ease;
+        }
+
+        /* main container – printable, max-width for readability */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            transition: background 0.2s;
+        }
+
+        /* header area with purple brand */
+        .header {
+            background: #6E3061;
+            padding: 1.0rem 1.0rem;
+            color: white;
+            border-bottom: 4px solid #ffd966;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header h2 {
+            font-size: 2.0rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: 1.35rem;
+            opacity: 0.92;
+            font-weight: 500;
+            border-left: 3px solid #ffd966;
+            padding-left: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        /* toolbar: toggle + print + size hints */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 0.9rem 2rem;
+            background: #f9f4f7;
+            border-bottom: 1px solid #e2d0dc;
+            align-items: center;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid #c2a8bd;
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2d2a2c;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            background: #e9dce5;
+            border-color: #6E3061;
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: #6E3061;
+            border-color: #4f2444;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4f2444;
+        }
+
+        /* CARDS GRID: two per row on desktop, responsive */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.8rem;
+            padding: 2rem 2rem;
+        }
+
+        /* responsive: on narrow screens, single column */
+        @media (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            body {
+                padding: 1rem;
+            }
+        }
+
+        /* reference card style */
+        .card {
+            background: #fefcff;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(110, 48, 97, 0.15);
+            transition: all 0.2s;
+            border: 1px solid #ecdde6;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card-header {
+            background: #6E3061;
+            padding: 1rem 1.4rem;
+            border-bottom: 2px solid #dbbdce;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .card-header span {
+            background: rgba(255,255,240,0.2);
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: normal;
+            font-family: monospace;
+        }
+        .card-body {
+            padding: 1.3rem 1.4rem 1.6rem;
+            flex: 1;
+        }
+        .formula-block {
+            background: #f5f0f3;
+            padding: 0.9rem;
+            border-radius: 18px;
+            margin: 0.8rem 0;
+            font-size: 1rem;
+            overflow-x: auto;
+            text-align: center;
+        }
+        /* R code block: left-aligned with proper indentation, using "=" assignment */
+        .r-code {
+            background: #1e2a2f;
+            color: #d6deeb;
+            padding: 1rem;
+            border-radius: 16px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.78rem;
+            margin: 0.7rem 0;
+            overflow-x: auto;
+            white-space: pre;
+            tab-size: 4;
+            line-height: 1.45;
+            text-align: left;
+        }
+        .r-code code {
+            display: block;
+            white-space: pre;
+            font-family: inherit;
+        }
+        .check-row {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 0.7rem;
+            border-top: 1px dashed #e2d0dc;
+            padding-top: 0.8rem;
+            font-size: 0.85rem;
+        }
+        .check-row input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #6E3061;
+        }
+        .badge {
+            background: #e2d0dc;
+            border-radius: 30px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        footer {
+            background: #f3eaf0;
+            padding: 1.2rem 2rem;
+            font-size: 0.8rem;
+            color: #3f2d38;
+            border-top: 1px solid #e1cfda;
+            /*display: flex; */
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        /* Dark mode overrides */
+        body.dark {
+            background-color: #2c1a27;
+        }
+        body.dark .container {
+            background: #1f1a1d;
+        }
+        body.dark .card {
+            background: #2b2428;
+            border-color: #4d3a44;
+        }
+        body.dark .card-header {
+            background: #6E3061;
+            color: white;
+            border-bottom-color: #6E3061;
+        }
+        body.dark .card-body {
+            color: #efeaed;
+        }
+        body.dark .formula-block {
+            background: #3a2e35;
+            color: #f3e6ef;
+        }
+        body.dark .r-code {
+            background: #0e181c;
+            color: #bbd4f0;
+        }
+        body.dark .toolbar {
+            background: #2a2126;
+            border-bottom-color: #4b3942;
+        }
+        body.dark .btn {
+            background: #3f2f37;
+            border-color: #6E3061;
+            color: #f0e3ea;
+        }
+        body.dark .btn-primary {
+            background: #6E3061;
+            color: white;
+        }
+        body.dark footer {
+            background: #2c2228;
+            color: #cfc1ca;
+            border-top-color: #4a3842;
+        }
+        body.dark .badge {
+            background: #4a3842;
+        }
+        /* print styles: A3 & Letter support */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            body.dark .container, .container {
+                background: white;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .toolbar {
+                display: none;
+            }
+            .cards-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .check-row input {
+                opacity: 1;
+                border: 1px solid black;
+            }
+            footer {
+                background: #f5f5f5;
+                color: black;
+            }
+            .btn, .toolbar .btn {
+                display: none;
+            }
+            body.dark .card-header, body.dark .card-body {
+                color: black;
+                background: #fff;
+            }
+            body.dark .r-code {
+                background: #f0f0f0;
+                color: #1e1e1e;
+                border: 1px solid #aaa;
+            }
+            .formula-block {
+                background: #f7f7f7;
+            }
+            @page {
+                size: A3;
+            }
+            @page letter {
+                size: letter;
+            }
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        @media print and (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        .site-meter {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>STA 200 STATISTICS II </h1>
+        <h2>📋 Multiple Linear Regression & ANOVA</h2>
+        <div class="subtitle">Essential formulas & procedures from MLR / one-way / two-way ANOVA · binary & multi-category predictors</div>
+    </div>
+
+    <div class="toolbar">
+        <button class="btn" id="printBtn" aria-label="Print to PDF">🖨️ Print / PDF (A3/Letter)</button>
+        <button class="btn btn-primary" id="darkmodeToggle">🌓 Dark / Light mode</button>
+        <!--span class="badge">✅ click checkboxes · study tracker</span-->
+    </div>
+
+    <div class="cards-grid">
+        <!-- CARD 1: SLR with continuous predictor + log-wage transformation -->
+        <div class="card">
+            <div class="card-header">
+                📈 SLR · Continuous predictor
+                <span>log-wage model</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \log(\text{wage}) = \beta_0 + \beta_1 \cdot \text{educ} + \varepsilon,\quad \varepsilon \sim N(0,\sigma^2)
+                    \]
+                    <div style="font-size:0.85rem; margin-top:5px;">Interpretation: \( \hat{\beta}_1 = 0.0827 \) → each year of education increases log-wage by 0.083 (p ≈ 0). <br> \(R^2 \approx 0.186\) weak linear correlation.</div>
+                </div>
+                <div class="r-code"><code># fit SLR with log(wage) ~ education
+edu.wage = read.csv("https://pengdsci.github.io/STA200/dataset/EduWage.csv")
+lgw.model = lm(lwage ~ educ, data = edu.wage)
+summary(lgw.model)
+plot(lgw.model)  # residual diagnostics: Q-Q, residuals vs fitted</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>✔️ Reviewed linearity & constant variance (residual plot)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: SLR with binary predictor (smsa) + dummy variable interpretation -->
+        <div class="card">
+            <div class="card-header">
+                🧬 Binary predictor · Two-sample t-test via regression
+                <span>dummy coding</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \log(\text{wage}) = \beta_0 + \beta_1 \cdot \text{smsa} + \varepsilon,\quad \text{smsa}=0(\text{rural}),1(\text{urban})
+                    \]
+                    \[
+                    \hat{\beta}_0 = 1.4518 \ (\text{mean log wage rural}),\quad \hat{\beta}_1=0.2373
+                    \]
+                    Urban wage is \(e^{0.2373}\approx 1.268\) times rural → <strong>26.78% higher</strong>.
+                </div>
+                <div class="r-code"><code>smsa.lm = lm(lwage ~ factor(smsa), data = edu.wage)
+summary(smsa.lm)
+anova(smsa.lm)   # F-test equals squared t-statistic
+# convert coefficients: exp(coef(smsa.lm)[2]) gives multiplier</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📘 Understand baseline category & difference interpretation</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: One-way ANOVA via MLR (dummy variables k-1) plant growth example -->
+        <div class="card">
+            <div class="card-header">
+                🌾 One-way ANOVA → Regression approach
+                <span>k-1 dummies</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \text{weight} = \beta_0 + \beta_1 \cdot I_{\text{trt1}} + \beta_2 \cdot I_{\text{trt2}} + \varepsilon
+                    \]
+                    Baseline = "ctrl". \(\beta_0 = \mu_{ctrl}\), \(\beta_1 = \mu_{trt1}-\mu_{ctrl}\), \(\beta_2 = \mu_{trt2}-\mu_{ctrl}\)<br>
+                    F-test in ANOVA table: \(H_0: \beta_1=\beta_2=0\) same as one-way ANOVA.
+                </div>
+                <div class="r-code"><code>plant = read.csv("https://pengdsci.github.io/STA200//dataset/oneWayPlantGrowth.csv")
+plant.lm = lm(weight ~ group, data = plant)
+summary(plant.lm)      # coefficients: grouptrt1, grouptrt2
+anova(plant.lm)        # identical F = 4.846, p = 0.0159
+TukeyHSD(aov(weight ~ group, data = plant))</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>✅ Recall: dummies avoid multicollinearity; intercept = reference mean</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 4: Two-way ANOVA with interaction (Crop * Fertilizer) -->
+        <div class="card">
+            <div class="card-header">
+                🌽 Two-way ANOVA · interaction model
+                <span>Crop × Fertilizer</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \text{Yield} = \beta_0 + \beta_{\text{Crop}} + \beta_{\text{Fert}} + \beta_{\text{interaction}} + \varepsilon
+                    \]
+                    Baseline: Corn + Blend X. Coefficients represent differences; interaction tests whether effect of fertilizer depends on crop.
+                </div>
+                <div class="r-code"><code>crop.data = data.frame(...)   # as in document
+crop.lm = lm(Yield ~ Crop * Fertilizer, data = crop.data)
+summary(crop.lm)
+anova(crop.lm)   # three F-tests: Crop, Fertilizer, Crop:Fertilizer
+# model.matrix shows all dummy variables
+colnames(model.matrix(crop.lm))</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>🧪 Interaction term significance → p = 0.0688 (moderate)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 5: Dummy variable construction & multicollinearity avoidance -->
+        <div class="card">
+            <div class="card-header">
+                🧩 Dummy variables & baseline selection
+                <span>k categories → k-1 dummies</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    For a categorical variable with \(k\) levels, define \(k-1\) binary indicators.<br>
+                    \[
+                    \text{Dummy}_j = \begin{cases}1 & \text{if category = level}_j \\ 0 & \text{otherwise}\end{cases}
+                    \]
+                    Perfect multicollinearity if all \(k\) dummies included: \(D_1 + D_2 + \dots + D_k = 1\).
+                </div>
+                <div class="r-code"><code># R automatically creates dummies with factor()
+edu.wage$region = factor(edu.wage$region)
+lm(lwage ~ region, data = edu.wage)
+# change baseline: relevel(factor(region), ref = "south")
+# anova F-test tests overall region significance</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📌 F-test in regression for categorical variable = global ANOVA test</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 6: Model diagnostics & residual plots (normality, homoscedasticity, leverage) -->
+        <div class="card">
+            <div class="card-header">
+                🔍 Regression diagnostics
+                <span>residuals & influential points</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    Assumptions: Linearity, Normality of residuals (\(\varepsilon \sim N(0,\sigma^2)\)), Constant variance (homoscedasticity), No high leverage / influential points.<br>
+                    Diagnostic plots: Residuals vs Fitted, Q-Q plot, Scale-Location, Residuals vs Leverage (Cook's distance).
+                </div>
+                <div class="r-code"><code>par(mfrow = c(2,2))
+plot(lm_model)   # 4 diagnostic plots
+# check constant variance: residuals vs fitted should have no funnel
+# normality: Q-Q points should follow diagonal line
+# influence: cook's distance < 1 generally safe</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📊 Evaluate plots: outliers? heteroscedasticity? (see document example)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 7: F-test vs t-test relationship (SLR binary) & ANOVA equivalence -->
+        <div class="card">
+            <div class="card-header">
+                ⚖️ t-test ↔ F-test equivalence
+                <span>binary predictor</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    For SLR with binary predictor: \(t_{df}^2 = F_{1,df}\). <br>
+                    \(t = 4.676 \Rightarrow t^2 = 21.86\) equals F-stat from ANOVA. <br>
+                    \(H_0: \beta_1 = 0\) identical to two-sample equal variance t-test.
+                </div>
+                <div class="r-code"><code># SLR with binary factor
+model_bin = lm(lwage ~ factor(smsa), data = edu.wage)
+summary(model_bin)$coefficients   # t-test
+anova(model_bin)                  # F-test, same p-value</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>🎯 one-way ANOVA = special case of MLR with dummy variables</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 8: Interpretation of log-transformed response (percentage change) -->
+        <div class="card">
+            <div class="card-header">
+                📐 Log-response interpretation
+                <span>percentage change</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    If model is \(\log(y) = \beta_0 + \beta_1 x + \varepsilon\): <br>
+                    A one-unit increase in \(x\) multiplies \(y\) by \(e^{\beta_1}\).<br>
+                    Approximate percent change: \(100 \times (e^{\beta_1} - 1)\%\).<br>
+                    Example: urban vs rural \(e^{0.2373} \approx 1.268\) → +26.8% higher wage.
+                </div>
+                <div class="r-code"><code>coef_beta1 = 0.23732
+percent_change = (exp(coef_beta1) - 1) * 100
+# back-transform predicted log-wage to original scale:
+exp(predict(lm_model, newdata))</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📈 Useful when variance stabilizes after log transformation</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 9: ANOVA table extraction from lm() and aov() -->
+        <div class="card">
+            <div class="card-header">
+                📋 ANOVA table from regression
+                <span>lm() vs aov()</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    The function \( \texttt{anova(lm.object)} \) returns sequential Type I ANOVA table. For one-way / two-way designs it matches classic ANOVA F-tests.
+                </div>
+                <div class="r-code"><code># Two-way ANOVA from linear model
+crop.aov = aov(Yield ~ Crop * Fertilizer, data = crop.data)
+summary(crop.aov)        # same anova table as anova(crop.lm)
+# Post-hoc: Tukey HSD
+TukeyHSD(crop.aov)
+# regression coeffs provide pairwise differences vs baseline</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📚 Extract both: anova(lm) and summary(aov) give identical F/p-values</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 10: Adjusted R-squared & Global F-test in MLR -->
+        <div class="card">
+            <div class="card-header">
+                📊 Model fit · \(R^2_{adj}\) & F-test
+                <span>multiple predictors</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    R^2_{adj} = 1 - \frac{(1-R^2)(n-1)}{n-p-1},\quad F = \frac{(TSS-RSS)/p}{RSS/(n-p-1)}
+                    \]
+                    Global F-test: \(H_0: \beta_1=\dots=\beta_p=0\). Significant F indicates at least one predictor matters.
+                </div>
+                <div class="r-code"><code>summary(mlr_model)$adj.r.squared
+# F-statistic appears at bottom of summary()
+# example: multiple linear regression with educ + exper
+mlr_ex = lm(lwage ~ educ + exper + tenure, data = edu.wage)
+summary(mlr_ex)   # F and p-value for overall significance</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>📉 Adjusted R² penalizes extra predictors</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 11: Leverage & Cook's distance outlier detection -->
+        <div class="card">
+            <div class="card-header">
+                🎯 Influential observations
+                <span>Cook's distance</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    Cook’s distance measures influence of each observation on fitted coefficients. \(D_i > \frac{4}{n}\) or visually > 0.5 suggests high influence. Leverage: \(h_{ii} > \frac{2p}{n}\).
+                </div>
+                <div class="r-code"><code>plot(model, which = 4)   # Cook's distance plot
+# identify high leverage points
+hatvalues(model) > (2 * length(coef(model))) / nrow(data)
+# influence measures
+influence.measures(model)</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>⚠️ Outliers can distort coefficients – check Residuals vs Leverage plot</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 12: Interaction terms in MLR (product of dummies) -->
+        <div class="card">
+            <div class="card-header">
+                🤝 Interaction effects
+                <span>product terms</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    Model: \(y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 (x_1 \cdot x_2) + \varepsilon\) <br>
+                    Interpretation: effect of \(x_1\) on \(y\) depends on \(x_2\). In two-way ANOVA, interaction indicates factor levels are not additive.
+                </div>
+                <div class="r-code"><code># Using Crop * Fertilizer notation expands to main effects + interaction
+lm(Yield ~ Crop * Fertilizer, data = crop.data)
+# explicit: lm(Yield ~ Crop + Fertilizer + Crop:Fertilizer)
+# check significance of interaction term (last group of coefficients)</code></div>
+                <div class="check-row">
+                    <input type="checkbox"> <span>🧬 p-value for interaction term → if >0.05, additive model may be sufficient</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer>
+        <center> 
+       <div class="copyright">
+       <p>© 2019-<span id="currentYear"></span>  C. Peng @ West Chester University, USA. All rights reserved.</p>
+            <!-- Copyright Statement -->
+ 
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script><a href='http://www.freevisitorcounters.com'><img src="img/blackdot.jpg" width="1" height="1"></a><br>
+    
+           <div class="license">
+              <p>📄 Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer"><font color = "red">Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</font></a></p>
+              <p>You are free to share and adapt for non-commercial purposes with appropriate credit.</p>
+            </div>
+         </div>
+       </center> 
+
+    <script>
+         // Set current year in copyright
+        document.getElementById('currentYear').textContent = new Date().getFullYear();   
+    
+    // dark mode toggle + local storage persistence
+    const toggleBtn = document.getElementById('darkmodeToggle');
+    const body = document.body;
+    const prefersDark = localStorage.getItem('mlr-dark-mode');
+    if (prefersDark === 'enabled') {
+        body.classList.add('dark');
+    }
+    toggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark');
+        if (body.classList.contains('dark')) {
+            localStorage.setItem('mlr-dark-mode', 'enabled');
+        } else {
+            localStorage.setItem('mlr-dark-mode', 'disabled');
+        }
+    });
+
+    // print functionality: respects A3/Letter sizing via CSS print rules
+    const printBtn = document.getElementById('printBtn');
+    printBtn.addEventListener('click', () => {
+        window.print();
+    });
+
+    // optional: make all checkboxes interactive but we do nothing extra - they just work
+    // ensure any dynamic MathJax reflow - but static content fine
+    if (typeof MathJax !== 'undefined') {
+        MathJax.typesetPromise();
+    }
+</script>
+</body>
+</html>

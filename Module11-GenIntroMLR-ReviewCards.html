@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=yes">
+    <title>STA200: MLR Review Cards – Polynomial, ANCOVA & Diagnostics</title>
+    <!-- MathJax for beautiful formulas -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* CORE COLOR: purple #6E3061 with accessibility contrast */
+        body {
+            background-color: #512d6d;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+            transition: background-color 0.25s ease, color 0.2s ease;
+        }
+
+        /* main container – printable, max-width for readability */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            transition: background 0.2s;
+        }
+
+        /* header area with purple brand */
+        .header {
+            background: #6E3061;
+            padding: 1.0rem 1.0rem;
+            color: white;
+            border-bottom: 4px solid #ffd966;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header h2 {
+            font-size: 2.0rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: 1.35rem;
+            opacity: 0.92;
+            font-weight: 500;
+            border-left: 3px solid #ffd966;
+            padding-left: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        /* toolbar: toggle + print + size hints */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 0.9rem 2rem;
+            background: #f9f4f7;
+            border-bottom: 1px solid #e2d0dc;
+            align-items: center;
+        }
+
+        .btn {
+            background: white;
+            border: 1px solid #c2a8bd;
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2d2a2c;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            background: #e9dce5;
+            border-color: #6E3061;
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: #6E3061;
+            border-color: #4f2444;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #4f2444;
+        }
+
+        /* CARDS GRID: two per row on desktop, responsive */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.8rem;
+            padding: 2rem 2rem;
+        }
+
+        @media (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            body {
+                padding: 1rem;
+            }
+        }
+
+        /* reference card style */
+        .card {
+            background: #fefcff;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px #6E3061;
+            border: 1px solid #ecdde6;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card-header {
+            background: #6E3061;
+            padding: 1rem 1.4rem;
+            border-bottom: 2px solid #dbbdce;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .card-header span {
+            background: #6E306110;
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: normal;
+            font-family: monospace;
+        }
+        .card-body {
+            padding: 1.3rem 1.4rem 1.6rem;
+            flex: 1;
+        }
+        .formula-block {
+            background: #f5f0f3;
+            padding: 0.9rem;
+            border-radius: 18px;
+            margin: 0.8rem 0;
+            font-size: 1rem;
+            overflow-x: auto;
+            text-align: center;
+        }
+        /* R code block: left-aligned with proper indentation, using "=" assignment */
+        .r-code {
+            background: #1e2a2f;
+            color: #d6deeb;
+            padding: 1rem;
+            border-radius: 16px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.78rem;
+            margin: 0.7rem 0;
+            overflow-x: auto;
+            white-space: pre;
+            tab-size: 4;
+            line-height: 1.45;
+            text-align: left;
+        }
+        .r-code code {
+            display: block;
+            white-space: pre;
+            font-family: inherit;
+        }
+        .check-row {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 0.7rem;
+            border-top: 1px dashed #e2d0dc;
+            padding-top: 0.8rem;
+            font-size: 0.85rem;
+        }
+        .check-row input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #6E3061;
+        }
+        .badge {
+            background: #e2d0dc;
+            border-radius: 30px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        footer {
+            background: #f3eaf0;
+            padding: 1.2rem 2rem;
+            font-size: 0.8rem;
+            color: #3f2d38;
+            border-top: 1px solid #e1cfda;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            text-align: center;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        /* Dark mode overrides */
+        body.dark {
+            background-color: #2c1a27;
+        }
+        body.dark .container {
+            background: #1f1a1d;
+        }
+        body.dark .card {
+            background: #2b2428;
+            border-color: #4d3a44;
+        }
+        body.dark .card-header {
+            background: #6E3061;
+            color: white;
+            border-bottom-color: #6E3061;
+        }
+        body.dark .card-body {
+            color: #efeaed;
+        }
+        body.dark .formula-block {
+            background: #3a2e35;
+            color: #f3e6ef;
+        }
+        body.dark .r-code {
+            background: #0e181c;
+            color: #bbd4f0;
+        }
+        body.dark .toolbar {
+            background: #2a2126;
+            border-bottom-color: #4b3942;
+        }
+        body.dark .btn {
+            background: #3f2f37;
+            border-color: #6E3061;
+            color: #f0e3ea;
+        }
+        body.dark .btn-primary {
+            background: #6E3061;
+            color: white;
+        }
+        body.dark footer {
+            background: #2c2228;
+            color: #cfc1ca;
+            border-top-color: #4a3842;
+        }
+        body.dark .badge {
+            background: #4a3842;
+        }
+        /* print styles: A3 & Letter support */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            body.dark .container, .container {
+                background: white;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .toolbar {
+                display: none;
+            }
+            .cards-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .check-row input {
+                opacity: 1;
+                border: 1px solid black;
+            }
+            footer {
+                background: #f5f5f5;
+                color: black;
+            }
+            .btn, .toolbar .btn {
+                display: none;
+            }
+            body.dark .card-header, body.dark .card-body {
+                color: black;
+                background: #fff;
+            }
+            body.dark .r-code {
+                background: #f0f0f0;
+                color: #1e1e1e;
+                border: 1px solid #aaa;
+            }
+            .formula-block {
+                background: #f7f7f7;
+            }
+            @page {
+                size: A3;
+            }
+            @page letter {
+                size: letter;
+            }
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        @media print and (max-width: 760px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        .site-meter {
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+        .inline-code {
+            background: #e9e3e7;
+            padding: 0.1rem 0.3rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        body.dark .inline-code {
+            background: #3d2f37;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>STA 200 STATISTICS II</h1>
+        <h2>📚  General Introduction to Multiple Linear Regression</h2>
+        <div class="subtitle">Review & Reference Cards: Polynomial Regression · ANCOVA · Model Diagnostics & R Workflow</div>
+    </div>
+    <div class="toolbar">
+        <button class="btn" id="darkModeToggle">🌓 Dark / Light</button>
+        <button class="btn btn-primary" id="printPdfBtn">🖨️ Print to PDF (A3/Letter)</button>
+        <!--span class="badge">📄 A3-ready · Letter</span-->
+    </div>
+
+    <div class="cards-grid">
+        <!-- CARD 1: Polynomial regression model structure -->
+        <div class="card">
+            <div class="card-header">
+                📈 Polynomial Regression
+                <span>non‑linear trends</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    y = \beta_0 + \beta_1 x + \beta_2 x^2 + \dots + \beta_p x^p + \varepsilon,\quad \varepsilon \sim N(0,\sigma^2)
+                    \]
+                </div>
+                <div><strong>🔍 Key points:</strong> Linear in coefficients; degree \(p\) (≤3 recommended). Centering reduces multicollinearity: use \((x-\bar{x}), (x-\bar{x})^2\).</div>
+                <div class="r-code"><code># Quadratic example (mtcars: mpg ~ hp + hp²)
+mtcars <- read.csv("https://pengdsci.github.io/STA200/dataset/mtcars.csv")
+quadratic_model <- lm(mpg ~ hp + I(hp^2), data = mtcars)
+summary(quadratic_model)
+
+# Centered polynomial to reduce collinearity
+mtcars$hp_c <- mtcars$hp - mean(mtcars$hp)
+quad_centered <- lm(mpg ~ hp_c + I(hp_c^2), data = mtcars)
+</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="check1"> <label for="check1">✔️ Understood: polynomial ≠ linear in x, linear in β</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: Polynomial diagnostics & selection -->
+        <div class="card">
+            <div class="card-header">
+                🧪 Polynomial Diagnostics
+                <span>R², AIC, residual plots</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    R^2 = 1-\frac{SS_{res}}{SS_{tot}}, \quad
+                    \text{adj-}R^2 = 1-\frac{(1-R^2)(n-1)}{n-p-1}
+                    \]
+                </div>
+                <div><strong>📌 Model comparison:</strong> Quadratic yields \(R^2 = 0.7561\), cubic improves only 0.59% → prefer simpler model.</div>
+                <div class="r-code"><code># Residual diagnostic plots
+par(mfrow = c(2,2))
+plot(quadratic_model)   # check Residuals vs Fitted, Q-Q, Scale-Location
+
+# Compare models
+linear_model <- lm(mpg ~ hp, data = mtcars)
+anova(linear_model, quadratic_model)  # F-test for improvement
+AIC(linear_model, quadratic_model)
+</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="check2"> <label for="check2">📉 Avoid extrapolation & overfitting (keep degree ≤ 3)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: ANCOVA model structure (categorical + continuous) -->
+        <div class="card">
+            <div class="card-header">
+                📊 ANCOVA Model
+                <span>interaction & slopes</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    Y = \beta_0 + \beta_1 X + \sum_{i=2}^{k}\beta_i G_i + \sum_{i=2}^{k}\gamma_i (X \times G_i) + \varepsilon
+                    \]
+                </div>
+                <div><strong>🧩 Interpretation:</strong> \( \beta_0\) baseline intercept, \(\beta_1\) baseline slope; \(\gamma_i\) slope change for group \(i\). Interaction => different regression lines per group.</div>
+                <div class="r-code"><code># Depression dataset: treatment A, B, C with age covariate
+depression <- read.csv("https://pengdsci.github.io/STA200/dataset/depression.csv")
+# ANCOVA with interaction: y ~ x * z  (equivalent to x + z + x:z)
+dep_ancova <- lm(y ~ x * z, data = depression)
+summary(dep_ancova)
+
+# Extract group-specific equations:
+# Treatment A (ref): y = 47.516 + 0.331*x
+# Treatment B: y = (47.516-18.597) + (0.331+0.193)*x
+# Treatment C: y = (47.516-41.304) + (0.331+0.703)*x
+</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="check3"> <label for="check3">✅ Interaction term: slopes differ across categorical levels</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 4: ANCOVA assumptions & diagnostics -->
+        <div class="card">
+            <div class="card-header">
+                🔍 ANCOVA Diagnostics
+                <span>normality · homoscedasticity</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \text{Residuals} \sim N(0,\sigma^2),\quad \text{constant variance, independence}
+                    \]
+                </div>
+                <div><strong>📌 Assumptions:</strong> linearity, independent errors, homoscedasticity, normality. Check with residual plots.</div>
+                <div class="r-code"><code>par(mfrow = c(2,2))
+plot(dep_ancova)   # Residuals vs Fitted, Q-Q, Scale-Location, Leverage
+
+# Test for interaction significance:
+# p-value for x:zB = 0.108 (not significant), x:zC = 3.98e-07 (significant)
+# => slopes differ between A and C.
+
+# If interaction non-significant, fit additive model:
+dep_additive <- lm(y ~ x + z, data = depression)
+anova(dep_additive, dep_ancova)  # test interaction effect
+</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="check4"> <label for="check4">📐 Interaction effect changes slope interpretation</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 5: Model selection and goodness-of-fit (F-test, R²) -->
+        <div class="card">
+            <div class="card-header">
+                📏 Global F-test & R²
+                <span>inference for MLR</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    H_0: \beta_1 = \beta_2 = \dots = \beta_p = 0, \quad
+                    F = \frac{MS_{reg}}{MS_{res}} \sim F_{p, n-p-1}
+                    \]
+                    \[
+                    R^2 = \frac{SS_{reg}}{SS_{tot}},\quad \text{adj-}R^2 = 1 - \frac{(1-R^2)(n-1)}{n-p-1}
+                    \]
+                </div>
+                <div><strong>📈 Use F-statistic p-value to test overall model significance.</strong> Adjusted R² penalizes extra predictors.</div>
+                <div class="r-code"><code>summary(quadratic_model)   # shows F-statistic, R², adj R²
+# Global F-test p-value: 1.301e-09 => model significant
+
+# For ANCOVA:
+summary(dep_ancova)$fstatistic
+# F = 64.04, p = 4.264e-15 → strong evidence that at least one β ≠ 0
+</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="check5"> <label for="check5">🎯 F-test: compares model vs intercept-only baseline</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 6: Centering and multicollinearity remedy (polynomial) -->
+        <div class="card">
+            <div class="card-header">
+                ⚖️ Centering Predictors
+                <span>reduce multicollinearity</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    x_{\text{centered}} = x - \bar{x}, \quad
+                    \text{model: } y = \beta_0^* + \beta_1^*(x-\bar{x}) + \beta_2^*(x-\bar{x})^2 + \varepsilon
+                    \]
+                </div>
+                <div><strong>✨ Why:</strong> High correlation between \(x\) and \(x^2\) causes unstable estimates. Centering improves numerical stability and interpretability of lower-order terms.</div>
+                <div class="r-code"><code># Centering before polynomial terms
+mtcars$hp_centered <- mtcars$hp - mean(mtcars$hp)
+model_centered <- lm(mpg ~ hp_centered + I(hp_centered^2), data = mtcars)
+summary(model_centered)
+# Check variance inflation: library(car); vif(model_centered)
+</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="check6"> <label for="check6">🧹 Centering recommended in polynomial regression (no effect on predictions)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 7: Categorical variables as factors (ANOVA/ANCOVA) -->
+        <div class="card">
+            <div class="card-header">
+                🏷️ Factors in R
+                <span>categorical handling</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \text{dummy coding: } G_i = 
+                    \begin{cases} 
+                    1 & \text{if level i} \\
+                    0 & \text{otherwise}
+                    \end{cases}
+                    \]
+                </div>
+                <div><strong>⚠️ Important:</strong> Numeric codes must be converted to factor to avoid being treated as continuous.</div>
+                <div class="r-code"><code># Convert numeric treatment (1,2,3) to factor
+depression$z_factor <- factor(depression$z)
+ancova_proper <- lm(y ~ x + z_factor + x:z_factor, data = depression)
+
+# Check levels: baseline is first level (A)
+contrasts(depression$z_factor)
+
+# Equivalent simplified formula with '*'
+ancova_interaction <- lm(y ~ x * z_factor, data = depression)
+summary(ancova_interaction)
+</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="check7"> <label for="check7">🔁 Always use factor() for categorical predictors in regression</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 8: Interpretation of interaction & group-specific lines -->
+        <div class="card">
+            <div class="card-header">
+                📐 ANCOVA: group lines
+                <span>intercept & slope shifts</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \text{Group A (ref): } \hat{y} = \hat{\beta}_0 + \hat{\beta}_1 X
+                    \]
+                    \[
+                    \text{Group B: } \hat{y} = (\hat{\beta}_0+\hat{\beta}_2) + (\hat{\beta}_1+\hat{\gamma}_1)X
+                    \]
+                </div>
+                <div><strong>From depression output:</strong><br>
+                Treatment A: \( \hat{y} = 47.516 + 0.331x\)<br>
+                Treatment C: \( \hat{y} = 6.211 + 1.033x\) → steeper slope.<br>
+                p-value for x:zC < 0.001 ⇒ significant slope difference.
+                </div>
+                <div class="r-code"><code># Visualize fitted lines (using ggplot2-like base)
+plot(y ~ x, data = depression, col = as.factor(z), pch = 16)
+abline(a = 47.516, b = 0.331, col = "red", lwd = 2)      # A
+abline(a = 28.918, b = 0.524, col = "blue", lwd = 2)     # B
+abline(a = 6.211, b = 1.033, col = "forestgreen", lwd = 2) # C
+legend("topright", legend = c("A","B","C"), col = c("red","blue","forestgreen"), lwd = 2)
+</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="check8"> <label for="check8">✍️ Significant interaction → slopes differ; main effects interpreted conditionally</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 9: Residual diagnostics summary (all models) -->
+        <div class="card">
+            <div class="card-header">
+                🧾 Residual diagnostics
+                <span>plot assumptions</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \text{Residuals } e_i = y_i - \hat{y}_i,\quad \text{Q-Q plot for normality}
+                    \]
+                </div>
+                <div><strong>✔️ Standard checks:</strong> Residuals vs Fitted (constant variance, no pattern), Q-Q (normality), Scale-Location (homoscedasticity), Residuals vs Leverage (influential points).</div>
+                <div class="r-code"><code># Generic diagnostic function for any lm object
+diagnostic_plots <- function(model) {
+  par(mfrow = c(2,2))
+  plot(model)
+  # Look for: 
+  # - red line nearly horizontal (linearity)
+  # - points along diagonal in Q-Q
+  # - no fan shape in Scale-Location
+}
+diagnostic_plots(quadratic_model)
+diagnostic_plots(dep_ancova)
+</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="check9"> <label for="check9">🔬 Always inspect residual plots before trusting inference</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 10: Practical best practices (extrapolation, overfitting) -->
+        <div class="card">
+            <div class="card-header">
+                🧠 Best Practices
+                <span>MLR guidelines</span>
+            </div>
+            <div class="card-body">
+                <div class="formula-block">
+                    \[
+                    \text{Avoid extrapolation: } x_{\text{new}} \notin [\min(x),\max(x)]
+                    \]
+                </div>
+                <div><strong>📌 Summary:</strong> • Polynomial degree ≤ 3 • Center predictors for higher-order terms • Use ANCOVA to adjust for covariates • Check interaction significance • Keep models parsimonious (AIC / adj-R²) • Never extrapolate beyond data range.</div>
+                <div class="r-code"><code># Example: predict within range only
+new_hp <- data.frame(hp = seq(50, 350, length.out = 10))
+pred_mpg <- predict(quadratic_model, newdata = new_hp)
+# Warning if new_hp outside training range (train hp range ~50-335)
+# Evaluate using cross-validation (future courses)
+</code></div>
+                <div class="check-row">
+                    <input type="checkbox" id="check10"> <label for="check10">🎓 Extrapolation → unreliable predictions (height vs weight example)</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ <footer>
+        <center> 
+       <div class="copyright">
+       <p>© 2019-<span id="currentYear"></span>  C. Peng @ West Chester University, USA. All rights reserved.</p>
+            <!-- Copyright Statement -->
+ 
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script><a href='http://www.freevisitorcounters.com'><img src="img/blackdot.jpg" width="1" height="1"></a><br>
+    
+           <div class="license">
+              <p>📄 Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer"><font color = "red">Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</font></a></p>
+              <p>You are free to share and adapt for non-commercial purposes with appropriate credit.</p>
+            </div>
+         </div>
+       </center> 
+ 
+    <script>
+         // Set current year in copyright
+        document.getElementById('currentYear').textContent = new Date().getFullYear();   
+    
+    // Dark/Light toggle functionality
+    const darkToggle = document.getElementById('darkModeToggle');
+    darkToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+        // store preference
+        const isDark = document.body.classList.contains('dark');
+        localStorage.setItem('mlrDarkMode', isDark);
+    });
+    // Load saved mode
+    if (localStorage.getItem('mlrDarkMode') === 'true') {
+        document.body.classList.add('dark');
+    }
+
+    // Print-to-PDF: trigger browser print with A3/letter support (CSS handles size)
+    const printBtn = document.getElementById('printPdfBtn');
+    printBtn.addEventListener('click', () => {
+        window.print();
+    });
+
+    // Additional: ensure checkboxes are interactive but no auto-save needed
+    // all checkboxes are standard clickable.
+</script>
+</body>
+</html>
