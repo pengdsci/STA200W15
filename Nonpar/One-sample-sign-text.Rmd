@@ -1,0 +1,438 @@
+---
+title: 'One-sample Nonparametric Sign Test'
+author: "Cheng Peng"
+date: "West Chester University"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    toc_collapsed: yes
+    toc_depth: 4
+    number_sections: yes
+    code_folding: hide
+    code_download: yes
+    theme: lumen
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+---
+
+```{=html}
+<style type="text/css">
+/* Table of content - navigation */
+div#TOC li {
+    list-style:none;
+    background-color:lightgray;
+    background-image:none;
+    background-repeat:none;
+    background-position:0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #780c0c;
+}
+
+
+/* Title fonts */
+h1.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: darkblue;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-variant-caps: normal;
+}
+h4.author { 
+  font-size: 16px;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+  color: navy;
+  text-align: center;
+}
+h4.date { 
+  font-size: 16px;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+  color: darkblue;
+  text-align: center;
+}
+
+/* Section headers */
+h1 {
+    font-size: 22px;
+  font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: darkred;
+    text-align: left;
+}
+
+h2 {
+    font-size: 18px;
+  font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: navy;
+    text-align: left;
+}
+
+h3 { 
+    font-size: 15px;
+  font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: darkred;
+    text-align: left;
+}
+
+h4 {
+    font-size: 18px;
+  font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    color: darkred;
+    text-align: left;
+}
+
+/* Decoration of hyperlinks  */
+
+/* unvisited link */
+a:link {
+  color: green;
+}
+
+/* visited link */
+a:visited {
+  color: purple;
+}
+
+/* mouse over link */
+a:hover {
+  color: red;
+}
+
+/* selected link */
+a:active {
+  color: yellow;
+}
+
+
+code, pre {
+  font-family: "Fira Code", "Consolas", "Courier New", monospace;
+  font-size: 14px;
+  background-color: #f5f5f5;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+  p0 {
+     background-color: purple;
+     color: gold;
+     text-align: center;
+     font-size: 16px;
+     font-weight:bold
+     text-shadow: 2px 2px red;
+   } 
+
+</style>
+```
+
+```{r setup, include=FALSE}
+if (!require("tidyverse")) {
+   install.packages("tidyverse")
+   library(tidyverse)
+}
+if (!require("knitr")) {
+   install.packages("knitr")
+   library(knitr)
+}
+if (!require("gifski")) {
+   install.packages("gifski")
+   library(gifski)
+}
+if (!require("plotly")) {
+   install.packages("plotly")
+   library(plotly)
+}
+# knitr::opts_knit$set(root.dir = "C:\\STA490\\w05")
+knitr::opts_chunk$set(echo = TRUE,       
+                      warning = FALSE,   
+                      result = TRUE,   
+                      message = FALSE,
+                      comment = NA)
+```
+
+\
+
+# Introduction
+
+Nonparametric tests are statistical methods that do not rely on assumptions about the underlying population distribution. Unlike parametric tests, which assume a specific distribution (e.g., normal distribution), nonparametric tests are more flexible and can be applied to data that may not meet these assumptions. One-sample nonparametric tests are used to determine whether a sample comes from a population with a specific characteristic, such as a particular median or distribution shape.
+
+Common one-sample nonparametric tests include the Sign Test, Wilcoxon Signed-Rank Test, and Kolmogorov-Smirnov Test. This note focuses on the Sign Test, a simple yet powerful tool for analyzing data.
+
+
+# Some Motivational Examples
+
+**1. Pharmaceutical Research**
+
+A pharmaceutical company is testing a new drug to reduce cholesterol levels. They collect cholesterol measurements from 20 patients before and after administering the drug. The data is skewed, and the sample size is small. The company wants to determine if the drug significantly reduces cholesterol levels. Since the data does not meet the normality assumption required for parametric tests like the paired t-test, the Sign Test is an ideal choice. It compares the number of patients whose cholesterol decreased (positive signs) to those whose cholesterol increased or remained the same (negative or zero signs).
+
+**2. Customer Satisfaction Surveys**
+
+A restaurant chain introduces a new menu and collects customer satisfaction ratings (on a scale of 1 to 10) before and after the change. The ratings are ordinal and not normally distributed. The management wants to test if the new menu has improved customer satisfaction. The Sign Test can be used to compare the number of customers whose satisfaction increased (positive signs) versus those whose satisfaction decreased or stayed the same (negative or zero signs).
+
+**3. Economics**
+
+An economist studies the impact of a new policy on household income. Income data is collected from 30 households before and after the policy implementation. The data is skewed due to a few high-income outliers. The economist wants to determine if the policy has significantly increased household income. The Sign Test is suitable because it does not rely on the magnitude of income changes and is robust to skewness.
+
+
+**Use Cases of One-sample Nonparametric Tests**
+
+**Ordinal Data**: The Sign Test is ideal for ordinal or ranked data or data with outliers and skewness. Nonparametric tests are ideal because they do not require interval or ratio measurements. 
+
+**Non-normal Distributions**: When the data is skewed or has outliers, nonparametric tests provide more reliable results.
+
+**Small Sample Sizes**: Nonparametric tests are robust for small samples where parametric assumptions may not hold. 
+
+**Unknown Population Parameters**: When the population parameters (e.g., mean, variance) are unknown, nonparametric tests are a practical choice.
+
+**Simplicity**: The Sign Test is easy to understand and apply, making it accessible for practitioners in various fields.
+
+
+# The Sign Test
+
+We have learned about the one-sample t-test and the paired two-sample t-test in elementary statistics, both of which assume that the observed data values follow a normal distribution. If the normality assumption is not met, we can use the following non-parametric tests to analyze the population median instead of the mean.
+
+
+## One-sample Sign Test
+
+**1. Definition and Explanation**
+
+The Sign Test is a nonparametric test used to determine whether the median of a sample differs from a hypothesized value. It is based on the signs of the differences between observed values and the hypothesized median. Unlike parametric tests, it does not rely on the magnitude of the differences, making it robust to outliers and skewed data.
+
+**2. Null and Alternative Hypotheses**
+
+**Null Hypothesis ($H_0$)**: The median of the population is equal to a specified value ($M_0$).
+Mathematically, $H_0$: Median = $M_0$.
+
+**Alternative Hypothesis ($H_1$)**: The median of the population is not equal to (or greater than/less than) the specified value.
+
+Mathematically, $H_1$: Median $\ne M_0$ (two-tailed), Median $> M_0$  (right-tailed), or Median $< M_0$  (left-tailed).
+
+**3. Formula of Test Statistic and Its Distribution**
+
+The test statistic for the Sign Test is the number of positive or negative signs of the differences between the observed values and the hypothesized median ($M_0$). Let:
+
+$n$ = number of non-zero differences,
+
+$S$ = number of positive (or negative) signs.
+
+Under the null hypothesis, $S$ follows a binomial distribution with parameters $n$ and $p=0.5$. For large samples ($n>25$), the binomial distribution can be approximated by a normal distribution:
+
+$$
+Z= \frac{S-p\times n}{\sqrt{n}/2} = \frac{S-0.5\times n}{\sqrt{n}/2}
+$$
+
+where Z follows approximately a standard normal distribution. For small sample, the above formulas is asjusted by
+
+$$
+Z= \frac{(S+0.5)-p\times n}{\sqrt{n}/2} = \frac{(S+0.5)-0.5\times n}{\sqrt{n}/2}
+$$
+
+
+## Paired-sample Sign Test
+
+The paired sample sign test is a non-parametric statistical test used to determine whether there is a significant difference between two related (paired) samples. It is based on the signs of the differences between paired observations, rather than the magnitude of the differences. In general, a paired-sample sign test should be used:
+
+* When the data consists of paired observations (e.g., before-and-after measurements, matched pairs).
+
+* When the data does not meet the assumptions of parametric tests (e.g., normality).
+
+* When the data is measured on at least an ordinal scale.
+
+**Steps for Paired-sample Test**
+
+* **State the Hypotheses**
+  + *Null Hypothesis ($H_0$)*: There is no difference between the paired observations (median difference = 0).
+  + *Alternative Hypothesis ($H_1$)*: There is a difference between the paired observations (median difference $\ne$ 0).
+
+* **Calculate the Differences**: For each pair of observations, calculate the difference:
+$$
+d_i = X_i - Y_i \ \ \text{where } X_i \ \text{and} \ Y_i \ \text{ are paired meaqsurements}
+$$
+
+* **Determine the Signs**:
+  + Assign a + sign if $d_i > 0$   
+  + Assign a - sign if $d_i < 0$  
+  + **Exclude ties** (where $d_i = 0$) from the analysis.
+
+* **Count the Signs**:
+  + Let $n_+ =$ number of `+` signs.
+  + Let $n_- =$ number of `-` signs.
+  + Let $n = n_+ + n_-$ (total number of `+` and `-` signs. That is, total number of non-zero differences)
+
+
+* **Test Statistic**: The test statistic is the smaller of $n_+$ and $n_-$, denoted by $S$, is given by
+$$
+S = \min \{n_+, n_-\}
+$$
+
+
+* **Determine the Critical Value or p-value**:
+  + Use the binomial distribution with $p = 0.5$ and n trials to find the p-value.
+  + Alternatively, use a sign test table or statistical software to find the critical value.
+
+* **Make a Decision**:
+  + If the p-value $\le$ significance level (e.g., 0.05), reject the null hypothesis.
+  + If the p-value > significance level, fail to reject the null hypothesis.
+
+
+## An Illustrative Video
+
+The following illustrative video created by Prof. Fulkerson contains examples for both one sample and paired-sample sign test.
+
+<center><a href="https://stavideo.s3.us-east-1.amazonaws.com/Nonparamtrics-SignedTest.mp4" target="popup"  onclick="window.open('https://stavideo.s3.us-east-1.amazonaws.com/Nonparamtrics-SignedTest.mp4', 'name','width=900,height=500')"><img src = "https://pengdsci.github.io/MAT121/img/VideoIcon.jpg" width="250" height="170"></a>
+</center>
+
+
+# Numerical ExampleS
+
+This section provides two worked numerical examples on one-sample and paired sample sign tests. 
+
+## One-sample
+
+Suppose we have the following blood pressure measurements (in mmHg) from 10 patients after taking the drug:
+
+`120, 125, 118, 122, 130, 115, 119, 123, 121, 124`
+
+We want to test whether the median blood pressure is 120 mmHg.
+
+**Step 1**: State Hypotheses
+
+$H_0$: $\text{Median} = 120$,  vs   $H_1$: $\text{Median} \ne 120$  (two-tailed).
+
+**Step 2**: Calculate Differences (*between individual value and the claimed median*)
+
+Subtract the hypothesized median (120) from each observation:
+
+`0, +5, -2, +2, +10, -5, -1, +3, +1, +4`
+
+**Step 3**: Count Signs
+
+* *Positive signs*: 6 (+5, +2, +10, +3, +1, +4),
+
+* *Negative signs*: 3 (-2, -5, -1),
+
+* *Zero differences*: 1 (excluded).
+
+**Step 4**: Compute Test Statistic
+
+Let $S = 6$ (number of positive signs), $n = 9$ (non-zero differences).
+
+Using the binomial distribution with $p = 0.5$, the p-value can be calculated using statistical software or tables. Alternatively, for large n, use the normal approximation:
+
+$$
+Z=\frac{6-0.5\times 9}{\sqrt{0.25\times 9}} = \frac{6-4.5}{1.5} = 1.0.
+$$
+
+The p-value for $Z = 1.0$ (two-tailed) is approximately 0.317.
+
+**Step 5**: Make a Decision
+
+Since the p-value (0.317) is greater than the significance level (e.g., 0.05), we fail to reject the null hypothesis. There is no significant evidence that the median blood pressure differs from 120 mmHg.
+
+
+## Paired Sample
+
+Suppose you have the following paired data:
+
+|Pair	Before (X)|	After (Y)|	Difference (d = X - Y) |	Sign |
+|:--------------|:---------|:-----------------------|:-------|
+|	1	|	10	|	12	|	-2|		-|	
+|	2	|	15	14	|	+1|		+|	
+|	3	|	8	|	9	|	-1|		-|	
+|	4	|	12	|	11|		+1|		+|	
+|	5	|	9	|	10	|	-1|		-|	
+
+* $n_+ = 2$ (number of + signs).
+* $n_- = 3$ (number of - signs).
+* $n = 2 + 3 = 5$ (total non-zero differences).
+
+
+**Test statistic**: $S = \min\{2,3\} = 2$.
+
+Using a binomial distribution with $p = 0.5$ and $n=5$, the p-value for $S = 2$ is calculated. If the p-value $\le$ 0.05, reject the null hypothesis.
+
+
+# Conculding Remarks
+
+**Assumptions**
+
+* The data consists of paired observations.
+
+* The differences are independent of each other.
+
+* The differences are measured on at least an ordinal scale.
+
+**Benefits and Drawbacks**
+
+* Benefits
+  + Simple and easy to perform.
+  + Does not require assumptions about the population distribution.
+  + Robust to outliers and skewed data.
+
+* Drawbacks
+  + Less powerful than parametric tests when data meets parametric assumptions.
+  + Ignores the magnitude of differences, which can lead to loss of information.
+
+* Summary
+  + The Sign Test is a versatile and straightforward nonparametric test for analyzing data when parametric assumptions are not met. It is particularly useful for small samples, ordinal data, or non-normal distributions. While it has limitations, its simplicity and robustness make it a valuable tool in statistical analysis.
+
+
+# Implementation in SPSS
+
+This section illustrates how to use SPSS to perform one sample sign test for median.
+
+## Illustrative Video
+
+<center><a href="https://stavideo.s3.us-east-1.amazonaws.com/SPSS-1sample-sign-test.mp4" target="popup"  onclick="window.open('https://stavideo.s3.us-east-1.amazonaws.com/SPSS-1sample-sign-test.mp4', 'name','width=900,height=500')"><img src = "https://pengdsci.github.io/MAT121/img/VideoIcon.jpg" width="250" height="170"></a>
+</center>
+
+
+
+## A Practice Exercise
+
+Consider the following hypotheses:
+
+$$
+H_0: \text{median} = 78  \ \ \text{v.s.} \ \ H_1: \text{median} \ne 78
+$$
+
+based on the following data set:
+
+|   Teaching Method	| Test Scores (Dependent Variable) | |  |
+|:----------------|:-------------------------|:----------|:-----------|
+| Traditional Lectur (1)	| 75, 78, 72, 80, 74, 77, 76, 79, 73, 81| | | 
+| Interactive Learning (2) | 82, 85, 80, 84, 83, 86, 81, 87, 82, 88| | | 
+| Flipped Classroom	(3)  | 90, 88, 92, 89, 91, 87, 93, 90, 94, 89| | | 
+
+
+## Typed Data Values in SPSS
+
+Open SPSS data editor and typed in data values in the SPSS data editor. SPSS does not have a procedure option specifically for a one sample sign test . However, it can be done. Just compute a constant variable with value equal to the null hypothesized or test value, and use that in a pair with the variable of interest in a paired samples sign test. <font color = "red">For example, if you wanted to test a variable against a null value of 0, use **Transform->Compute** and create a new variable with a value of 0, then run that along with the variable of interest as a pair in the Nonparametric Tests dialog.</font>
+
+
+
+The following screenshot shows the layout of the data (last few rows).
+
+```{r echo = FALSE, fig.align='center', out.width="79%"}
+include_graphics("img/sign-test-01.jpg")
+```
+
+
+## Perform Sign Test
+
+Follow the steps in the illustrative video to complete the sign test.
+
+
+
+
+
+
+
+
+
