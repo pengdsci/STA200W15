@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Stats Review Cards: Inferential Procedures & R Code</title>
+    <!-- MathJax 3 for beautiful formula rendering -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* CSS Variables for theming */
+        :root {
+            --bg-body: #F5F2F7;
+            --card-bg: #FFFFFF;
+            --text-main: #1E1A2F;
+            --text-secondary: #2D2A3E;
+            --accent: #6E3061;
+            --accent-light: #8b4a7c;
+            --border-light: #E0D4E6;
+            --code-bg: #F0EAF2;
+            --code-text: #1E1A2F;
+            --footer-text: #D9C8E0;
+            --toggle-bg: #E6DEEE;
+        }
+
+        body.dark {
+            --bg-body: #121212;
+            --card-bg: #1E1E2E;
+            --text-main: #F0EDF2;
+            --text-secondary: #DCD9E6;
+            --border-light: #3A3344;
+            --code-bg: #2A2536;
+            --code-text: #E2D9F0;
+            --footer-text: #9A8CAE;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            padding: 1.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .document-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: transparent;
+        }
+
+        /* Header Section - Purple #6E3061 */
+        .header-card {
+            background: #6E3061;
+            color: white;
+            padding: 1.8rem 2rem;
+            border-radius: 28px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .header-card h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.4rem;
+        }
+        .header-card h2 {
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.4rem;
+        }
+        .header-card .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.92;
+            font-weight: 500;
+            border-left: 3px solid #FFE2F0;
+            padding-left: 1rem;
+            margin-top: 0.5rem;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.2rem;
+            align-items: center;
+        }
+        .toggle-btn, .print-btn, .page-size-select {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .toggle-btn:hover, .print-btn:hover {
+            background: rgba(255,255,255,0.35);
+            transform: scale(1.02);
+        }
+        .page-size-select {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+        .page-size-select option {
+            background: #6E3061;
+            color: white;
+        }
+        .controls-info {
+            font-size: 0.75rem;
+            text-align: right;
+            margin-top: 0.6rem;
+            opacity: 0.85;
+        }
+
+        /* Cards Grid: 2 cards per row on desktop */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.6rem;
+            margin-bottom: 2.5rem;
+        }
+        /* Responsive: single column on smaller screens */
+        @media (max-width: 800px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .review-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            transition: transform 0.1s;
+        }
+        .card-header {
+            background: var(--accent);
+            color: white;
+            padding: 0.8rem 1.2rem;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .card-header span:first-child {
+            letter-spacing: -0.2px;
+        }
+        .checkbox {
+            width: 1.3rem;
+            height: 1.3rem;
+            accent-color: #FFD966;
+            cursor: pointer;
+        }
+        .card-content {
+            padding: 1.2rem 1.3rem;
+            flex: 1;
+        }
+        .formula-container {
+            background: var(--code-bg);
+            padding: 0.9rem;
+            border-radius: 16px;
+            margin: 0.8rem 0;
+            border-left: 4px solid var(--accent);
+            text-align: center;
+            overflow-x: auto;
+        }
+        .badge {
+            display: inline-block;
+            background: var(--accent-light);
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.6rem;
+        }
+        .code-r {
+            background: #1e1a2e;
+            color: #e6e0ff;
+            padding: 0.9rem;
+            border-radius: 14px;
+            font-family: 'Courier New', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+            white-space: pre;
+            text-align: left;
+        }
+        body.dark .code-r {
+            background: #0c0b16;
+            color: #f0ebff;
+        }
+        .code-r pre {
+            margin: 0;
+            font-family: inherit;
+            white-space: pre-wrap;
+            word-break: break-word;
+            text-align: left;
+        }
+        .small-note {
+            font-size: 0.7rem;
+            margin-top: 0.6rem;
+            color: var(--text-secondary);
+            border-top: 1px dashed var(--border-light);
+            padding-top: 0.5rem;
+        }
+        /* Footer purple section */
+        .footer-site {
+            background: #6E3061;
+            color: var(--footer-text);
+            padding: 1.5rem 2rem;
+            border-radius: 28px;
+            margin-top: 2.2rem;
+           /* display: flex; */
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+        }
+        .footer-site .copy {
+            font-weight: 500;
+        }
+        .footer-site .sitemeter {
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        /* Print styles: A3/Letter support, hide toolbar, keep purple */
+        @media print {
+            body {
+                background: white;
+                padding: 0.2in;
+                margin: 0;
+            }
+            .header-card, .footer-site {
+                background: #6E3061 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .review-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .toolbar, .toggle-btn, .print-btn, .page-size-select, .controls-info {
+                display: none !important;
+            }
+            .checkbox {
+                opacity: 1;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            body.dark .review-card {
+                background: #fff;
+                color: black;
+            }
+            body.dark .code-r {
+                background: #f4f4f4;
+                color: #1e1a2e;
+            }
+            .cards-grid {
+                gap: 1rem;
+            }
+        }
+        @media print {
+            @page {
+                size: var(--print-page-size, Letter);
+                margin: 1.2cm;
+            }
+        }
+        .print-a3 {
+            --print-page-size: A3;
+        }
+        .print-letter {
+            --print-page-size: Letter;
+        }
+        button, select {
+            cursor: pointer;
+        }
+        mjx-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+    </style>
+</head>
+<body>
+<div class="document-container" id="appContainer">
+    <!-- Header with purple background #6E3061 -->
+    <div class="header-card">
+        <h1>STA 200 STATISTICS II</h1>
+        <h2>📊 Module 01: Inferential Statistics & R Code</h2>
+        <div class="subtitle">Sampling Distributions • Confidence Intervals • Hypothesis Tests • Correlation </div>
+        <div class="toolbar">
+            <button class="toggle-btn" id="darkModeToggle" aria-label="Toggle dark mode">🌓 Dark/Light</button>
+            <button class="print-btn" id="printPdfBtn" aria-label="Print as PDF">🖨️ Print / PDF</button>
+        </div>
+    </div>
+
+    <!-- Cards Grid (2 per row) -->
+    <div class="cards-grid" id="cardsGrid"></div>
+
+    <!-- Footer with copyright and site meter -->
+    <div class="footer-site">
+        <center> 
+       <div class="copyright">
+       <p>© 2019-<span id="currentYear"></span>  C. Peng @ West Chester University, USA. All rights reserved.</p>
+            <!-- Copyright Statement -->
+ 
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script><a href='http://www.freevisitorcounters.com'><img src="img/blackdot.jpg" width="1" height="1"></a><br>
+    
+           <div class="license">
+              <p>📄 Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer"><font color = "red">Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</font></a></p>
+              <p>You are free to share and adapt for non-commercial purposes with appropriate credit.</p>
+            </div>
+         </div>
+       </center> 
+        
+    </div>
+
+    <script>
+         // Set current year in copyright
+        document.getElementById('currentYear').textContent = new Date().getFullYear();   
+    
+    // Data for each card: title, LaTeX formula (raw), R code (assignment uses "=")
+    const cardsData = [
+        { id: 1, title: "Sampling Distribution: Sample Mean (Large n, CLT)", 
+          latex: "\\bar{x} \\rightarrow N\\left(\\mu, \\frac{s}{\\sqrt{n}}\\right) \\quad \\text{and} \\quad \\frac{\\bar{x} - \\mu}{s / \\sqrt{n}} \\rightarrow N(0,1)",
+          rcode: "# For large sample (n > 30) using Central Limit Theorem\nse = sd(x) / sqrt(n)\n# Approximate normality holds" },
+        { id: 2, title: "Sampling Distribution: Normal Pop, Known σ", 
+          latex: "\\frac{\\bar{x} - \\mu}{\\sigma / \\sqrt{n}} \\rightarrow N(0,1)",
+          rcode: "# Population standard deviation is known\nse = sigma / sqrt(n)\nz_score = (mean(x) - mu0) / se" },
+        { id: 3, title: "Sampling Dist: Normal Pop, Unknown σ (t-distribution)", 
+          latex: "\\frac{\\bar{x} - \\mu}{s / \\sqrt{n}} \\rightarrow t_{n-1}",
+          rcode: "# t-distribution with df = n-1\nse = sd(x) / sqrt(n)\nt_crit = qt(0.975, df = n-1)" },
+        { id: 4, title: "Sampling Distribution: Sample Proportion", 
+          latex: "\\hat{p} \\rightarrow N\\left(p, \\sqrt{\\frac{p(1-p)}{n}}\\right) \\quad \\text{with } n\\hat{p}\\ge 10,\\ n(1-\\hat{p})\\ge 10",
+          rcode: "p_hat = successes / n\nse = sqrt(p_hat * (1 - p_hat) / n)\n# Normal approximation valid when conditions met" },
+        { id: 5, title: "One-Sample CI for Mean (Large Sample / Known σ)", 
+          latex: "\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}} \\quad \\text{or} \\quad \\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{s}{\\sqrt{n}}",
+          rcode: "z = qnorm(1 - alpha/2)\nmargin = z * s / sqrt(n)\nci = c(xbar - margin, xbar + margin)" },
+        { id: 6, title: "One-Sample CI for Population Proportion", 
+          latex: "\\hat{p} \\pm z_{\\alpha/2} \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}",
+          rcode: "z = qnorm(0.975)   # for 95% confidence\nmargin = z * sqrt(p_hat*(1-p_hat)/n)\nci_prop = c(p_hat - margin, p_hat + margin)" },
+        { id: 7, title: "One-Sample CI for Mean (Small Sample, t-distribution)", 
+          latex: "\\bar{x} \\pm t_{n-1,\\alpha/2} \\cdot \\frac{s}{\\sqrt{n}}",
+          rcode: "t_crit = qt(1 - alpha/2, df = n-1)\nmargin = t_crit * sd(x)/sqrt(n)\nci_t = mean(x) + c(-1,1)*margin" },
+        { id: 8, title: "Two-Sample CI: Pooled t (Equal Variances)", 
+          latex: "(\\bar{x}_1 - \\bar{x}_2) \\pm t_{n_1+n_2-2,\\alpha/2} \\sqrt{\\frac{s_{\\text{pool}}^2}{n_1} + \\frac{s_{\\text{pool}}^2}{n_2}}",
+          rcode: "s_pool = sqrt(((n1-1)*var1 + (n2-1)*var2)/(n1+n2-2))\nt_crit = qt(0.975, n1+n2-2)\nmargin = t_crit * s_pool * sqrt(1/n1 + 1/n2)\nci_diff = (xbar1-xbar2) + c(-1,1)*margin" },
+        { id: 9, title: "One-Sample Z-test (Large Sample)", 
+          latex: "TS = \\frac{\\bar{x} - \\mu_0}{s / \\sqrt{n}} \\rightarrow N(0,1)",
+          rcode: "ts = (mean(x) - mu0) / (sd(x)/sqrt(n))\np_value = 2 * (1 - pnorm(abs(ts)))" },
+        { id: 10, title: "One-Sample Z-test (σ Known, Normal Population)", 
+          latex: "TS = \\frac{\\bar{x} - \\mu_0}{\\sigma / \\sqrt{n}} \\rightarrow N(0,1)",
+          rcode: "ts_z = (mean(x) - mu0) / (sigma/sqrt(n))\np_val = 2 * pnorm(-abs(ts_z))" },
+        { id: 11, title: "One-Sample t-test (Unknown σ, Normal Pop)", 
+          latex: "TS = \\frac{\\bar{x} - \\mu_0}{s / \\sqrt{n}} \\rightarrow t_{n-1}",
+          rcode: "# Built-in R t-test\nt_result = t.test(x, mu = mu0, alternative = \"two.sided\")\nt_result$p.value" },
+        { id: 12, title: "Two-Sample Z-test (Large Independent Samples)", 
+          latex: "TS = \\frac{(\\bar{x}_1-\\bar{x}_2)}{\\sqrt{\\frac{s_1^2}{n_1} + \\frac{s_2^2}{n_2}}} \\rightarrow N(0,1)",
+          rcode: "se_diff = sqrt(var1/n1 + var2/n2)\nts_z2 = (xbar1 - xbar2) / se_diff\np_val = 2*(1-pnorm(abs(ts_z2)))" },
+        { id: 13, title: "Two-Sample Pooled t-test (Equal Variances Assumed)", 
+          latex: "TS = \\frac{\\bar{x}_1-\\bar{x}_2}{s_{\\text{pool}}\\sqrt{\\frac{1}{n_1}+\\frac{1}{n_2}}} \\sim t_{n_1+n_2-2}",
+          rcode: "t.test(x1, x2, var.equal = TRUE)" },
+        { id: 14, title: "Pearson Correlation Coefficient (r)", 
+          latex: "r = \\frac{\\sum_{i=1}^{n}(x_i - \\bar{x})(y_i - \\bar{y})}{\\sqrt{\\sum (x_i-\\bar{x})^2}\\sqrt{\\sum (y_i-\\bar{y})^2}}",
+          rcode: "cor_xy = cor(x, y, method = \"pearson\")\n# Measures strength/direction of linear relationship" },
+        { id: 15, title: "Simple Linear Regression Coefficients", 
+          latex: "\\hat{\\beta}_1 = \\frac{S_{xy}}{S_{xx}}, \\quad \\hat{\\beta}_0 = \\bar{y} - \\hat{\\beta}_1 \\bar{x}, \\quad S_{xx} = \\sum (x_i-\\bar{x})^2,\\ S_{xy} = \\sum (x_i-\\bar{x})(y_i-\\bar{y})",
+          rcode: "model = lm(y ~ x)\nbeta_hat = coef(model)\n# beta_hat[1] is intercept, beta_hat[2] is slope" },
+        { id: 16, title: "Relationship: Pearson r and Slope β₁", 
+          latex: "r = \\hat{\\beta}_1 \\sqrt{\\frac{S_{xx}}{S_{yy}}} = \\hat{\\beta}_1 \\cdot \\frac{s_x}{s_y}",
+          rcode: "beta1 = coef(lm(y~x))[2]\nr_check = beta1 * sd(x)/sd(y)\n# r_check equals cor(x,y) mathematically" },
+        { id: 17, title: "CI for Difference of Two Proportions", 
+          latex: "(\\hat{p}_1 - \\hat{p}_2) \\pm z_{\\alpha/2} \\sqrt{\\frac{\\hat{p}_1(1-\\hat{p}_1)}{n_1} + \\frac{\\hat{p}_2(1-\\hat{p}_2)}{n_2}}",
+          rcode: "se_diff_prop = sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)\nz_crit = qnorm(0.975)\nmargin = z_crit * se_diff_prop\nc((p1-p2)-margin, (p1-p2)+margin)" },
+        { id: 18, title: "Hypothesis Testing Framework (General)", 
+          latex: "H_0: \\mu = \\mu_0 \\quad \\text{vs} \\quad H_a: \\mu \\neq \\mu_0 \\ (\\text{or } <, >) \\\\ \\text{Test statistic: } \\frac{\\bar{x}-\\mu_0}{\\text{SE}} \\sim N(0,1) \\text{ or } t_{df}",
+          rcode: "# General approach:\ntest_statistic = (xbar - mu0) / standard_error\np_value = 2 * pt(-abs(test_statistic), df)\n# Reject H0 if p_value < alpha" }
+    ];
+
+    // Helper to build cards and render LaTeX via MathJax
+    function buildCards() {
+        const grid = document.getElementById('cardsGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        cardsData.forEach(card => {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'review-card';
+            const chkId = `chk_card_${card.id}`;
+            // Wrap LaTeX in display math mode for better readability
+            const displayFormula = `\\[ ${card.latex} \\]`;
+            cardDiv.innerHTML = `
+                <div class="card-header">
+                    <span>📐 ${escapeHtml(card.title)}</span>
+                    <input type="checkbox" class="checkbox" id="${chkId}" aria-label="Mark as mastered">
+                </div>
+                <div class="card-content">
+                    <div class="badge">📈 Mathematical Formula (MathJax)</div>
+                    <div class="formula-container" id="math-${card.id}">
+                        ${displayFormula}
+                    </div>
+                    <div class="badge" style="background: #2c5a6e;">💻 R Implementation (aligned, "=" operator)</div>
+                    <div class="code-r"><pre>${escapeHtml(card.rcode)}</pre></div>
+                    <div class="small-note">✅ Check when mastered — progress saved locally. Dark mode compatible.</div>
+                </div>
+            `;
+            grid.appendChild(cardDiv);
+            // Load checkbox state from localStorage
+            const stored = localStorage.getItem(chkId);
+            const chkBox = document.getElementById(chkId);
+            if (chkBox && stored === 'true') chkBox.checked = true;
+            if (chkBox) {
+                chkBox.addEventListener('change', (e) => {
+                    localStorage.setItem(chkId, e.target.checked);
+                });
+            }
+        });
+        // Trigger MathJax to typeset new formulas
+        if (window.MathJax) {
+            MathJax.typesetPromise().catch(err => console.log("MathJax error:", err));
+        }
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Dark mode with localStorage
+    const darkToggle = document.getElementById('darkModeToggle');
+    function initDarkMode() {
+        const saved = localStorage.getItem('darkModeStatsCards');
+        if (saved === 'enabled') {
+            document.body.classList.add('dark');
+        } else {
+            document.body.classList.remove('dark');
+        }
+    }
+    if (darkToggle) {
+        darkToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('darkModeStatsCards', isDark ? 'enabled' : 'disabled');
+            if (window.MathJax) MathJax.typesetPromise(); // re-render for contrast
+        });
+    }
+    initDarkMode();
+
+    // Print and page size (A3 / Letter)
+    const printBtn = document.getElementById('printPdfBtn');
+    const pageSizeSelect = document.getElementById('pageSizeSelect');
+    
+    function setPrintPageSize(size) {
+        const container = document.getElementById('appContainer');
+        if (!container) return;
+        if (size === 'a3') {
+            container.classList.add('print-a3');
+            container.classList.remove('print-letter');
+        } else {
+            container.classList.add('print-letter');
+            container.classList.remove('print-a3');
+        }
+        const pageSizeVal = size === 'a3' ? 'A3' : 'Letter';
+        document.documentElement.style.setProperty('--print-page-size', pageSizeVal);
+    }
+    
+    if (pageSizeSelect) {
+        const savedSize = localStorage.getItem('preferredPageSizeCards');
+        if (savedSize === 'a3' || savedSize === 'letter') {
+            pageSizeSelect.value = savedSize;
+            setPrintPageSize(savedSize);
+        } else {
+            setPrintPageSize('letter');
+            pageSizeSelect.value = 'letter';
+        }
+        pageSizeSelect.addEventListener('change', (e) => {
+            const newSize = e.target.value;
+            localStorage.setItem('preferredPageSizeCards', newSize);
+            setPrintPageSize(newSize);
+        });
+    }
+    
+    if (printBtn) {
+        printBtn.addEventListener('click', () => {
+            if (window.MathJax) {
+                MathJax.typesetPromise().then(() => {
+                    window.print();
+                }).catch(() => window.print());
+            } else {
+                window.print();
+            }
+        });
+    }
+
+    // Initialize after DOM
+    document.addEventListener('DOMContentLoaded', () => {
+        buildCards();
+        // ensure page size consistency
+        if (pageSizeSelect && !localStorage.getItem('preferredPageSizeCards')) {
+            setPrintPageSize('letter');
+        }
+    });
+</script>
+</body>
+</html>
