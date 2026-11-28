@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STA200 Practice Exercises - Multiple Linear Regression Models</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body {
+    background-color: #f5f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .page-header {
+    background: #1f3a5f;
+    color: #ffffff;
+    padding: 28px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+  .page-header h2 { font-size: 1.15rem; font-weight: 300; margin-bottom: 0; }
+  .page-header .instr { font-size: 1rem; color: #cfdcec; }
+
+  .question-table {
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  }
+  .question-table > thead > tr > th {
+    background-color: #dbe7f3;
+    color: #1f3a5f;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .question-table > tbody > tr > td {
+    padding: 12px 14px;
+    vertical-align: top;
+  }
+  .options { margin-bottom: 0; padding-left: 1.4rem; }
+  .options li { margin-bottom: 4px; }
+
+  .answer-row > td {
+    background-color: #eef6ff;
+    border-left: 5px solid #0d6efd;
+  }
+  .answer-row .correct {
+    color: #0a6b2d;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .btn-view { min-width: 130px; }
+
+  .toolbar { margin-bottom: 20px; }
+
+  footer {
+    border-top: 1px solid #d5dde5;
+    padding-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  .note-box {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 25px;
+  }
+</style>
+
+  <style>
+    .container { max-width: 960px; }
+    .part-title { color: #1f3a5f; font-size: 1.3rem; font-weight: 700; margin: 35px 0 15px; padding-bottom: 6px; border-bottom: 2px solid #dbe7f3; }
+    .level { font-weight: 400; color: #4a6785; }
+    pre.rcode { background: #f4f6f8; border: 1px solid #d5dde5; border-radius: 4px; padding: 10px 12px; font-size: 0.85rem; overflow-x: auto; margin-bottom: 12px; }
+    .answer-row p { margin-bottom: 8px; }
+    .question-table { table-layout: fixed; width: 100%; }
+    .options li { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+<div class="container py-4">
+
+  <div class="page-header">
+    <h1>STA200 Practice Exercises</h1>
+    <h2>Module #12: A Brief Introduction to Multiple Linear Regression Models</h2>
+    <div class="instr">STA200 Statistics II &middot; Instr. Dr. Cheng Peng</div>
+  </div>
+
+  <div class="note-box">
+    <strong>How to use these questions.</strong> Before viewing the answer, try to solve each question on your own.
+    Whenever possible, work through the calculations manually or run the relevant R code to obtain your answer.
+    Then click <strong>View Answer</strong> to reveal the correct choice, the justification, and an explanation of why the other choices are incorrect.
+  </div>
+
+  <div class="toolbar">
+    <button type="button" class="btn btn-outline-primary" onclick="setAll(true)">Show All Answers</button>
+    <button type="button" class="btn btn-outline-secondary" onclick="setAll(false)">Hide All Answers</button>
+  </div>
+
+    <h3 class="part-title">Part 1: Foundations (model types, linearity, polynomial basics)</h3>
+
+    <table class="table table-bordered question-table" id="q1">
+      <thead><tr><th>Question 1 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>A researcher models crop yield (continuous response) using rainfall (a numerical predictor) and fertilizer type (a categorical predictor with 3 levels). According to the note's classification of linear regression models by predictor types, this is a(n):</p>
+          <ol type="A" class="options">
+            <li>General linear regression model</li>
+            <li>Analysis of covariance (ANCOVA) model</li>
+            <li>Analysis of variance (ANOVA) model</li>
+            <li>Polynomial regression model</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn1" aria-expanded="false" aria-controls="ans1" onclick="toggleAnswer(1)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans1" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note classifies models by predictor type: all predictors numerical gives a general linear regression model, all predictors categorical gives an ANOVA model, and a mix of numerical and categorical predictors gives an ANCOVA model.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A requires every predictor to be numerical, but fertilizer type is categorical. C requires every predictor to be categorical, but rainfall is numerical. D is defined by powers of a numerical predictor (x, x², x³, ...), which is not what this model describes.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q2">
+      <thead><tr><th>Question 2 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note explains that the word linear in linear regression refers to linearity in the regression coefficients, not to a straight-line relationship between y and x. Consider the models: (i) y = β₀ + β₁x + β₂x² + ε; (ii) y = β₀ + 1/(β₁x₁ + β₂x₂) + β₃x₃ + ε; (iii) y = β₀ + β₁ln(x) + ε; (iv) y = β₀e^(β₁x) + ε. Which models are linear regression models in this sense?</p>
+          <ol type="A" class="options">
+            <li>Only (i)</li>
+            <li>(ii) and (iv)</li>
+            <li>(i) and (iii)</li>
+            <li>All four</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn2" aria-expanded="false" aria-controls="ans2" onclick="toggleAnswer(2)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans2" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> Model (i) is the note's own example (a quadratic polynomial model), and model (ii) is its example of a model that is not linear, because the β's do not enter linearly. Model (iii) is linear in β₀ and β₁ (ln(x) is just a transformed predictor), and model (iv) is not, because β₁ sits inside the exponent.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A leaves out (iii), which is linear in its coefficients even though it is not a straight line in x. B selects exactly the two models whose coefficients enter nonlinearly. D includes the nonlinear models (ii) and (iv).</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q3">
+      <thead><tr><th>Question 3 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The following model is fitted to the mtcars data. What is its polynomial degree, and what does the note's practical guideline say about it?</p>
+          <pre class="rcode"><code>cubic_model &lt;- lm(mpg ~ hp + I(hp^2) + I(hp^3), data = mtcars)</code></pre>
+          <ol type="A" class="options">
+            <li>Degree 3 (cubic); this is at the maximum degree the guideline suggests, so going higher should be avoided</li>
+            <li>Degree 2; the guideline recommends at least degree 3</li>
+            <li>Degree 3 (cubic); the guideline says polynomial models should never exceed degree 1</li>
+            <li>Degree 4, because the model has four coefficients</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn3" aria-expanded="false" aria-controls="ans3" onclick="toggleAnswer(3)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans3" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The degree is the highest power of x in the model, which is 3 here. The note recommends avoiding high-degree polynomials to keep the model interpretable and suggests limiting the degree to no more than 3.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B miscounts the degree and reverses the guideline. C states a guideline that does not exist (degree 1 would just be a straight line). D confuses the number of coefficients (4, including the intercept) with the degree, which is the highest power (3).</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q4">
+      <thead><tr><th>Question 4 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note fits a quadratic model with the formula below. Why is hp^2 wrapped in I()?</p>
+          <pre class="rcode"><code>quadratic_model &lt;- lm(mpg ~ hp + I(hp^2), data = mtcars)</code></pre>
+          <ol type="A" class="options">
+            <li>I() centers hp before squaring it</li>
+            <li>I() tells R to compute hp² arithmetically; inside a formula, the ^ symbol otherwise has a special meaning</li>
+            <li>I() makes R treat hp as a categorical variable</li>
+            <li>I() adds an interaction between hp and itself</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn4" aria-expanded="false" aria-controls="ans4" onclick="toggleAnswer(4)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans4" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note's code uses I(hp^2) for the squared term. In R model formulas, operators such as ^ describe how terms are combined, not arithmetic, so I() (as is) protects the calculation and makes R add a column equal to hp squared. (The note uses I() without explaining it; this is standard R behavior.)</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is wrong because I() does no centering; centering would be written as hp - mean(hp). C is wrong because factor() is the function that creates a categorical variable. D is wrong because an interaction is written with : or *, and I() only protects an arithmetic expression.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q5">
+      <thead><tr><th>Question 5 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note says that x, x², and x³ are often highly correlated in a polynomial regression model. What practical remedy does the note recommend?</p>
+          <ol type="A" class="options">
+            <li>Convert x to a factor variable</li>
+            <li>Center the predictor and use x − x̄, (x − x̄)², and (x − x̄)³</li>
+            <li>Always add a higher-degree term</li>
+            <li>Remove the response variable from the model</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn5" aria-expanded="false" aria-controls="ans5" onclick="toggleAnswer(5)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans5" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> Under the no-multicollinearity assumption, the note says we can center the predictor variable to reduce collinearity between the polynomial terms, using x − x̄, (x − x̄)², and (x − x̄)³ in place of x, x², and x³.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A would discard the numerical information in x and turn the model into an ANOVA-type model. C makes the correlation problem worse and conflicts with the advice to keep the degree low. D is meaningless, since a regression model needs a response variable.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="part-title">Part 2: Polynomial Regression (mtcars Example)</h3>
+
+    <table class="table table-bordered question-table" id="q6">
+      <thead><tr><th>Question 6 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note first fits the first-order model lm(mpg ~ hp, data = mtcars). Its residuals-versus-fitted plot shows a clear curved pattern, and its Q–Q plot indicates a violation of normality. What does the note conclude?</p>
+          <ol type="A" class="options">
+            <li>The first-order model is not the best choice, so higher-order polynomial models should be considered</li>
+            <li>The first-order model is adequate, because R² = 0.6024 is above 0.5</li>
+            <li>The data should be converted to a categorical variable and analyzed with ANOVA</li>
+            <li>The residual plot has no useful information, so only the F test matters</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn6" aria-expanded="false" aria-controls="ans6" onclick="toggleAnswer(6)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans6" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The note says the curved pattern in the residual plot and the normality violation show that the first-order linear model is not the best, and it then fits quadratic and cubic models.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B treats a moderate R² as proof of validity, but validity is judged by the diagnostic plots. C changes the type of the predictor without any reason, because hp is numerical. D ignores the diagnostics, which are the basis for choosing the model.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q7">
+      <thead><tr><th>Question 7 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Here is part of the output for the first-order model. Which statement is correct?</p>
+          <pre class="rcode"><code>Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) 30.09886    1.63392  18.421  &lt; 2e-16 ***
+hp          -0.06823    0.01012  -6.742 1.79e-07 ***
+
+Residual standard error: 3.863 on 30 degrees of freedom
+Multiple R-squared:  0.6024,    Adjusted R-squared:  0.5892
+F-statistic: 45.46 on 1 and 30 DF,  p-value: 1.788e-07</code></pre>
+          <ol type="A" class="options">
+            <li>Each additional unit of horsepower is associated with an average increase of about 0.068 mpg</li>
+            <li>The correlation between mpg and hp is 0.6024</li>
+            <li>The slope is not significant, because the residual standard error (3.863) is large</li>
+            <li>Each additional unit of horsepower is associated with an average decrease of about 0.068 mpg, and the correlation between mpg and hp is about −0.776</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn7" aria-expanded="false" aria-controls="ans7" onclick="toggleAnswer(7)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans7" hidden><td>
+          <p class="correct">Answer: D.</p>
+          <p><em>Justification:</em> The slope estimate is −0.06823 with p = 1.79e-07, so mpg decreases by about 0.068 per unit of hp. In a simple linear regression R² = r², so |r| = √0.6024 ≈ 0.776, and the negative slope gives r ≈ −0.776.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A has the wrong sign. B confuses R² with the correlation coefficient r. C is wrong because significance comes from the p-value of the t test (1.79e-07), not from the size of the residual standard error.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q8">
+      <thead><tr><th>Question 8 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Here is part of the output for the quadratic model. Which conclusion is supported?</p>
+          <pre class="rcode"><code>Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  4.041e+01  2.741e+00  14.744 5.23e-15 ***
+hp          -2.133e-01  3.488e-02  -6.115 1.16e-06 ***
+I(hp^2)      4.208e-04  9.844e-05   4.275 0.000189 ***
+
+Residual standard error: 3.077 on 29 degrees of freedom
+Multiple R-squared:  0.7561,    Adjusted R-squared:  0.7393
+F-statistic: 44.95 on 2 and 29 DF,  p-value: 1.301e-09</code></pre>
+          <ol type="A" class="options">
+            <li>The quadratic term is not significant, so the model should be reduced to the straight line</li>
+            <li>The F test (p = 1.301e-09) shows that every coefficient is individually significant</li>
+            <li>The residual df is 30, the same as the first-order model, because both models use the same data</li>
+            <li>The quadratic term is significant (p = 0.000189), so the curvature is supported; R² rises from 0.6024 to 0.7561, and the residual df is 29</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn8" aria-expanded="false" aria-controls="ans8" onclick="toggleAnswer(8)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans8" hidden><td>
+          <p class="correct">Answer: D.</p>
+          <p><em>Justification:</em> The t test for I(hp^2) has p = 0.000189 &lt; 0.05, and R² increases from 0.6024 to 0.7561 (the note calls the quadratic model much better). With n = 32 observations and 3 estimated coefficients, the residual df is 32 − 3 = 29.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A reads the output backwards: 0.000189 is far below 0.05. B misreads the F test, which tests all slopes together, not each coefficient. C is wrong because each extra coefficient uses up one df (30 for the linear model, 29 for the quadratic).</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q9">
+      <thead><tr><th>Question 9 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>A student uses the rounded coefficients of the quadratic model to predict mpg for a car with 100 horsepower (the hp values in the data range from 52 to 335). Which statement is correct?</p>
+          <pre class="rcode"><code>&gt; 40.41 - 0.2133*100 + 0.0004208*100^2
+[1] 23.288</code></pre>
+          <p>Which statement is correct?</p>
+          <ol type="A" class="options">
+            <li>The prediction is about 19.2 mpg (the student should use 2×hp in place of hp²)</li>
+            <li>The prediction is about 40.4 mpg, the intercept, because hp has a negative coefficient</li>
+            <li>The prediction is about 23.3 mpg, and since hp = 100 is inside the observed range, this is an interpolation</li>
+            <li>The prediction is about 65.9 mpg, found by adding the absolute values of the three coefficient terms</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn9" aria-expanded="false" aria-controls="ans9" onclick="toggleAnswer(9)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans9" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> Substituting into mpg = 40.41 − 0.2133·hp + 0.0004208·hp² gives 40.41 − 21.33 + 4.208 = 23.288 ≈ 23.3 mpg. Since 52 ≤ 100 ≤ 335, the prediction is within the observed range, which is where the note says predictions are meaningful.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A replaces hp² with 2×hp, which is not what the model says. B ignores the other two terms. D flips the sign of the hp term, which gives 40.41 + 21.33 + 4.208 ≈ 65.9.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q10">
+      <thead><tr><th>Question 10 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Here is part of the cubic model output, together with the quadratic model's fit statistics (R² = 0.7561, adjusted R² = 0.7393, residual standard error = 3.077). Which decision does the evidence support?</p>
+          <pre class="rcode"><code>Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  4.422e+01  5.961e+00   7.419 4.43e-08 ***
+hp          -2.945e-01  1.178e-01  -2.500   0.0185 *
+I(hp^2)      9.115e-04  6.863e-04   1.328   0.1949
+I(hp^3)     -8.701e-07  1.204e-06  -0.722   0.4760
+
+Residual standard error: 3.103 on 28 degrees of freedom
+Multiple R-squared:  0.7606,    Adjusted R-squared:  0.7349
+F-statistic: 29.65 on 3 and 28 DF,  p-value: 7.769e-09</code></pre>
+          <ol type="A" class="options">
+            <li>Keep the cubic model, because it has the highest R²</li>
+            <li>Keep the cubic model, because the hp term is significant (p = 0.0185)</li>
+            <li>Keep the quadratic model: the hp² and hp³ terms are not significant (p = 0.1949 and 0.4760), R² improves by only about 0.6%, and adjusted R² and the residual standard error get worse (0.7349 and 3.103)</li>
+            <li>Keep the cubic model, because its overall F test is significant</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn10" aria-expanded="false" aria-controls="ans10" onclick="toggleAnswer(10)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans10" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> The note compares R² = 0.7606 (cubic) with 0.7561 (quadratic), an improvement of about 0.6%, calls it insignificant, and stays with the quadratic model. The adjusted R² (0.7393 → 0.7349) and residual standard error (3.077 → 3.103) also move in the wrong direction, and neither added term is significant.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is wrong because R² never decreases when a term is added, so it cannot be used by itself to choose between nested models. B looks only at the hp term; a significant hp term says nothing about whether the extra hp² and hp³ terms are needed. D is wrong because the overall F test only shows that at least one slope is nonzero, which was already true for the quadratic model.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q11">
+      <thead><tr><th>Question 11 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>In the cubic output above, the overall F test is highly significant (p = 7.769e-09), yet the t tests for I(hp^2) and I(hp^3) are not significant. Which is the best interpretation?</p>
+          <ol type="A" class="options">
+            <li>The terms hp, hp², and hp³ are strongly correlated, so each adds little once the others are in the model. This is consistent with the multicollinearity the note warns about, and centering hp would reduce it</li>
+            <li>The output must contain an error, because the F test and the t tests must always agree</li>
+            <li>The F test is significant only because of the hp³ term</li>
+            <li>Centering hp would change the fitted values and R² of the cubic model</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn11" aria-expanded="false" aria-controls="ans11" onclick="toggleAnswer(11)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans11" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The note lists no multicollinearity as an assumption and says high-order terms are often highly correlated, which makes individual coefficients hard to estimate. The F test asks whether the three slopes are jointly zero, while each t test asks whether a term adds anything beyond the other terms, so the two can disagree. The note recommends centering to reduce the collinearity.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B is wrong because the F test and the individual t tests answer different questions and need not agree. C is false: the hp³ term has p = 0.4760. D is false because centering is a re-expression of the same polynomial, which changes the coefficients and standard errors but not the fitted values or R².</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q12">
+      <thead><tr><th>Question 12 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note warns about the danger of extrapolation. The observed hp values range from 52 to 335. A student uses the quadratic model to predict mpg for a 500-horsepower car and gets about 39 mpg, more than the model predicts for a 100-horsepower car (23.3 mpg). What is the correct conclusion?</p>
+          <pre class="rcode"><code>&gt; 40.41 - 0.2133*500 + 0.0004208*500^2
+[1] 38.96</code></pre>
+          <ol type="A" class="options">
+            <li>The prediction is an extrapolation outside the observed range; polynomial curves can behave erratically there, so the result should not be trusted</li>
+            <li>The prediction is reliable, because the model has a high R² and a significant quadratic term</li>
+            <li>The prediction shows that powerful cars are the most fuel efficient</li>
+            <li>The problem is solved by switching to the cubic model</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn12" aria-expanded="false" aria-controls="ans12" onclick="toggleAnswer(12)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans12" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The note says polynomials can behave erratically outside the observed x-range and gives the example of a model trained on adult heights and weights that predicts 148.142 pounds for a newborn 20 inches long. Here the fitted parabola turns upward after hp ≈ 253, so at hp = 500 it produces an implausible value.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B confuses a good in-sample fit with good out-of-range prediction. C reads a mathematical artifact of the curve as a real effect. D is wrong because the cubic model is also a polynomial and has the same extrapolation problem.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="part-title">Part 3: ANCOVA Model Structure</h3>
+
+    <table class="table table-bordered question-table" id="q13">
+      <thead><tr><th>Question 13 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>An ANCOVA model has one numerical predictor X and a categorical predictor G with k = 4 levels, and it includes the interaction X × G. How many regression coefficients (including the intercept) does the model have, and why?</p>
+          <ol type="A" class="options">
+            <li>4, one for each level of G</li>
+            <li>8: the intercept, X, 3 dummy variables, and 3 interaction terms</li>
+            <li>6, because there are 4 + 2 variables</li>
+            <li>12, because every level of G needs its own intercept, slope, and error term</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn13" aria-expanded="false" aria-controls="ans13" onclick="toggleAnswer(13)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans13" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> For a factor with k levels the note defines k − 1 dummy variables (here 3) and k − 1 interaction terms X × G (here 3). Together with β₀ and β₁ this gives 1 + 1 + 3 + 3 = 8 coefficients, which is 2k.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A ignores the numerical predictor, the intercept, and the interaction terms. C has no basis in the model structure. D counts an error term per group, but the model has a single error term ε ~ N(0, σ), and the reference level is absorbed into the intercept and slope.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q14">
+      <thead><tr><th>Question 14 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>In the ANCOVA model Y = β₀ + β₁X + Σβᵢ Gᵢ + Σγᵢ(X × Gᵢ) + ε, what do βᵢ and γᵢ (i = 2, ..., k) represent, according to the note?</p>
+          <ol type="A" class="options">
+            <li>βᵢ is the change in the slope for group i, and γᵢ is the shift in the intercept</li>
+            <li>βᵢ is the slope of X for group i, and γᵢ is the intercept for group i</li>
+            <li>Both βᵢ and γᵢ are random errors</li>
+            <li>βᵢ is the shift in the intercept for group i, and γᵢ is the change in the slope of X for group i</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn14" aria-expanded="false" aria-controls="ans14" onclick="toggleAnswer(14)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans14" hidden><td>
+          <p class="correct">Answer: D.</p>
+          <p><em>Justification:</em> The note defines β₀ as the intercept for the reference group, β₁ as the slope of X for the reference group, βᵢ as the shift in intercept for group i, and γᵢ as the change in slope of X for group i.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A swaps the two roles. B treats the coefficients as the group's own intercept and slope, but they are differences from the reference group. C confuses the coefficients with the error term ε.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q15">
+      <thead><tr><th>Question 15 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>In the depression study, treatment A is the reference level and Z^B and Z^C are the dummy variables for treatments B and C. Which expression gives the regression line for treatment C?</p>
+          <ol type="A" class="options">
+            <li>Y = β₀ + β₁X</li>
+            <li>Y = (β₀ + β₂) + (β₁ + γ₁)X</li>
+            <li>Y = (β₀ + β₃) + (β₁ + γ₂)X</li>
+            <li>Y = (β₀ + γ₂) + (β₁ + β₃)X</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn15" aria-expanded="false" aria-controls="ans15" onclick="toggleAnswer(15)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans15" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> For treatment C, Z^B = 0 and Z^C = 1, so Y = β₀ + β₁X + β₃ + γ₂X = (β₀ + β₃) + (β₁ + γ₂)X, as in the note's Case III.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is the line for the reference treatment A (both dummies equal 0). B is the line for treatment B (Case II). D mixes up the roles: β coefficients shift intercepts and γ coefficients shift slopes.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q16">
+      <thead><tr><th>Question 16 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note says R defines the full ANCOVA model internally and that the formula used in the code is y ~ X + G + X*G. In R, which statement about the model formulas is correct?</p>
+          <ol type="A" class="options">
+            <li>y ~ x * z fits only the interaction, without main effects</li>
+            <li>y ~ x + z fits lines with different slopes but the same intercept</li>
+            <li>If z is coded 0/1, R always treats it as a factor automatically</li>
+            <li>y ~ x * z is equivalent to y ~ x + z + x:z; dropping the x:z term gives parallel lines with different intercepts</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn16" aria-expanded="false" aria-controls="ans16" onclick="toggleAnswer(16)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans16" hidden><td>
+          <p class="correct">Answer: D.</p>
+          <p><em>Justification:</em> The note says that if the interaction is not significant, the effect of X is the same across groups (parallel lines, though intercepts may differ), which is exactly the model without the x:z term. In R, x * z expands to x + z + x:z.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is false because * includes the main effects as well. B reverses the situation: without the interaction, the slopes are equal and the intercepts differ. C is false, and the note stresses that numerically labeled categorical variables must be converted with factor(), or R will treat them as continuous.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="part-title">Part 4: ANCOVA by Example (Depression Data)</h3>
+
+    <table class="table table-bordered question-table" id="q17">
+      <thead><tr><th>Question 17 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Here is the coefficient table of the ANCOVA fit lm(y ~ x * z, data = depression), with treatment A as the reference level. What is the estimated regression line for treatment B?</p>
+          <pre class="rcode"><code>Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) 47.51559    3.82523  12.422 2.34e-13 ***
+x            0.33051    0.08149   4.056 0.000328 ***
+zB         -18.59739    5.41573  -3.434 0.001759 **
+zC         -41.30421    5.08453  -8.124 4.56e-09 ***
+x:zB         0.19318    0.11660   1.657 0.108001
+x:zC         0.70288    0.10896   6.451 3.98e-07 ***</code></pre>
+          <ol type="A" class="options">
+            <li>y = −18.59739 + 0.19318x</li>
+            <li>y = 28.9182 + 0.52369x</li>
+            <li>y = 47.51559 + 0.52369x</li>
+            <li>y = 28.9182 + 0.33051x</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn17" aria-expanded="false" aria-controls="ans17" onclick="toggleAnswer(17)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans17" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> For treatment B the intercept is β₀ + β₂ = 47.51559 − 18.59739 = 28.9182, and the slope is β₁ + γ₁ = 0.33051 + 0.19318 = 0.52369, which matches the line the note reports.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A uses only the adjustment terms and leaves out the reference-group intercept and slope. C adds the slope shift but forgets the intercept shift. D adds the intercept shift but forgets the slope shift.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q18">
+      <thead><tr><th>Question 18 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Use the coefficient table from the previous question. Which statement about the interaction terms is correct at the 0.05 level?</p>
+          <ol type="A" class="options">
+            <li>The x:zC term (p = 3.98e-07) shows that the slope for treatment C differs significantly from that of A (by about +0.70 per year), while the x:zB term (p = 0.108) gives no significant evidence that B's slope differs from A's</li>
+            <li>Both interaction terms are significant, so all three slopes differ significantly</li>
+            <li>The x:zB term is not significant, so there is no interaction in the model at all</li>
+            <li>The x:zC term is significant only because the zC main effect is significant</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn18" aria-expanded="false" aria-controls="ans18" onclick="toggleAnswer(18)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans18" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> Each interaction coefficient γᵢ is the change in slope relative to the reference group A, and its t test checks whether that change is zero. The test for x:zC gives t = 6.451 and p = 3.98e-07, while x:zB gives t = 1.657 and p = 0.108 &gt; 0.05.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B overlooks that x:zB has p = 0.108. C is wrong because a significant x:zC term already shows that the effect of age depends on the treatment, so the interaction cannot be dropped. D is wrong because each coefficient has its own t test, and its significance does not come from the main-effect term.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q19">
+      <thead><tr><th>Question 19 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Using the three fitted lines from the depression data (A: 47.51559 + 0.33051x, B: 28.9182 + 0.52369x, C: 6.21138 + 1.03339x), where a higher y means a more effective treatment and x is age, which statement is correct? (Assume both ages are within the range of the data.)</p>
+          <ol type="A" class="options">
+            <li>Treatment A has the highest predicted effectiveness at both age 30 and age 60</li>
+            <li>The ordering of the three treatments is the same at every age, because the intercepts differ</li>
+            <li>At age 30 treatment A is highest (about 57.4), but at age 60 treatment C is highest (about 68.2, versus 67.3 for A); the A and C lines cross near age 58.8, which reflects the interaction</li>
+            <li>Treatment C is the least effective at every age, because its intercept is the smallest</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn19" aria-expanded="false" aria-controls="ans19" onclick="toggleAnswer(19)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans19" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> At age 30 the predicted values are A = 57.43, B = 44.63, C = 37.21. At age 60 they are A = 67.35, B = 60.34, C = 68.21. Setting the A and C lines equal gives x = 41.30421/0.70288 ≈ 58.8. The note explains that the interaction is reflected in the different slopes, which implies intersections between the regression lines.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A fails at age 60, where C overtakes A. B is the opposite of what the interaction implies: when slopes differ, the ordering can change with age. D confuses the intercept (the value at x = 0) with the effect at the ages of interest; C has the steepest slope and is the highest at age 60.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q20">
+      <thead><tr><th>Question 20 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The bottom of the ANCOVA summary reports the output below. The data have n = 36 individuals. Which statement is correct?</p>
+          <pre class="rcode"><code>Residual standard error: 3.925 on 30 degrees of freedom
+Multiple R-squared:  0.9143,    Adjusted R-squared:  0.9001
+F-statistic: 64.04 on 5 and 30 DF,  p-value: 4.264e-15</code></pre>
+          <ol type="A" class="options">
+            <li>The F test shows that all five coefficients are individually significant</li>
+            <li>The residual df is 31, because n − 5 = 31</li>
+            <li>R² = 0.9143 proves that the model assumptions are satisfied</li>
+            <li>The F test (5 and 30 df, p = 4.264e-15) rejects H₀ that all five non-intercept coefficients are zero; R² = 0.9143 means about 91.4% of the variation in y is explained; and the residual df is 36 − 6 = 30</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn20" aria-expanded="false" aria-controls="ans20" onclick="toggleAnswer(20)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans20" hidden><td>
+          <p class="correct">Answer: D.</p>
+          <p><em>Justification:</em> The model has 6 coefficients (intercept, x, zB, zC, x:zB, x:zC), so the residual df is 36 − 6 = 30, and the F test has 6 − 1 = 5 numerator df. The tiny p-value rejects the hypothesis that all slopes and group effects are jointly zero, and R² is the proportion of variation in y explained by the model.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is wrong because the overall F test is a joint test, and in fact x:zB is not significant individually (p = 0.108). B miscounts the parameters, since the intercept must be counted as well. C is wrong because a high R² says nothing about the assumptions, which the note checks with residual plots.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+<!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+<!--XXXXXXXXXXXXXXXXXXXXXXXXXXX  FOOTER  XXXXXXXXXXXXXXXXXXXXXXX-->
+<!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+<footer class="col-md-12">
+<center><font color = "navy" size =2>
+    <p class="text-center">Copyright &copy; 
+        <script>
+            var CurrentYear = new Date().getFullYear()
+            document.write(CurrentYear)
+        </script>
+       C. Peng. Last updated: 
+         <script> 
+            document.write(new Date().toLocaleDateString()); 
+         </script> 
+      </font>
+ <a href='http://www.freevisitorcounters.com'>.</a> 
+<script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+<script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script></p>
+</center>
+</footer>
+
+</div>
+
+<script>
+  var TOTAL = 20;
+  function setState(n, show) {
+    document.getElementById('ans' + n).hidden = !show;
+    var b = document.getElementById('btn' + n);
+    b.textContent = show ? 'Hide Answer' : 'View Answer';
+    b.setAttribute('aria-expanded', show ? 'true' : 'false');
+  }
+  function toggleAnswer(n) {
+    setState(n, document.getElementById('ans' + n).hidden);
+  }
+  function setAll(show) {
+    for (var i = 1; i <= TOTAL; i++) setState(i, show);
+  }
+</script>
+</body>
+</html>

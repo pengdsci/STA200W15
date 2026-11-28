@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STA200 Practice Exercises - Module 10: Two-Way ANOVA</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body {
+    background-color: #f5f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .page-header {
+    background: #1f3a5f;
+    color: #ffffff;
+    padding: 28px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+  .page-header h2 { font-size: 1.15rem; font-weight: 300; margin-bottom: 0; }
+  .page-header .instr { font-size: 1rem; color: #cfdcec; }
+
+  .question-table {
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  }
+  .question-table > thead > tr > th {
+    background-color: #dbe7f3;
+    color: #1f3a5f;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .question-table > tbody > tr > td {
+    padding: 12px 14px;
+    vertical-align: top;
+  }
+  .options { margin-bottom: 0; padding-left: 1.4rem; }
+  .options li { margin-bottom: 4px; }
+
+  .answer-row > td {
+    background-color: #eef6ff;
+    border-left: 5px solid #0d6efd;
+  }
+  .answer-row .correct {
+    color: #0a6b2d;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .btn-view { min-width: 130px; }
+
+  .toolbar { margin-bottom: 20px; }
+
+  footer {
+    border-top: 1px solid #d5dde5;
+    padding-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  .note-box {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 25px;
+  }
+</style>
+
+  <style>
+    .container { max-width: 960px; }
+    .part-title { color: #1f3a5f; font-size: 1.3rem; font-weight: 700; margin: 35px 0 15px; padding-bottom: 6px; border-bottom: 2px solid #dbe7f3; }
+    .level { font-weight: 400; color: #4a6785; }
+    pre.rcode { background: #f4f6f8; border: 1px solid #d5dde5; border-radius: 4px; padding: 10px 12px; font-size: 0.85rem; overflow-x: auto; margin-bottom: 12px; }
+    .answer-row p { margin-bottom: 8px; }
+    .question-table { table-layout: fixed; width: 100%; }
+    .options li { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+<div class="container py-4">
+
+  <div class="page-header">
+    <h1>STA200 Practice Exercises</h1>
+    <h2>Module #10: Two-Way ANOVA with Replication</h2>
+    <div class="instr">STA200 Statistics II &middot; Instr. Dr. Cheng Peng</div>
+  </div>
+
+  <div class="note-box">
+    <strong>How to use these questions.</strong> Before viewing the answer, try to solve each question on your own.
+    Whenever possible, work through the calculations manually or run the relevant R code to obtain your answer.
+    Then click <strong>View Answer</strong> to reveal the correct choice, the justification, and an explanation of why the other choices are incorrect.
+  </div>
+
+  <div class="toolbar">
+    <button type="button" class="btn btn-outline-primary" onclick="setAll(true)">Show All Answers</button>
+    <button type="button" class="btn btn-outline-secondary" onclick="setAll(false)">Hide All Answers</button>
+  </div>
+
+    <h3 class="part-title">Part A: Design, hypotheses, and ANOVA structure</h3>
+
+    <table class="table table-bordered question-table" id="q1">
+      <thead><tr><th>Q1 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>What does a two-way ANOVA with replication test for Factor A (sunlight) and Factor B (watering)?</p>
+          <ol type="A" class="options">
+            <li>Only the two main effects</li>
+            <li>The main effect of A, the main effect of B, and the A × B interaction</li>
+            <li>Only whether all 8 cell means are equal</li>
+            <li>Only the A × B interaction</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn1" aria-expanded="false" aria-controls="ans1" onclick="toggleAnswer(1)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans1" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note sets up three pairs of hypotheses: main effect of A, main effect of B, and the interaction.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A omits the interaction, which replication makes testable. C is a single global test, which is not how the two-way table is organized. D leaves out the main effects.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q2">
+      <thead><tr><th>Q2 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <pre class="rcode"><code>&gt; table(growthData$sunlight, growthData$watering)
+
+         Daily Weekly
+  High       5      5
+  Low        5      5
+  Medium     5      5
+  None       5      5</code></pre>
+          <p>What does this show?</p>
+          <ol type="A" class="options">
+            <li>An unbalanced design with 8 replicates per cell</li>
+            <li>An unbalanced design with N = 40</li>
+            <li>A design with a = 2 sunlight levels, b = 4 watering levels, and 10 per cell</li>
+            <li>A balanced design with a = 4, b = 2, 5 replicates per cell, and N = 40</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn2" aria-expanded="false" aria-controls="ans2" onclick="toggleAnswer(2)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans2" hidden><td>
+          <p class="correct">Answer: D.</p>
+          <p><em>Justification:</em> The table has 4 sunlight rows × 2 watering columns = 8 cells, each containing 5 plants, so N = 8 × 5 = 40. The note describes this as a balanced design with replications.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A and B contradict the equal cell counts, since every cell has 5, so the design is balanced. A also gives the wrong number of replicates (8 cells × 8 = 64 ≠ 40). C swaps the factors and miscounts the cell sizes.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q3">
+      <thead><tr><th>Q3 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <pre class="rcode"><code>&gt; a &lt;- 4; b &lt;- 2; N &lt;- 40
+&gt; c(A = a-1, B = b-1, AB = (a-1)*(b-1), E = N - a*b, T = N - 1)
+ A  B AB  E  T
+ 3  1  3 32 39</code></pre>
+          <p>What is the correct degrees of freedom for the interaction, and how can you check it?</p>
+          <ol type="A" class="options">
+            <li>(a − 1)(b − 1) = 3. The components 3 + 1 + 3 + 32 add up to the total df of 39</li>
+            <li>(a − b)(b − 1) = 2, as printed in the note's df list</li>
+            <li>a × b = 8</li>
+            <li>a + b − 2 = 4</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn3" aria-expanded="false" aria-controls="ans3" onclick="toggleAnswer(3)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans3" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The note's own check says N − 1 = (a − 1) + (b − 1) + (a − 1)(b − 1) + (N − ab). With a = 4, b = 2, N = 40 this gives 39 = 3 + 1 + 3 + 32. The "(a − b)" in the note's df list is a typo for (a − 1).</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B would give 3 + 1 + 2 + 32 = 38, not 39, so the identity fails. C is the number of cells, not a df. D is a coincidental expression that does not match the formula.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q4">
+      <thead><tr><th>Q4 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Which statement gives the correct test of the sunlight (Factor A) main effect?</p>
+          <ol type="A" class="options">
+            <li>F<sub>A</sub> = MS<sub>A</sub>/SS<sub>E</sub> ~ F(a − 1, N − ab)</li>
+            <li>F<sub>A</sub> = SS<sub>A</sub>/SS<sub>E</sub> ~ F(3, 32)</li>
+            <li>F<sub>A</sub> = MS<sub>A</sub>/MS<sub>E</sub> ~ F(a − 1, N − ab) = F(3, 32), and F<sub>A</sub> = 6.255/0.271 ≈ 23.05</li>
+            <li>F<sub>A</sub> = MS<sub>A</sub>/MS<sub>B</sub> ~ F(3, 1)</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn4" aria-expanded="false" aria-controls="ans4" onclick="toggleAnswer(4)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans4" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> Each F statistic in the note divides a mean square by the error mean square, as F<sub>B</sub> = MS<sub>B</sub>/MS<sub>E</sub> does. For sunlight the df are (a − 1, N − ab) = (3, 32), and 6.255/0.271 = 23.05 matches the R output. The note's printed "MS<sub>A</sub>/SS<sub>E</sub>" is a typo.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A divides by a sum of squares, which is not on the mean-square scale. B ignores df entirely. D uses the watering mean square as the denominator, but all main-effect and interaction tests share MS<sub>E</sub>.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q5">
+      <thead><tr><th>Q5 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Given only the first two columns of the table (Df and Sum Sq), you derive the rest in R.</p>
+          <pre class="rcode"><code>&gt; MSE   &lt;- 8.684/32
+&gt; MS.AB &lt;- 1.011/3
+&gt; F.AB  &lt;- MS.AB/MSE
+&gt; F.AB
+[1] 1.241824
+&gt; pf(F.AB, 3, 32, lower.tail = FALSE)
+[1] 0.3107921</code></pre>
+          <p>What do the results tell us about the A × B interaction?</p>
+          <ol type="A" class="options">
+            <li>F = 0.337 and p &lt; 0.001, so the interaction is significant</li>
+            <li>F ≈ 1.24 with p ≈ 0.31, so there is no significant interaction at α = 0.05</li>
+            <li>F ≈ 1.24 with p ≈ 0.031, so the interaction is significant</li>
+            <li>F ≈ 3.73 with p ≈ 0.021, so the interaction is significant</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn5" aria-expanded="false" aria-controls="ans5" onclick="toggleAnswer(5)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans5" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note says to build the remaining columns from Df and Sum Sq using pf(F, df1, df2, lower.tail = FALSE). MS<sub>AB</sub> = 1.011/3 = 0.337, MS<sub>E</sub> = 8.684/32 = 0.2714, F = 1.24, df = (3, 32), and p = 0.31 &gt; 0.05.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A reports MS<sub>AB</sub> as the F value. C has a decimal slip in the p-value. D comes from dividing SS<sub>AB</sub> by MS<sub>E</sub> without dividing by its df (1.011/0.2714 = 3.73), which is a common error.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q6">
+      <thead><tr><th>Q6 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The table shows SS<sub>T</sub> = 28.460, SS<sub>A</sub> = 18.765, SS<sub>B</sub> ≈ 0.000, and SS<sub>AB</sub> = 1.011. What is SS<sub>E</sub>?</p>
+          <pre class="rcode"><code>&gt; 28.460 - 18.765 - 0.000 - 1.011
+[1] 8.684</code></pre>
+          <ol type="A" class="options">
+            <li>48.236</li>
+            <li>19.776</li>
+            <li>0.271</li>
+            <li>8.684</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn6" aria-expanded="false" aria-controls="ans6" onclick="toggleAnswer(6)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans6" hidden><td>
+          <p class="correct">Answer: D.</p>
+          <p><em>Justification:</em> SST = SSA + SSB + SSAB + SSE, so SSE = 28.460 − 18.765 − 0.000 − 1.011 = 8.684, which matches the Residuals row.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A adds SS<sub>T</sub> to the explained sums of squares. B is the sum of the explained SS (SSA + SSB + SSAB). C is MS<sub>E</sub> = SS<sub>E</sub>/32, a mean square, not a sum of squares.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="part-title">Part B: Data preparation and ANOVA output in R</h3>
+
+    <table class="table table-bordered question-table" id="q7">
+      <thead><tr><th>Q7 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The wide data were stacked as growth &lt;- c(None, Low, Medium, High), each of 10 values (the first 5 Daily, the last 5 Weekly).</p>
+          <pre class="rcode"><code>watering &lt;- rep(c(rep("Daily", 5), rep("Weekly", 5)), 4)
+&gt; length(watering)
+[1] 40
+&gt; head(watering, 12)
+ [1] "Daily"  "Daily"  "Daily"  "Daily"  "Daily"  "Weekly" "Weekly" "Weekly"
+ [9] "Weekly" "Weekly" "Daily"  "Daily"</code></pre>
+          <p>Why is this correct?</p>
+          <ol type="A" class="options">
+            <li>The inner rep() builds the 10-value pattern (5 Daily, 5 Weekly), and the outer rep(..., 4) repeats it once for each sunlight column</li>
+            <li>It should use times = 40 so each label appears 40 times</li>
+            <li>It should use each = 4 to separate the sunlight levels</li>
+            <li>It is wrong, because label vectors must have length 10</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn7" aria-expanded="false" aria-controls="ans7" onclick="toggleAnswer(7)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans7" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The note says the inner rep() returns the pattern for the first column and the outer rep() replicates it for the rest. The result lines up with the stacked growth vector, 40 labels for 40 values.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B would produce a vector of length 400 and would not match the data. C would repeat each label 4 times in a row and would not align with the stacked data. D is false, since the long format needs one label for every observation (length 40).</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q8">
+      <thead><tr><th>Q8 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <pre class="rcode"><code>&gt; summary(growth.aov)
+                  Df Sum Sq Mean Sq F value  Pr(&gt;F)
+sunlight           3 18.765   6.255  23.049 3.9e-08 ***
+watering           1  0.000   0.000   0.001   0.976
+sunlight:watering  3  1.011   0.337   1.242   0.311
+Residuals         32  8.684   0.271</code></pre>
+          <p>Which conclusion is correct at α = 0.05?</p>
+          <ol type="A" class="options">
+            <li>Only watering has a significant effect</li>
+            <li>All three effects are significant</li>
+            <li>Sunlight has a significant main effect, and there is no evidence of a watering main effect or an interaction</li>
+            <li>The interaction is significant because its F value exceeds 1</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn8" aria-expanded="false" aria-controls="ans8" onclick="toggleAnswer(8)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans8" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> The sunlight p-value (3.9e-08) is below 0.05, while watering (0.976) and the interaction (0.311) are above it.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A reverses the results. B ignores the two large p-values. D uses an invalid rule, because significance depends on the p-value (F compared with F(3, 32)), and the 5% critical value here is about 2.90.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q9">
+      <thead><tr><th>Q9 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Which write-up of the output in Q8 is correct?</p>
+          <ol type="A" class="options">
+            <li>Watering: F(1, 32) = 0.01. Interaction: F(1, 32) = 1.242</li>
+            <li>Sunlight: F(3, 32) = 23.05, p &lt; 0.001. Watering: F(1, 32) = 0.001, p = 0.976. Interaction: F(3, 32) = 1.24, p = 0.311</li>
+            <li>Sunlight: F(32, 3) = 23.05, p &lt; 0.001</li>
+            <li>Sunlight: F(3, 32) = 23.05, p = 0.976</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn9" aria-expanded="false" aria-controls="ans9" onclick="toggleAnswer(9)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans9" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> Each F statistic is reported with the df from its own row (numerator) and the residual df (denominator), exactly as in the output. The note's Format 1 write-up gives the interaction as F(1, 32) and watering as 0.01, which do not match the table. Its claim that heights were "significantly higher when exposed to more sunlight" is also too strong, since the means are not monotone (None 4.07 &lt; Low 5.10 &lt; High 5.55 &lt; Medium 5.89).</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A contains the note's two errors. C reverses the numerator and denominator df. D attaches the watering p-value to the sunlight test.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q10">
+      <thead><tr><th>Q10 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note's plotting code:</p>
+          <pre class="rcode"><code>grp.means &lt;- aggregate(growth ~ watering + sunlight, data = growthData, mean)
+&gt; grp.means
+  watering sunlight growth
+1    Daily     High   5.78
+2   Weekly     High   5.32
+3    Daily      Low   4.98
+4   Weekly      Low   5.22
+5    Daily   Medium   5.72
+6   Weekly   Medium   6.06
+7    Daily     None   4.14
+8   Weekly     None   4.00
+&gt; daily.avg;  weekly.avg
+[1] 5.78 4.98 5.72 4.14
+[1] 5.32 5.22 6.06 4.00
+
+x.labels &lt;- c("None", "Low", "Medium", "High")   # used with plot(1:4, weekly.avg, ...)</code></pre>
+          <p>The resulting plot suggests the weekly mean is highest at Medium and lowest at High. What is wrong?</p>
+          <ol type="A" class="options">
+            <li>type = "b" should be type = "l"</li>
+            <li>The legend should list "Daily" before "Weekly"</li>
+            <li>aggregate() computed medians instead of means</li>
+            <li>The rows of grp.means are in alphabetical order (High, Low, Medium, None), so the labels None and High are attached to the wrong means, and the lowest mean actually belongs to None</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn10" aria-expanded="false" aria-controls="ans10" onclick="toggleAnswer(10)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans10" hidden><td>
+          <p class="correct">Answer: D.</p>
+          <p><em>Justification:</em> aggregate() sorts sunlight alphabetically, so weekly.avg is ordered High, Low, Medium, None. The code labels the x-axis None, Low, Medium, High, so the first and last points are mislabeled. The true weekly means are High 5.32, Low 5.22, Medium 6.06, None 4.00, so growth is poorest with no sunlight. The note's Tukey output agrees (None−High = −1.48, p adj &lt; 0.001).</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A changes only the line style. B is wrong because the legend order (Weekly, Daily) matches the colors used. C is false, since the function passed was mean.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q11">
+      <thead><tr><th>Q11 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The Weekly − Daily mean differences are High −0.46, Low +0.24, Medium +0.34, and None −0.14, so the two lines in the interaction plot cross. The interaction F-test gives p = 0.311. How should this be interpreted?</p>
+          <ol type="A" class="options">
+            <li>Non-parallel lines in a sample can arise from random variation. The F-test finds no significant evidence of a true interaction</li>
+            <li>The lines cross, so the interaction must be significant and the ANOVA is wrong</li>
+            <li>p = 0.311 proves that the population lines are exactly parallel</li>
+            <li>A non-significant watering main effect means an interaction cannot exist</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn11" aria-expanded="false" aria-controls="ans11" onclick="toggleAnswer(11)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans11" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The note uses a line plot as a visual aid, but the formal test of H₀ (no interaction) is the F-test. Here F(3, 32) = 1.24 and p = 0.311 &gt; 0.05, so the data are consistent with no interaction.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B treats a visual impression as a test result. C treats failure to reject as proof. D is false, because main effects and interaction are separate terms, and crossing patterns can exist even when a main effect is near zero.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="part-title">Part C: Post-hoc comparisons</h3>
+
+    <table class="table table-bordered question-table" id="q12">
+      <thead><tr><th>Q12 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <pre class="rcode"><code>$sunlight
+             diff        lwr        upr     p adj
+Low-High    -0.45 -1.0811999  0.1811999 0.2353814
+Medium-High  0.34 -0.2911999  0.9711999 0.4730539
+None-High   -1.48 -2.1111999 -0.8488001 0.0000023
+Medium-Low   0.79  0.1588001  1.4211999 0.0095962
+None-Low    -1.03 -1.6611999 -0.3988001 0.0005862
+None-Medium -1.82 -2.4511999 -1.1888001 0.0000000</code></pre>
+          <p>Which statement is correct? (Tukey HSD for the sunlight main effect)</p>
+          <ol type="A" class="options">
+            <li>Low and High differ significantly</li>
+            <li>Medium is significantly higher than High</li>
+            <li>None is significantly lower than High, Low, and Medium, and Medium is significantly higher than Low. Low–High and Medium–High are not significant</li>
+            <li>All six pairs are significantly different</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn12" aria-expanded="false" aria-controls="ans12" onclick="toggleAnswer(12)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans12" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> Four pairs have adjusted p &lt; 0.05 and intervals excluding 0: None−High, Medium−Low, None−Low, and None−Medium. Low−High (0.235) and Medium−High (0.473) have intervals containing 0.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A and B cite pairs whose intervals contain 0. D overcounts, since only 4 of 6 pairs are significant.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q13">
+      <thead><tr><th>Q13 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The ANOVA table gave p = 0.976 for watering. Why do these p-values agree?</p>
+          <pre class="rcode"><code>$watering
+               diff        lwr       upr    p adj
+Weekly-Daily -0.005 -0.3405535 0.3305535 0.975975</code></pre>
+          <ol type="A" class="options">
+            <li>It is a coincidence</li>
+            <li>With only two levels there is just one comparison, so Tukey's test is equivalent to the F-test (t² = F, same MS<sub>E</sub> and 32 df), and no multiplicity adjustment is needed</li>
+            <li>Tukey's method ignores MS<sub>E</sub> and reuses the ANOVA p-value</li>
+            <li>Both are small because the watering effect is large</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn13" aria-expanded="false" aria-controls="ans13" onclick="toggleAnswer(13)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans13" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> With two groups, the F statistic equals the square of the pairwise t statistic. Here t = −0.005/√(0.2714 × 2/20) = −0.030, so t² = 0.0009 = F, and both tests use the same error term. The note describes Tukey as adjusting for multiple comparisons, and one comparison needs no adjustment.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is wrong because the agreement is mathematical. C is false, since Tukey's intervals are built from MS<sub>E</sub>. D is false, because p = 0.976 is large and means there is no evidence of a watering effect.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q14">
+      <thead><tr><th>Q14 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note's Tukey output for sunlight:watering has 28 rows but highlights only four. Why?</p>
+          <pre class="rcode"><code>&gt; choose(8, 2)
+[1] 28</code></pre>
+          <ol type="A" class="options">
+            <li>There are only 8 comparisons, so all are meaningful</li>
+            <li>There are 16 comparisons, one for each plant</li>
+            <li>All 28 comparisons are equally interpretable, so the note should report all of them</li>
+            <li>There are C(8, 2) = 28 pairs of cells, and Tukey's adjustment covers all of them. The practically meaningful ones compare watering at the same sunlight level (4 of the 28)</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn14" aria-expanded="false" aria-controls="ans14" onclick="toggleAnswer(14)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans14" hidden><td>
+          <p class="correct">Answer: D.</p>
+          <p><em>Justification:</em> The note says the two factors give 8 cells and 28 group comparisons, and that the meaningful ones compare watering frequencies under the same sunlight condition. Those are the four pairs in its summary table.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A and B miscount the comparisons. C ignores that many pairs differ in both factors at once (for example, Medium:Weekly vs Low:Daily), which makes them hard to interpret.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q15">
+      <thead><tr><th>Q15 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <pre class="rcode"><code>Group Difference            diff    lower CI    upper CI    p-value
+None:Weekly-None:Daily     -0.14  -1.20724928  0.92724928  0.9998578
+Low:Weekly-Low:Daily        0.24  -0.82724928  1.30724928  0.9954055
+Medium:Weekly-Medium:Daily  0.34  -0.72724928  1.40724928  0.9657630
+High:Weekly-High:Daily     -0.46  -1.52724928  0.60724928  0.8523023</code></pre>
+          <p>Which conclusion is correct?</p>
+          <ol type="A" class="options">
+            <li>None of the four is significant. Every interval contains 0, so there is no evidence that watering frequency changes growth at any sunlight level</li>
+            <li>High:Weekly−High:Daily is significant because it has the largest difference</li>
+            <li>Low:Weekly−Low:Daily shows that weekly watering is significantly better at Low sunlight</li>
+            <li>The comparison Medium:Weekly−Low:Daily (p adj = 0.0457) shows that watering matters</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn15" aria-expanded="false" aria-controls="ans15" onclick="toggleAnswer(15)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans15" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The note says an interval that includes zero means the difference is not significant. All four adjusted p-values are ≥ 0.85, which agrees with the non-significant interaction and watering effects.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B and C read the size of the estimated difference as significance, even though both intervals contain 0. D uses a comparison that changes sunlight level and watering at the same time, so it cannot isolate the watering effect.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="part-title">Part D: Assumptions and broader issues</h3>
+
+    <table class="table table-bordered question-table" id="q16">
+      <thead><tr><th>Q16 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note says homogeneity of variance should be checked for each combination of factor levels.</p>
+          <pre class="rcode"><code>&gt; bartlett.test(growth ~ interaction(sunlight, watering), data = growthData)
+
+	Bartlett test of homogeneity of variances
+
+data:  growth by interaction(sunlight, watering)
+Bartlett's K-squared = 4.0503, df = 7, p-value = 0.774</code></pre>
+          <p>Which interpretation is correct?</p>
+          <ol type="A" class="options">
+            <li>The large p-value means the variances differ across cells</li>
+            <li>The df should be 1, because there are two watering levels</li>
+            <li>H₀ (equal variances across the 8 cells) is not rejected, so there is no evidence against homogeneity. The df is 8 − 1 = 7</li>
+            <li>The test checks normality</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn16" aria-expanded="false" aria-controls="ans16" onclick="toggleAnswer(16)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans16" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> Bartlett's H₀ is that all group variances are equal, and p = 0.774 is far above 0.05. The test compares 8 cell variances, which gives df = 7. Failing to reject is not proof, but the cell variances (0.085 to 0.447) show no strong sign of heterogeneity.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A reverses the decision rule. B counts only one factor's levels. D is wrong because normality is checked with Shapiro–Wilk or a Q-Q plot.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q17">
+      <thead><tr><th>Q17 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <pre class="rcode"><code>&gt; shapiro.test(residuals(growth.aov))
+
+	Shapiro-Wilk normality test
+
+data:  residuals(growth.aov)
+W = 0.95274, p-value = 0.0943</code></pre>
+          <p>Which statement is correct?</p>
+          <ol type="A" class="options">
+            <li>Since W &lt; 1, normality is rejected</li>
+            <li>H₀ (normality) is not rejected at 0.05, so there is no strong evidence against the normality assumption</li>
+            <li>The p-value is the probability that the data are normal</li>
+            <li>The test shows that the cell variances are equal</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn17" aria-expanded="false" aria-controls="ans17" onclick="toggleAnswer(17)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans17" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note requires approximate normality and names Shapiro–Wilk as a check. With p = 0.094 &gt; 0.05, H₀ is not rejected. The p-value is only moderately large, so this check does not clear the data entirely, and a Q-Q plot is a useful companion.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A misreads W, since W is always below 1 for real data and the decision rests on p. C misreads the p-value. D confuses normality with equal variances (Bartlett's or Levene's test).</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q18">
+      <thead><tr><th>Q18 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>A different experiment gives the following output (hypothetical).</p>
+          <pre class="rcode"><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)
+A            2     30   15.00      12 0.000244 ***
+B            1      5    5.00       4 0.056940 .
+A:B          2     20   10.00       8 0.002177 **
+Residuals   24     30    1.25</code></pre>
+          <p>What should the analyst do next?</p>
+          <ol type="A" class="options">
+            <li>Interpret the main effect of A on its own, since it is highly significant</li>
+            <li>Ignore the interaction because B is not significant</li>
+            <li>Drop the interaction and refit without it</li>
+            <li>Treat the significant interaction (p ≈ 0.002) as meaning the effect of one factor depends on the level of the other, and compare cell means within combinations using Tukey-adjusted comparisons</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn18" aria-expanded="false" aria-controls="ans18" onclick="toggleAnswer(18)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans18" hidden><td>
+          <p class="correct">Answer: D.</p>
+          <p><em>Justification:</em> The note says a significant interaction means one factor's impact depends on the other, so groups must be compared within combinations, with simultaneous methods such as Tukey's HSD to control the family-wise error rate.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A uses an averaged main effect that may be misleading when the effect of A varies with B. B is wrong because the interaction has its own test and is significant. C discards a significant term to make the results easier to read.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q19">
+      <thead><tr><th>Q19 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>An RBD has 3 treatments (a = 3) and 4 blocks (b = 4) with one observation per cell, so N = 12. What does the note imply about the interaction?</p>
+          <ol type="A" class="options">
+            <li>DF.E = N − ab = 0, so there are no error df and the interaction cannot be tested</li>
+            <li>DF.E = 6, so the interaction can be tested with 6 df</li>
+            <li>DF.E = 11, so the interaction can be tested</li>
+            <li>DF.E = 12, so the interaction can be tested</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn19" aria-expanded="false" aria-controls="ans19" onclick="toggleAnswer(19)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans19" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The note states that the interaction effect is not available for RBD data with no replicates. Using DF.E = N − ab gives 12 − 12 = 0, so there is no pure-error estimate. In practice one fits the additive model aov(y ~ trt + block), whose 6 residual df combine interaction and error.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B describes the additive model's residual df but wrongly treats them as a separate interaction test. C is the total df (N − 1). D is N itself.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q20">
+      <thead><tr><th>Q20 <span class="level"></span></th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Each plant's height is measured monthly for six months, and the researcher wants to compare sunlight levels. Which analysis is appropriate?</p>
+          <ol type="A" class="options">
+            <li>The two-way ANOVA from this note, since the design has two factors</li>
+            <li>A replicated RBD analysis with more replicates</li>
+            <li>Repeated-measures ANOVA, because repeated measurements on the same subject are not independent</li>
+            <li>One-way ANOVA on the pooled measurements</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn20" aria-expanded="false" aria-controls="ans20" onclick="toggleAnswer(20)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans20" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> The note's caution says the one-way and two-way methods assume independent observations. Measuring the same characteristic on the same subject multiple times requires repeated-measures ANOVA, which differs from the analysis for a replicated RBD.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A, B, and D all treat repeated measurements on one plant as independent observations, which violates the assumption.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+<!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+<!--XXXXXXXXXXXXXXXXXXXXXXXXXXX  FOOTER  XXXXXXXXXXXXXXXXXXXXXXX-->
+<!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+<footer class="col-md-12">
+<center><font color = "navy" size =2>
+    <p class="text-center">Copyright &copy; 
+        <script>
+            var CurrentYear = new Date().getFullYear()
+            document.write(CurrentYear)
+        </script>
+       C. Peng. Last updated: 
+         <script> 
+            document.write(new Date().toLocaleDateString()); 
+         </script> 
+      </font>
+ <a href='http://www.freevisitorcounters.com'>.</a> 
+<script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+<script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script></p>
+</center>
+</footer>
+
+</div>
+
+<script>
+  var TOTAL = 20;
+  function setState(n, show) {
+    document.getElementById('ans' + n).hidden = !show;
+    var b = document.getElementById('btn' + n);
+    b.textContent = show ? 'Hide Answer' : 'View Answer';
+    b.setAttribute('aria-expanded', show ? 'true' : 'false');
+  }
+  function toggleAnswer(n) {
+    setState(n, document.getElementById('ans' + n).hidden);
+  }
+  function setAll(show) {
+    for (var i = 1; i <= TOTAL; i++) setState(i, show);
+  }
+</script>
+</body>
+</html>

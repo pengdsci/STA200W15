@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STA200 Practice Exercises - Module 11</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body {
+    background-color: #f5f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .page-header {
+    background: #1f3a5f;
+    color: #ffffff;
+    padding: 28px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+  .page-header h2 { font-size: 1.15rem; font-weight: 300; margin-bottom: 0; }
+  .page-header .instr { font-size: 1rem; color: #cfdcec; }
+
+  .question-table {
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  }
+  .question-table > thead > tr > th {
+    background-color: #dbe7f3;
+    color: #1f3a5f;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .question-table > tbody > tr > td {
+    padding: 12px 14px;
+    vertical-align: top;
+  }
+  .options { margin-bottom: 0; padding-left: 1.4rem; }
+  .options li { margin-bottom: 4px; }
+
+  .answer-row > td {
+    background-color: #eef6ff;
+    border-left: 5px solid #0d6efd;
+  }
+  .answer-row .correct {
+    color: #0a6b2d;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .btn-view { min-width: 130px; }
+
+  .toolbar { margin-bottom: 20px; }
+
+  footer {
+    border-top: 1px solid #d5dde5;
+    padding-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  .note-box {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 25px;
+  }
+</style>
+
+  <style>
+    .container { max-width: 960px; }
+    .part-title { color: #1f3a5f; font-size: 1.3rem; font-weight: 700; margin: 35px 0 15px; padding-bottom: 6px; border-bottom: 2px solid #dbe7f3; }
+    .level { font-weight: 400; color: #4a6785; }
+    pre.rcode { background: #f4f6f8; border: 1px solid #d5dde5; border-radius: 4px; padding: 10px 12px; font-size: 0.85rem; overflow-x: auto; margin-bottom: 12px; }
+    .answer-row p { margin-bottom: 8px; }
+    .question-table { table-layout: fixed; width: 100%; }
+    .options li { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+<div class="container py-4">
+
+  <div class="page-header">
+    <h1>STA200 Practice Exercises</h1>
+    <h2>Module #11: Regression with Categorical Predictors and ANOVA</h2>
+    <div class="instr">STA200 Statistics II &middot; Instr. Dr. Cheng Peng</div>
+  </div>
+
+  <div class="note-box">
+    <strong>How to use these questions.</strong> Before viewing the answer, try to solve each question on your own.
+    Whenever possible, work through the calculations manually or run the relevant R code to obtain your answer.
+    Then click <strong>View Answer</strong> to reveal the correct choice, the justification, and an explanation of why the other choices are incorrect.
+  </div>
+
+  <div class="toolbar">
+    <button type="button" class="btn btn-outline-primary" onclick="setAll(true)">Show All Answers</button>
+    <button type="button" class="btn btn-outline-secondary" onclick="setAll(false)">Hide All Answers</button>
+  </div>
+
+    <h3 class="part-title">Part 1: Introduction &amp; SLR Review</h3>
+
+    <table class="table table-bordered question-table" id="q1">
+      <thead><tr><th>Question 1</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note states that the basic applications of a simple linear regression (SLR) model are twofold. These two applications are:</p>
+          <ol type="A" class="options">
+            <li>Testing normality of the response and checking constant variance</li>
+            <li>Assessing the linear correlation between the response y and predictor x, and predicting the response for new values of x</li>
+            <li>Selecting the baseline category and creating dummy variables</li>
+            <li>Computing R² and performing model diagnostics</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn1" aria-expanded="false" aria-controls="ans1" onclick="toggleAnswer(1)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans1" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note lists exactly two applications: (1) assess the linear correlation between y and x, and (2) predict the response for given new values of the predictor x.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A describes assumption checking (diagnostics), which is part of the iterative modeling process, not an application of the fitted model. C describes the machinery for handling multi-category predictors, not applications of SLR. D names quantities computed along the way (R² is a measure of fit, diagnostics validate assumptions), not the two purposes of regression stated in the note.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q2">
+      <thead><tr><th>Question 2</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>According to the note, which step is described as "the most crucial step in any regression analysis"?</p>
+          <ol type="A" class="options">
+            <li>Model (re)fitting</li>
+            <li>Planning and data preparation</li>
+            <li>Model diagnostics</li>
+            <li>Final model reporting</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn2" aria-expanded="false" aria-controls="ans2" onclick="toggleAnswer(2)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans2" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> The note explicitly says: "Model diagnostics – This is the most crucial step in any regression analysis, where we assess whether all assumptions of the candidate models are satisfied."</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A (fitting) only estimates parameters; the note warns that fitted models "may not be valid or optimal" and should not be interpreted at that point. B is a prerequisite but is not singled out as the most crucial step. D only happens after the iterative loop has produced a final valid model.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q3">
+      <thead><tr><th>Question 3</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note emphasizes that after fitting candidate models, we should not interpret the model at that point. Why not?</p>
+          <ol type="A" class="options">
+            <li>Because the lm() function always produces invalid estimates on the first fit</li>
+            <li>Because fitted candidate models may not be valid or optimal — only the final model obtained from the iterative identification process is reported</li>
+            <li>Because R does not display coefficient estimates until diagnostics pass</li>
+            <li>Because interpretation requires the ANOVA table, which can only be extracted after remediation</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn3" aria-expanded="false" aria-controls="ans3" onclick="toggleAnswer(3)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans3" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note states explicitly: "the fitted models in this step may not be valid or optimal, we should not interpret the model at this point. We only report the final model obtained from the iterative model identification process."</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is false: lm() computes least-squares estimates correctly; validity concerns assumptions and optimality, not estimation errors. C is false: summary() displays coefficients immediately; nothing is withheld by R. D is false: anova() works on any fitted model object and is not a gating requirement for interpretation.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q4">
+      <thead><tr><th>Question 4</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>For the SLR model y = β₀ + β₁x + ε, which statement about the response variable y matches the note?</p>
+          <ol type="A" class="options">
+            <li>y may be any type of variable as long as x is continuous</li>
+            <li>y must be a continuous normal variable whose mean may be influenced by the predictor x, but not its variance</li>
+            <li>y must be a binary categorical variable</li>
+            <li>y must be normally distributed with variance that changes with x</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn4" aria-expanded="false" aria-controls="ans4" onclick="toggleAnswer(4)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans4" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note states: "The response must be a continuous normal variable whose mean may be influenced by the predictor x but not the variance." The constant-variance requirement is part of the normality assumption (ε ~ N(0, σ)).</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is wrong because the response specifically must be continuous and normal, not "any type." C confuses the roles: the predictor may be binary categorical; the response must be continuous normal. D directly contradicts the constant variance (homoscedasticity) assumption.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q5">
+      <thead><tr><th>Question 5</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Which R diagnostic plot does the note associate with checking the normality assumption of SLR?</p>
+          <ol type="A" class="options">
+            <li>Scatter plot of x and y</li>
+            <li>Residual plot (residuals vs. fitted)</li>
+            <li>Q–Q plot of the residuals</li>
+            <li>Leverage plot (Cook's distance)</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn5" aria-expanded="false" aria-controls="ans5" onclick="toggleAnswer(5)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans5" hidden><td>
+          <p class="correct">Answer: C.</p>
+          <p><em>Justification:</em> Under the normality assumption, the note lists the diagnostic check as "Q-Q plot."</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A (scatter plot) is the check for the linearity assumption. B (residual/studentized residual plot) is the check for constant variance. D (leverage plot with Cook's distance) checks for influential observations.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="part-title">Part 2: SLR with a Continuous Predictor (EduWage Example)</h3>
+
+    <table class="table table-bordered question-table" id="q6">
+      <thead><tr><th>Question 6</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>In the EduWage analysis, the scatter plot of wage vs. educ showed a linear trend, but the spread of wages clearly grows with education. The note's response was to:</p>
+          <ol type="A" class="options">
+            <li>Switch to the log wage (lwage) as the response, since economic studies show logarithmic wage has less variation</li>
+            <li>Drop all observations with wage above the 75th percentile</li>
+            <li>Add education squared to the model</li>
+            <li>Use the two-sample t-test instead of regression</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn6" aria-expanded="false" aria-controls="ans6" onclick="toggleAnswer(6)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans6" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The note says the wage scatter plot "shows a linear relationship but also shows non-constant variance. This violates the SLR assumption. Economic studies show that logarithmic wage has less variation," and the scatter plot of log wage vs. education confirms "log wage is a better response for SLR."</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B (deleting high-wage cases) is not discussed and would discard real information. C (adding a quadratic term) addresses non-linearity, not non-constant variance. D is irrelevant: the predictor here is continuous, and the issue is the response's variance, not comparing two groups.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q7">
+      <thead><tr><th>Question 7</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Here is the fitted model output:</p>
+          <pre class="rcode"><code>Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) 0.583773   0.097336   5.998 3.74e-09 ***
+educ        0.082744   0.007567  10.935  &lt; 2e-16 ***</code></pre>
+          <p>Which statement correctly interprets the slope?</p>
+          <ol type="A" class="options">
+            <li>Each additional year of education increases wage by $0.0827 per hour</li>
+            <li>Each additional year of education increases log wage by 0.082744, on average (p ≈ 0)</li>
+            <li>Each additional year of education increases log wage by 8.27%</li>
+            <li>The slope is not statistically significant, so education has no effect on wages</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn7" aria-expanded="false" aria-controls="ans7" onclick="toggleAnswer(7)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans7" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note's brief report states: "The estimated slope coefficient β̂₁ = 0.082744 indicates that log wage increases by 0.082744 for each additional year of education (p ≈ 0)." The response variable is lwage, so the slope is measured in log-wage units.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is wrong because the response is log wage, not the original wage; 0.0827 is not a dollar amount. C mixes up the arithmetic: a 0.0827 change in log wage corresponds to a multiplicative factor e^0.082744 ≈ 1.0863, i.e., about an 8.63% change, but the slope itself is 0.0827 log-wage units, not "8.27%." D contradicts the output: t = 10.935 with p &lt; 2×10⁻¹⁶ is overwhelmingly significant.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q8">
+      <thead><tr><th>Question 8</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>For the same model, the output reports:</p>
+          <pre class="rcode"><code>Multiple R-squared: 0.1858,  Adjusted R-squared: 0.1843</code></pre>
+          <p>The note concludes from R² ≈ 0.1858 that:</p>
+          <ol type="A" class="options">
+            <li>Education explains about 18.6% of the variation in log wage, indicating a weak linear correlation</li>
+            <li>The model is invalid because R² is less than 0.5</li>
+            <li>18.58% of workers earn above-average wages</li>
+            <li>The correlation between education and log wage is approximately 0.1858</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn8" aria-expanded="false" aria-controls="ans8" onclick="toggleAnswer(8)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans8" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> The note states: "The coefficient of determination R² ≈ 0.1858 shows that the log wage and years of education have a weak linear correlation." R² is the proportion of response variation explained by the predictor.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B is wrong: a low R² does not invalidate a model; validity is judged by assumption diagnostics, and the note proceeds to report the model. C misinterprets R² entirely; it is not a proportion of observations. D confuses R² with the correlation coefficient r; here r = √0.1858 ≈ 0.431.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q9">
+      <thead><tr><th>Question 9</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>The note gives a general principle of data analysis illustrated by the EduWage example. What is it?</p>
+          <ol type="A" class="options">
+            <li>Always use exactly two variables so the model stays simple</li>
+            <li>If more relevant variables are available in the data, we should use all of them (e.g., via multiple regression) rather than restricting to a single predictor</li>
+            <li>Simple linear regression is generally the optimal final model</li>
+            <li>Candidate models should be chosen so that all predictors are statistically significant</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn9" aria-expanded="false" aria-controls="ans9" onclick="toggleAnswer(9)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans9" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note says: "In practice, if you have more information (more variables) available in the data, we should use all relevant information — this is the general principle of all data analysis. This means we need to use multiple regression to include two or more predictor variables!"</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A contradicts the principle; the SLR in the example is an illustration, not a prescription. C is directly refuted: "an SLR can never be an optimal model if it is invalid," and the note argues for MLR when more information exists. D describes significance-based selection, which the note never endorses; candidates are chosen to address the practical question, and the final model comes from the full iterative process.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="part-title">Part 3: SLR with a Binary Predictor (smsa Example)</h3>
+
+    <table class="table table-bordered question-table" id="q10">
+      <thead><tr><th>Question 10</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>In the EduWage dataset, smsa is recorded numerically (0 = rural, 1 = urban). The note fits the model with:</p>
+          <pre class="rcode"><code>smsa.lm &lt;- lm(lwage ~ factor(smsa), data = edu.wage)</code></pre>
+          <p>Why is factor() needed here?</p>
+          <ol type="A" class="options">
+            <li>lm() cannot handle numeric predictors of any kind</li>
+            <li>To tell R to treat the numeric values as category labels (a categorical variable), so R builds the appropriate dummy variable with a baseline</li>
+            <li>To force smsa = 1 to be the baseline category</li>
+            <li>To convert log wage back to the original wage scale</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn10" aria-expanded="false" aria-controls="ans10" onclick="toggleAnswer(10)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans10" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note states: "When using a software program, we have to specify the predictor variable x to be a factor (categorical variable). In R, the function factor() converts a categorical or discrete numerical variable... to a factor variable." Without this, R would treat smsa as a continuous numeric predictor.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is false: lm() handles continuous numeric predictors; that is exactly what the educ model does. C is false: with factor(smsa), the baseline is level 0 (rural), and the coefficient is labeled factor(smsa)1. D is false: factor() has nothing to do with logarithms or back-transformation.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q11">
+      <thead><tr><th>Question 11</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Here is the model output:</p>
+          <pre class="rcode"><code>Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)    1.45182    0.04314  33.652  &lt; 2e-16 ***
+factor(smsa)1  0.23732    0.05076   4.676 3.73e-06 ***</code></pre>
+          <p>The intercept β̂₀ = 1.45182 represents:</p>
+          <ol type="A" class="options">
+            <li>The average log wage across all 526 respondents</li>
+            <li>The average log wage of the baseline category: rural workers (smsa = 0)</li>
+            <li>The average log wage of urban workers (smsa = 1)</li>
+            <li>The difference in average log wage between urban and rural workers</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn11" aria-expanded="false" aria-controls="ans11" onclick="toggleAnswer(11)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans11" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note explains that the intercept is "the average log wage of rural area (smsa = 0 is the baseline of the categorical variable)." For a dummy-coded predictor, the intercept is the mean response of the baseline level.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A describes a grand mean, which a dummy-coded model does not estimate (the intercept is a group mean, not an average of groups). C is the urban mean, which equals β₀ + β₁ = 1.45182 + 0.23732 = 1.68914. D describes the slope coefficient β̂₁ = 0.23732, not the intercept.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q12">
+      <thead><tr><th>Question 12</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Using β̂₁ = 0.23732 from the smsa model, the note performs the algebra: log(wage in urban area) − log(wage in rural area) = β̂₁, so the ratio of the two wages is e raised to β̂₁. The practical conclusion is:</p>
+          <ol type="A" class="options">
+            <li>Urban workers earn, on average, about $0.27 more per hour than rural workers</li>
+            <li>Urban wages are about 26.78% higher than rural wages</li>
+            <li>Urban wages are about 23.73% higher than rural wages</li>
+            <li>Urban wages are 1.2678 times as variable as rural wages</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn12" aria-expanded="false" aria-controls="ans12" onclick="toggleAnswer(12)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans12" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note concludes: "the wage in urban area is 26.7847% higher than the rural area," because the ratio wage(urban)/wage(rural) = e^0.23732 ≈ 1.2678, and 1.2678 − 1 = 0.2678.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A misreads the scale: 0.23732 is a difference in log wage, not dollars per hour. C mistakenly treats the log-scale coefficient 0.23732 as if it were already a percentage, skipping the exponentiation step. D confuses a ratio of means with a ratio of variances; the constant-variance assumption says variances are equal.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q13">
+      <thead><tr><th>Question 13</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>For the binary-predictor model, the t-statistic is 4.676 (df = 524) and the ANOVA F-statistic is 21.86 (df 1 and 524). Which relationship does the note use to connect them?</p>
+          <ol type="A" class="options">
+            <li>F = t (they are numerically identical in this example)</li>
+            <li>F = t² for a test with 1 numerator degree of freedom; indeed 4.676² ≈ 21.86</li>
+            <li>F = t / √(n − 2)</li>
+            <li>There is no relationship; the two tests test different hypotheses</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn13" aria-expanded="false" aria-controls="ans13" onclick="toggleAnswer(13)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans13" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note states: "It can be proven that t² (with d.f. degrees of freedom) = F(1, d.f.)." Checking: 4.676² = 21.865 ≈ 21.86. Hence the t-test in SLR and the F-test in ANOVA "are identical," and one-way ANOVA is a special SLR.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A fails numerically: 4.676 ≠ 21.86. C is not a valid relationship between t and F statistics. D is refuted by the note: both test whether the group means differ / whether β₁ = 0, and the note uses this equivalence explicitly.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q14">
+      <thead><tr><th>Question 14</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Which R command extracts the one-way ANOVA table directly from the fitted regression model smsa.lm, and what equivalence does the note highlight?</p>
+          <ol type="A" class="options">
+            <li>summary(smsa.lm): the coefficient table equals the ANOVA table</li>
+            <li>anova(smsa.lm): the F test in lm() output is the same F test as in one-way ANOVA</li>
+            <li>TukeyHSD(smsa.lm): Tukey's p-values equal the regression p-values</li>
+            <li>aov(smsa.lm): the t-test becomes a χ² test</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn14" aria-expanded="false" aria-controls="ans14" onclick="toggleAnswer(14)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans14" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note demonstrates anova(smsa.lm) and states: "the result of the t-test in SLR and the F-test in the ANOVA procedure are identical." It further emphasizes (in the one-way ANOVA section): "In the output of lm(), the F test in the bottom portion provides the significance test of the categorical variable. This F test is the same F test in the one-way ANOVA!!!"</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A: summary() reports coefficients and the F test, but it does not produce the ANOVA table (sums of squares, mean squares); anova() does. C: Tukey's HSD requires an aov object and produces adjusted pairwise p-values, which differ from the unadjusted regression p-values. D: aov() is a separate fitting function (not applied to an lm object), and no χ² test is involved.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="part-title">Part 4: One-Way ANOVA via Regression (Dummy Variables)</h3>
+
+    <table class="table table-bordered question-table" id="q15">
+      <thead><tr><th>Question 15</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>A categorical variable has k categories. According to the note, how many dummy variables must be defined, and why?</p>
+          <ol type="A" class="options">
+            <li>k dummy variables, so every category gets its own coefficient</li>
+            <li>k − 1 dummy variables, because using all k would create perfect multicollinearity (e.g., D1 + D2 + D3 = 1 always)</li>
+            <li>k − 1 dummy variables, so that the model has fewer parameters and runs faster</li>
+            <li>2 dummy variables, regardless of k, because a dummy variable is always binary</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn15" aria-expanded="false" aria-controls="ans15" onclick="toggleAnswer(15)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans15" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note states: "a categorical variable has k categories, and we need to define k − 1 dummy variables," and later explains: "The reason we encode a categorical variable with k categories into (k-1) dummy variables (rather than k) is to avoid multicollinearity issues... This creates perfect multicollinearity because for every observation: D1 + D2 + D3 = 1 (always)!!!"</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A: with k dummies plus an intercept, the design matrix is singular (the "dummy variable trap"); R would drop one level anyway. C: computational speed is not the reason; the reason is statistical identifiability (perfect collinearity). D: the number of dummies must grow with the number of categories; two dummies would only encode three groups.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q16">
+      <thead><tr><th>Question 16</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>In the plant growth model:</p>
+          <pre class="rcode"><code>plant.lm &lt;- lm(weight ~ group, data = plant)   # group has levels ctrl, trt1, trt2</code></pre>
+          <p>The implicit model is weight = β₀ + β₁·grouptrt1 + β₂·grouptrt2. Which parameter mapping is correct?</p>
+          <ol type="A" class="options">
+            <li>β₀ = μ<sub>trt1</sub>, β₁ = μ<sub>trt2</sub> − μ<sub>trt1</sub>, β₂ = μ<sub>ctr</sub> − μ<sub>trt2</sub></li>
+            <li>β₀ = μ<sub>ctr</sub>, β₁ = μ<sub>trt1</sub> − μ<sub>ctr</sub>, β₂ = μ<sub>trt2</sub> − μ<sub>ctr</sub></li>
+            <li>β₀ = μ<sub>ctr</sub> − μ<sub>trt1</sub>, β₁ = μ<sub>trt1</sub>, β₂ = μ<sub>trt2</sub></li>
+            <li>β₀ = μ<sub>ctr</sub> + μ<sub>trt1</sub> + μ<sub>trt2</sub>, β₁ = β₂ = 0</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn16" aria-expanded="false" aria-controls="ans16" onclick="toggleAnswer(16)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans16" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note states explicitly: "the actual model formula used in the model is weight = β₀ + β₁ grouptrt1 + β₂ grouptrt2, where β₀ = μ<sub>ctr</sub>, β₁ = μ<sub>trt1</sub> − μ<sub>ctr</sub> and β₂ = μ<sub>trt2</sub> − μ<sub>ctr</sub>." The intercept is the baseline group mean; each dummy coefficient is the difference between that group's mean and the baseline mean.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A uses the wrong baseline (trt1 instead of ctrl) and inconsistent contrasts. C misplaces the baseline mean in β₀. D is nonsensical: the intercept is a single group's mean, and the whole point of the dummies is that β₁, β₂ are estimated contrasts.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q17">
+      <thead><tr><th>Question 17</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Here is the plant growth output:</p>
+          <pre class="rcode"><code>Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   5.0320     0.1971  25.527   &lt;2e-16 ***
+grouptrt1    -0.3710     0.2788  -1.331   0.1944
+grouptrt2     0.4940     0.2788   1.772   0.0877 .</code></pre>
+          <p>Which statement about grouptrt1 is correct at the 0.05 significance level?</p>
+          <ol type="A" class="options">
+            <li>trt1 differs significantly from ctrl, with trt1's mean higher by 0.371</li>
+            <li>There is no statistically significant difference between trt1 and ctrl; the negative estimate indicates the sample mean of ctrl is higher than that of trt1</li>
+            <li>trt1 differs significantly from ctrl because the p-value is less than 0.2</li>
+            <li>The estimate −0.3710 means the average weight of trt1 plants is negative</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn17" aria-expanded="false" aria-controls="ans17" onclick="toggleAnswer(17)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans17" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note says: "The p-value of 0.1944... indicates no statistically significant difference between trt1 and ctr. The negative sign of the estimate suggests that the sample mean of ctr is higher than that of trt1." Since 0.1944 &gt; 0.05, we fail to reject H₀: β₁ = 0 (equivalently, μ<sub>trt1</sub> = μ<sub>ctr</sub>).</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A reverses the direction and claims significance that the p-value does not support. C misuses the significance level: the cutoff is 0.05, not 0.20; 0.1944 is not significant. D is absurd: the coefficient is a difference in group means, not a mean itself; the mean weight of trt1 is 5.0320 − 0.3710 = 4.661.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q18">
+      <thead><tr><th>Question 18</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>For the plant growth model, the bottom of the summary() output reports:</p>
+          <pre class="rcode"><code>F-statistic: 4.846 on 2 and 27 DF,  p-value: 0.01591</code></pre>
+          <p>Which conclusion is correct at α = 0.05?</p>
+          <ol type="A" class="options">
+            <li>Only trt1 differs from ctrl</li>
+            <li>The null hypothesis H₀: β₁ = β₂ = 0 (equivalently μ<sub>ctr</sub> = μ<sub>trt1</sub> = μ<sub>trt2</sub>) is rejected, so the categorical variable group is significant; this is exactly the one-way ANOVA F test</li>
+            <li>Neither dummy is significant, so group must be insignificant and removed from the model</li>
+            <li>The F test shows the normality assumption is violated</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn18" aria-expanded="false" aria-controls="ans18" onclick="toggleAnswer(18)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans18" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note states: "The F test in the bottom portion yields a p-value of 0.01591. At a significance level of 0.05, we reject the null hypothesis... this F-test tests the null hypothesis: H₀: β₁ = β₂ = 0. This [is] equivalent to H₀: μ<sub>ctr</sub> = μ<sub>trt1</sub> = μ<sub>trt2</sub>. This is exactly the F test in the one-way ANOVA!"</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A is contradicted by the individual t-tests (both p &gt; 0.05); moreover, the F test is an omnibus test about all groups, not one specific contrast. C contradicts the note's rule: if any dummy is significant the variable is significant; more importantly, the overall F test (p = 0.01591) is what declares the variable significant, even when individual dummies are not. (In fact, Tukey's HSD later finds trt2 vs. trt1 significant.) D confuses an overall significance test with a residual assumption diagnostic.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered question-table" id="q19">
+      <thead><tr><th>Question 19</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>Compare the regression output (Q17) with Tukey's HSD:</p>
+          <pre class="rcode"><code>Tukey multiple comparisons of means
+            diff        lwr       upr     p adj
+trt1-ctrl -0.371 -1.0622161 0.3202161 0.3908711
+trt2-ctrl  0.494 -0.1972161 1.1852161 0.1979960
+trt2-trt1  0.865  0.1737839 1.5562161 0.0120064</code></pre>
+          <p>Which statement is accurate?</p>
+          <ol type="A" class="options">
+            <li>The regression p-values and Tukey p-values are identical because they test the same contrasts</li>
+            <li>The first two Tukey differences match the dummy coefficients (−0.371, 0.494); regression p-values are unadjusted individual tests, whereas Tukey's p-values are adjusted to control the family-wise Type I error rate, which is why trt2−trt1 is significant (0.0120) even though neither dummy vs. ctrl was</li>
+            <li>Tukey's HSD can be applied directly to an lm object without using aov()</li>
+            <li>The significant trt2−trt1 contrast contradicts the regression results, so one of the procedures is wrong</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn19" aria-expanded="false" aria-controls="ans19" onclick="toggleAnswer(19)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans19" hidden><td>
+          <p class="correct">Answer: B.</p>
+          <p><em>Justification:</em> The note says: "The first two estimated differences (trt1 − ctr and trt2 − ctr) correspond to the regression coefficients of the dummy variables... The p-values reported in the regression model are unadjusted (based on individual tests), whereas Tukey's HSD is a group test, and its corresponding p-values are adjusted to control the overall Type I error rate." Indeed, 0.494 − (−0.371) = 0.865, and the adjusted p-value 0.0120 &lt; 0.05 while the two ctrl contrasts are not significant, a classic illustration of why multiplicity adjustment matters.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> A: the p-values differ precisely because of adjustment (e.g., 0.1944 vs. 0.3909 for trt1−ctrl). C: the note's code requires plant.aov &lt;- aov(weight ~ group, data = plant) before calling TukeyHSD(plant.aov). D: there is no contradiction; the procedures answer different questions (individual unadjusted contrasts vs. family-wise adjusted comparisons), and the note presents them as complementary.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="part-title">Part 5: MLR &amp; Two-Way ANOVA with Interaction</h3>
+
+    <table class="table table-bordered question-table" id="q20">
+      <thead><tr><th>Question 20</th></tr></thead>
+      <tbody>
+        <tr><td>
+          <p>For the crop yield data (Crop with 4 levels, Fertilizer with 3 levels), the note fits the model below and examines the columns of its model matrix, with the result shown.</p>
+          <pre class="rcode"><code>crop.lm &lt;- lm(Yield ~ Crop * Fertilizer, data = crop.data)
+colnames(model.matrix(crop.lm))
+
+ [1] "(Intercept)"                 "CropRice"      "CropSoy"       "CropWheat"
+ [5] "FertilizerBlend Y"           "FertilizerBlend Z"
+ [7] "CropRice:FertilizerBlend Y"  "CropSoy:FertilizerBlend Y"   "CropWheat:FertilizerBlend Y"
+[10] "CropRice:FertilizerBlend Z"  "CropSoy:FertilizerBlend Z"   "CropWheat:FertilizerBlend Z"</code></pre>
+          <p>Which statement is correct?</p>
+          <ol type="A" class="options">
+            <li>The baseline levels are Corn (Crop) and Blend X (Fertilizer); the model has 12 parameters, and the interaction terms allow the effect of fertilizer to differ across crops</li>
+            <li>The baseline levels are Wheat (Crop) and Blend Z (Fertilizer)</li>
+            <li>The * operator means only the interaction is fitted, without main effects</li>
+            <li>The model matrix shows 12 parameters for 60 observations, so 60 − 12 = 48 degrees of freedom are available for the residual error</li>
+          </ol>
+        </td></tr>
+        <tr><td><button type="button" class="btn btn-primary btn-view" id="btn20" aria-expanded="false" aria-controls="ans20" onclick="toggleAnswer(20)">View Answer</button></td></tr>
+        <tr class="answer-row" id="ans20" hidden><td>
+          <p class="correct">Answer: A.</p>
+          <p><em>Justification:</em> Baselines are identified by the absent levels: Crop dummies are Rice/Soy/Wheat (Corn absent, so Corn is baseline) and Fertilizer dummies are Blend Y/Z (Blend X absent, so Blend X is baseline). The 12 columns = 1 intercept + 3 + 2 main-effect dummies + 3 × 2 = 6 interaction dummies, matching the note's statement that the two-way regression "will also include an interaction term" for inference on interaction effects, paralleling the replicated RBD two-way ANOVA.</p>
+          <p class="mb-0"><em>Why the others are wrong:</em> B reverses the logic: the omitted levels are the baselines, not the ones appearing as dummies. C is wrong: in R formula syntax, A * B expands to A + B + A:B, i.e., main effects plus interaction; only A:B alone would fit the interaction without main effects. D: although 60 − 12 = 48 is a correct arithmetic consequence, it is not the statement being asked about; it does not describe what the column names reveal (baselines, main effects, and interactions). As a distractor it mixes a true fact with an irrelevant conclusion, so the key interpretive content is in option A.</p>
+        </td></tr>
+      </tbody>
+    </table>
+
+<!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+<!--XXXXXXXXXXXXXXXXXXXXXXXXXXX  FOOTER  XXXXXXXXXXXXXXXXXXXXXXX-->
+<!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+<footer class="col-md-12">
+<center><font color = "navy" size =2>
+    <p class="text-center">Copyright &copy; 
+        <script>
+            var CurrentYear = new Date().getFullYear()
+            document.write(CurrentYear)
+        </script>
+       C. Peng. Last updated: 
+         <script> 
+            document.write(new Date().toLocaleDateString()); 
+         </script> 
+      </font>
+ <a href='http://www.freevisitorcounters.com'>.</a> 
+<script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+<script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script></p>
+</center>
+</footer>
+
+</div>
+
+<script>
+  var TOTAL = 20;
+  function setState(n, show) {
+    document.getElementById('ans' + n).hidden = !show;
+    var b = document.getElementById('btn' + n);
+    b.textContent = show ? 'Hide Answer' : 'View Answer';
+    b.setAttribute('aria-expanded', show ? 'true' : 'false');
+  }
+  function toggleAnswer(n) {
+    setState(n, document.getElementById('ans' + n).hidden);
+  }
+  function setAll(show) {
+    for (var i = 1; i <= TOTAL; i++) setState(i, show);
+  }
+</script>
+</body>
+</html>

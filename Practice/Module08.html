@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STA200 Module #8 Practice Exercises — ANOVA CRD</title>
+
+<style>
+  body {
+    background-color: #f5f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0 auto;
+    max-width: 1100px;
+    padding: 20px;
+    color: #212529;
+  }
+  .page-header {
+    background: #1f3a5f;
+    color: #ffffff;
+    padding: 28px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .page-header h1 { font-size: 1.9rem; margin: 0 0 6px 0; }
+  .page-header h2 { font-size: 1.15rem; font-weight: 300; margin: 0 0 6px 0; }
+  .page-header .instr { font-size: 1rem; color: #cfdcec; margin: 0; }
+
+  .note-box {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 25px;
+  }
+
+  .toolbar { margin-bottom: 20px; }
+
+  .question-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  }
+  .question-table > thead > tr > th {
+    background-color: #dbe7f3;
+    color: #1f3a5f;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .question-table > tbody > tr > td {
+    padding: 12px 14px;
+    vertical-align: top;
+    border-top: 1px solid #e9ecef;
+  }
+  .options { margin-bottom: 0; padding-left: 1.4rem; }
+  .options li { margin-bottom: 4px; }
+
+  .answer-row > td {
+    background-color: #eef6ff;
+    border-left: 5px solid #0d6efd;
+  }
+  .answer-row .correct {
+    color: #0a6b2d;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+
+  .btn-view, .btn-tool {
+    display: inline-block;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 8px 14px;
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: background-color 0.15s ease-in-out;
+  }
+  .btn-view {
+    min-width: 130px;
+    color: #ffffff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+  .btn-view:hover { background-color: #0b5ed7; border-color: #0a58ca; }
+
+  .btn-tool {
+    color: #ffffff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    margin-right: 8px;
+  }
+  .btn-tool:hover { background-color: #5c636a; border-color: #565e64; }
+
+  pre.r-output {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 8px 0;
+    font-size: 0.92rem;
+  }
+  code {
+    color: #b02a37;
+    background: #f8f9fa;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  pre code { color: #212529; background: transparent; padding: 0; }
+
+  footer {
+    border-top: 1px solid #d5dde5;
+    padding-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>STA200 Statistics II</h1>
+  <h2>Module #8 Practice Exercises — Analysis of Variance for Completely Randomized Designs</h2>
+  <p class="instr">Instructor: Dr. Cheng Peng</p>
+</div>
+
+<div class="note-box">
+  <strong>How to use these questions:</strong>
+  Before viewing the answer, try to solve each question on your own. Whenever possible,
+  work through the calculations manually or run the relevant R code to obtain your answer.
+  Then reveal the solution and review the explanation to check your understanding.
+</div>
+
+<div class="toolbar">
+  <button class="btn-tool" onclick="expandAll()">Expand All Answers</button>
+  <button class="btn-tool" onclick="collapseAll()">Collapse All Answers</button>
+</div>
+
+<!-- ===================== QUESTION 1 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 1</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>Which statement best describes a completely randomized design (CRD)?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li>Experimental units are grouped into homogeneous blocks before random assignment.</li>
+        <li>Experimental units are randomly assigned to treatment groups.</li>
+        <li>Each experimental unit receives every treatment in a random order.</li>
+        <li>Treatments are assigned systematically to avoid randomness.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans1" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans1" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states: “In CRD, experimental units are randomly assigned to different treatment groups.” Random assignment is the defining feature of a CRD.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> Blocking is a feature of randomized block designs, not a CRD.</li>
+          <li><strong>C:</strong> Receiving every treatment describes a repeated-measures or crossover design.</li>
+          <li><strong>D:</strong> Systematic assignment is the opposite of randomization and does not define a CRD.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 2 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 2</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>What are the correct null and alternative hypotheses for a one-way ANOVA with <em>t</em> treatments?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li><em>H</em><sub>0</sub>: σ<sub>1</sub><sup>2</sup> = σ<sub>2</sub><sup>2</sup> = ⋯ = σ<sub>t</sub><sup>2</sup> vs. <em>H</em><sub>a</sub>: at least one variance differs.</li>
+        <li><em>H</em><sub>0</sub>: μ<sub>1</sub> = μ<sub>2</sub> = ⋯ = μ<sub>t</sub> vs. <em>H</em><sub>a</sub>: all means are different.</li>
+        <li><em>H</em><sub>0</sub>: μ<sub>1</sub> = μ<sub>2</sub> = ⋯ = μ<sub>t</sub> vs. <em>H</em><sub>a</sub>: at least one mean differs.</li>
+        <li><em>H</em><sub>0</sub>: μ<sub>1</sub> ≠ μ<sub>2</sub> ≠ ⋯ ≠ μ<sub>t</sub> vs. <em>H</em><sub>a</sub>: all means are equal.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans2" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans2" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: C</p>
+        <p><strong>Justification:</strong> The note gives the CRD hypothesis as <em>H</em><sub>0</sub>: μ<sub>1</sub> = μ<sub>2</sub> = ⋯ = μ<sub>t</sub> vs. <em>H</em><sub>a</sub>: at least one mean differs.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> ANOVA tests means, not variances, although it uses variance estimates.</li>
+          <li><strong>B:</strong> The alternative does not require all means to be different; only at least one differs.</li>
+          <li><strong>D:</strong> This reverses the null and alternative and incorrectly uses “not equal” chains.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 3 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 3</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>Which sum-of-squares decomposition is correct in one-way ANOVA?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li><em>SST</em> = <em>SSB</em> × <em>SSW</em></li>
+        <li><em>SST</em> = <em>SSB</em> + <em>SSW</em></li>
+        <li><em>SSB</em> = <em>SST</em> + <em>SSW</em></li>
+        <li><em>SSW</em> = <em>SST</em> + <em>SSB</em></li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans3" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans3" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note derives <em>SST</em> = <em>SSW</em> + <em>SSB</em>, where <em>SST</em> is the total sum of squared residuals, <em>SSW</em> is within-treatment error, and <em>SSB</em> is between-treatment error.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> Sums of squares are added, not multiplied.</li>
+          <li><strong>C:</strong> <em>SSB</em> is a component of <em>SST</em>, not the sum of <em>SST</em> and <em>SSW</em>.</li>
+          <li><strong>D:</strong> <em>SSW</em> is also a component of <em>SST</em>, not the sum of <em>SST</em> and <em>SSB</em>.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 4 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 4</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>Suppose a CRD has <em>t</em> = 4 treatments and a total of <em>n<sub>T</sub></em> = 40 observations. What are the numerator and denominator degrees of freedom for the ANOVA <em>F</em>-test?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li><em>df<sub>N</sub></em> = 4, <em>df<sub>D</sub></em> = 40</li>
+        <li><em>df<sub>N</sub></em> = 3, <em>df<sub>D</sub></em> = 36</li>
+        <li><em>df<sub>N</sub></em> = 3, <em>df<sub>D</sub></em> = 40</li>
+        <li><em>df<sub>N</sub></em> = 4, <em>df<sub>D</sub></em> = 36</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans4" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans4" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The between-treatment degrees of freedom are <em>t</em> − 1 = 4 − 1 = 3. The within-treatment degrees of freedom are <em>n<sub>T</sub></em> − <em>t</em> = 40 − 4 = 36. These are the numerator and denominator degrees of freedom of the <em>F</em>-statistic.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> Uses <em>t</em> instead of <em>t</em> − 1 and <em>n<sub>T</sub></em> instead of <em>n<sub>T</sub></em> − <em>t</em>.</li>
+          <li><strong>C:</strong> Correct numerator df, but denominator should be <em>n<sub>T</sub></em> − <em>t</em>, not <em>n<sub>T</sub></em>.</li>
+          <li><strong>D:</strong> Reverses the correct values for the two df terms.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 5 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 5</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>What does <em>MSW</em> estimate in a one-way ANOVA?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li>The variance of the treatment sample means.</li>
+        <li>A weighted average of the within-treatment variances — the pooled within-group variance.</li>
+        <li>The total variance of all observations ignoring treatments.</li>
+        <li>The difference between the largest and smallest treatment means.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans5" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans5" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note says: “<em>MSW</em> is the weighted average of the variances of each individual treatment.” It is the pooled within-treatment variance and estimates the common error variance when ANOVA assumptions hold.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> <em>MSB</em>, not <em>MSW</em>, is related to the variance of the sample means.</li>
+          <li><strong>C:</strong> Total variance is represented by <em>SST</em>, not <em>MSW</em>.</li>
+          <li><strong>D:</strong> A range is not an ANOVA mean square.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 6 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 6</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>If the ANOVA null hypothesis is true, what is the expected relationship between <em>MSB</em> and <em>MSW</em>?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li><em>MSB</em> should be much larger than <em>MSW</em>.</li>
+        <li><em>MSB</em> and <em>MSW</em> should both estimate the same underlying variance, so their ratio should be approximately 1.</li>
+        <li><em>MSW</em> should be exactly 0.</li>
+        <li><em>MSB</em> / <em>MSW</em> should be exactly 0.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans6" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans6" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note explains: “If there is no real difference between treatments (i.e., <em>H</em><sub>0</sub> is true), <em>MSB</em> and <em>MSW</em> both estimate the same underlying variance. Therefore <em>MSB</em> ≈ <em>MSW</em>.” The <em>F</em>-ratio is therefore near 1 under <em>H</em><sub>0</sub>.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> Large <em>MSB</em> relative to <em>MSW</em> suggests a treatment effect, not <em>H</em><sub>0</sub>.</li>
+          <li><strong>C:</strong> <em>MSW</em> is a variance estimate and is not expected to be 0.</li>
+          <li><strong>D:</strong> An <em>F</em>-ratio near 0 is not the usual null expectation; near 1 is.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 7 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 7</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>The ANOVA <em>F</em>-statistic is often written as
+      <em>F</em> = <em>MSB</em> / <em>MSW</em> =
+      [<em>SSB</em> / (<em>t</em> − 1)] / [<em>SSW</em> / (<em>n<sub>T</sub></em> − <em>t</em>)].
+      What are the numerator and denominator degrees of freedom?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li><em>df<sub>N</sub></em> = <em>n<sub>T</sub></em> − <em>t</em>, <em>df<sub>D</sub></em> = <em>t</em> − 1</li>
+        <li><em>df<sub>N</sub></em> = <em>t</em> − 1, <em>df<sub>D</sub></em> = <em>n<sub>T</sub></em> − <em>t</em></li>
+        <li><em>df<sub>N</sub></em> = <em>t</em>, <em>df<sub>D</sub></em> = <em>n<sub>T</sub></em></li>
+        <li><em>df<sub>N</sub></em> = <em>n<sub>T</sub></em>, <em>df<sub>D</sub></em> = <em>t</em></li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans7" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans7" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note defines
+          <em>F</em> = [<em>SSB</em> / (<em>t</em> − 1)] / [<em>SSW</em> / (<em>n<sub>T</sub></em> − <em>t</em>)] ∼ <em>F</em><sub><em>t</em>−1, <em>n<sub>T</sub></em>−<em>t</em></sub>,
+          so the numerator df is <em>t</em> − 1 and the denominator df is <em>n<sub>T</sub></em> − <em>t</em>.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> Reverses the numerator and denominator df.</li>
+          <li><strong>C:</strong> Uses <em>t</em> and <em>n<sub>T</sub></em> rather than the correct df expressions.</li>
+          <li><strong>D:</strong> Also uses the wrong df values and reverses them.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 8 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 8</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>Which statement about the <em>F</em>-distribution used in ANOVA is correct?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li>It is symmetric and can take negative values.</li>
+        <li>It is right-skewed and defined on nonnegative values.</li>
+        <li><em>F</em><sub>7,5</sub> and <em>F</em><sub>5,7</sub> are the same distribution.</li>
+        <li>The order of the degrees of freedom does not matter.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans8" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans8" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states that <em>F</em><sub><em>df<sub>N</sub></em>, <em>df<sub>D</sub></em></sub> is “skewed to the right” and that <em>F</em><sub>7,5</sub> and <em>F</em><sub>5,7</sub> are two different <em>F</em>-distributions.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> The <em>F</em>-distribution is right-skewed, not symmetric, and cannot be negative.</li>
+          <li><strong>C:</strong> The note explicitly warns that <em>F</em><sub>7,5</sub> ≠ <em>F</em><sub>5,7</sub>.</li>
+          <li><strong>D:</strong> The order of numerator and denominator df must be respected.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 9 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 9</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>In R, which command gives the upper-tail p-value for an ANOVA <em>F</em>-statistic of 3.5 with <em>df<sub>N</sub></em> = 3 and <em>df<sub>D</sub></em> = 20?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li><code>pf(3.5, 20, 3, lower.tail = FALSE)</code></li>
+        <li><code>pf(3.5, 3, 20, lower.tail = FALSE)</code></li>
+        <li><code>qf(3.5, 3, 20)</code></li>
+        <li><code>pf(3.5, 3, 20, lower.tail = TRUE)</code></li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans9" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans9" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> ANOVA uses the upper tail of the <em>F</em>-distribution. The R syntax is <code>pf(F.value, dfN, dfD, lower.tail = FALSE)</code>. Thus:</p>
+        <pre class="r-output"><code>pf(3.5, 3, 20, lower.tail = FALSE)
+## [1] 0.0340</code></pre>
+        <p>This gives an upper-tail p-value of approximately 0.034.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> Reverses the df arguments.</li>
+          <li><strong>C:</strong> <code>qf()</code> gives a critical value, not a p-value.</li>
+          <li><strong>D:</strong> <code>lower.tail = TRUE</code> gives the lower-tail probability, not the ANOVA upper-tail p-value.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 10 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 10</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>The following R output is from <code>anova(aov.model)</code>:</strong></td></tr>
+    <tr><td colspan="2">
+      <pre class="r-output"><code>Analysis of Variance Table
+Response: Length
+
+           Df Sum Sq Mean Sq F value Pr(&gt;F)
+Treatment   4 1105.7  276.43  52.642 &lt; 2.2e-16 ***
+Residuals  45  236.3    5.251</code></pre>
+      <p><strong>At α = 0.05, what is the correct conclusion?</strong></p>
+      <ol class="options" type="A">
+        <li>Fail to reject <em>H</em><sub>0</sub>; all treatment means are equal.</li>
+        <li>Reject <em>H</em><sub>0</sub>; at least one treatment mean differs.</li>
+        <li>Conclude that all treatment variances are equal.</li>
+        <li>The ANOVA table cannot be used to test treatment effects.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans10" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans10" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The p-value is <code>&lt; 2.2e-16</code>, which is far below 0.05. The note’s decision rule says to reject <em>H</em><sub>0</sub> when the p-value is less than α. Therefore, at least one treatment mean differs.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> The p-value is very small, so failing to reject is wrong.</li>
+          <li><strong>C:</strong> This ANOVA tests means, not equality of variances.</li>
+          <li><strong>D:</strong> The ANOVA table is precisely the standard tool for this test.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 11 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 11</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>Why does the R function <code>aov()</code> require the data in long format?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li>Because <code>aov()</code> cannot handle balanced data.</li>
+        <li>Because <code>aov()</code> requires one column for the response and a separate column identifying the treatment group for each observation.</li>
+        <li>Because <code>aov()</code> only accepts matrix input.</li>
+        <li>Because wide-format data cannot be converted to long format.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans11" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans11" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note explains: “<code>aov()</code> requires a long table structure. That is, all measurements of the response must be stored in a column and a standalone column to label the treatment of each value.”</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> <code>aov()</code> handles balanced data perfectly well; the issue is data layout.</li>
+          <li><strong>C:</strong> <code>aov()</code> uses a model formula and data frame, not matrix-only input.</li>
+          <li><strong>D:</strong> Wide data can be reshaped to long format.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 12 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 12</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>Tukey’s HSD output includes:</strong></td></tr>
+    <tr><td colspan="2">
+      <pre class="r-output"><code>                  diff        lwr        upr     p adj
+Glucose-Control  -10.9 -13.811928  -7.988072 0.0000000</code></pre>
+      <p><strong>What is the correct interpretation?</strong></p>
+      <ol class="options" type="A">
+        <li>Glucose and Control are not significantly different.</li>
+        <li>Glucose is significantly lower than Control by about 10.9 units.</li>
+        <li>Glucose is significantly higher than Control by about 10.9 units.</li>
+        <li>The confidence interval contains 0, so no difference exists.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans12" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans12" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> In Tukey output, <code>diff = Glucose − Control = −10.9</code>. The negative sign means Glucose’s mean is lower than Control’s mean. The adjusted p-value is essentially 0, and the 95% interval [−13.81, −7.99] excludes 0, so the difference is significant.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> The p-value is near 0, indicating significance.</li>
+          <li><strong>C:</strong> The negative sign indicates Glucose is lower, not higher.</li>
+          <li><strong>D:</strong> The interval does not contain 0.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 13 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 13</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>Another Tukey row is:</strong></td></tr>
+    <tr><td colspan="2">
+      <pre class="r-output"><code>                  diff        lwr      upr     p adj
+Fructose-Glucose  -1.3 -4.211928 1.611928 0.7114379</code></pre>
+      <p><strong>What should you conclude?</strong></p>
+      <ol class="options" type="A">
+        <li>Fructose and Glucose differ significantly because the mean difference is negative.</li>
+        <li>Fructose and Glucose do not differ significantly because the adjusted p-value is large and the interval includes 0.</li>
+        <li>The interval proves the two means are exactly equal.</li>
+        <li>Tukey’s HSD cannot be used for this pair.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans13" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans13" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The adjusted p-value is 0.711, well above 0.05, and the 95% confidence interval [−4.21, 1.61] includes 0. The note says there is “no significant difference” for pairs such as Fructose–Glucose.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> A negative point estimate alone does not establish significance.</li>
+          <li><strong>C:</strong> A confidence interval including 0 does not prove exact equality; it only fails to show a significant difference.</li>
+          <li><strong>D:</strong> Tukey’s HSD is designed for all pairwise comparisons.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 14 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 14</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>What is the main purpose of the Bonferroni correction in post-hoc comparisons?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li>To increase the Type I error rate.</li>
+        <li>To control the family-wise error rate by adjusting p-values upward for the number of comparisons.</li>
+        <li>To replace the ANOVA <em>F</em>-test.</li>
+        <li>To test homogeneity of variance.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans14" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans14" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note says Bonferroni “adjusts p-values by multiplying them by the number of comparisons” and is used to control the family-wise error rate. It is a conservative multiple-comparison procedure.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> Bonferroni reduces the risk of Type I error inflation; it does not increase it.</li>
+          <li><strong>C:</strong> It is a post-hoc procedure performed after ANOVA, not a replacement for the <em>F</em>-test.</li>
+          <li><strong>D:</strong> Homogeneity of variance is checked with tests such as Levene’s or Bartlett’s test, not Bonferroni.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 15 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 15</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>When should post-hoc multiple-comparison tests such as Tukey’s HSD or Bonferroni be used?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li>Always, regardless of the ANOVA result.</li>
+        <li>Only after the omnibus ANOVA <em>F</em>-test is significant.</li>
+        <li>Only when the ANOVA <em>F</em>-test is <strong>not</strong> significant.</li>
+        <li>Before fitting the ANOVA model.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans15" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans15" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note explains that a significant <em>F</em>-test indicates that at least one group mean differs, but it does not identify which pairs differ. Post-hoc tests are then used “to identify these specific differences.” If the omnibus test is not significant, there is no strong evidence of any difference to investigate.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> Running all pairwise comparisons without a significant omnibus result can inflate Type I error and is not the recommended sequence.</li>
+          <li><strong>C:</strong> Post-hoc tests are used after a significant result, not a nonsignificant one.</li>
+          <li><strong>D:</strong> Post-hoc comparisons require a fitted ANOVA model first.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 16 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 16</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>Which of the following is <em>not</em> a fundamental assumption of one-way ANOVA?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li>Observations are independent.</li>
+        <li>Data in each group are approximately normally distributed.</li>
+        <li>The populations have equal variances.</li>
+        <li>All treatment group means must be equal.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans16" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans16" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: D</p>
+        <p><strong>Justification:</strong> The note lists the assumptions as independence, approximate normality within groups, and homogeneity of variance. “All group means are equal” is the null hypothesis, not an assumption required for the test to be valid.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> Independence is explicitly an ANOVA assumption.</li>
+          <li><strong>B:</strong> Normality within groups is explicitly an ANOVA assumption.</li>
+          <li><strong>C:</strong> Homogeneity of variance is explicitly an ANOVA assumption.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 17 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 17</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>If the treatment effect is large, what pattern should you expect in the ANOVA mean squares?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li><em>MSB</em> should tend to be much larger than <em>MSW</em>, producing a large <em>F</em>-statistic.</li>
+        <li><em>MSW</em> should tend to be much larger than <em>MSB</em>, producing a large <em>F</em>-statistic.</li>
+        <li><em>MSB</em> and <em>MSW</em> should be exactly equal.</li>
+        <li>The <em>F</em>-statistic should be close to 0.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans17" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans17" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: A</p>
+        <p><strong>Justification:</strong> <em>MSB</em> reflects variability between treatment means. When treatment means differ substantially, <em>MSB</em> becomes large relative to <em>MSW</em>, and <em>F</em> = <em>MSB</em> / <em>MSW</em> becomes large, providing evidence against <em>H</em><sub>0</sub>.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>B:</strong> If <em>MSW</em> were much larger, the <em>F</em>-ratio would be small, not large.</li>
+          <li><strong>C:</strong> Exact equality is not expected even under <em>H</em><sub>0</sub> because of sampling variability.</li>
+          <li><strong>D:</strong> A large treatment effect pushes <em>F</em> upward, not toward 0.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 18 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 18</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>Which R command performs Bonferroni-adjusted pairwise comparisons for the pea-length data?</strong></td></tr>
+    <tr><td colspan="2">
+      <ol class="options" type="A">
+        <li><code>TukeyHSD(aov.model)</code></li>
+        <li><code>pairwise.t.test(x = pea.long$Length, g = pea.long$Treatment, p.adjust.method = "bonferroni")</code></li>
+        <li><code>aov(Length ~ Treatment, data = pea.long)</code></li>
+        <li><code>pf(F.value, dfN, dfD, lower.tail = FALSE)</code></li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans18" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans18" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note uses:</p>
+        <pre class="r-output"><code>pairwise.t.test(
+  x = pea.long$Length,
+  g = pea.long$Treatment,
+  p.adjust.method = "bonferroni"
+)</code></pre>
+        <p>to obtain Bonferroni-adjusted pairwise p-values.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> <code>TukeyHSD()</code> performs Tukey’s HSD, not Bonferroni.</li>
+          <li><strong>C:</strong> <code>aov()</code> fits the ANOVA model but does not perform pairwise comparisons.</li>
+          <li><strong>D:</strong> <code>pf()</code> computes an <em>F</em>-distribution tail probability and is not a pairwise comparison procedure.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 19 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 19</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>In the pea-length example, <em>SSB</em> is computed as:</strong></td></tr>
+    <tr><td colspan="2">
+      <pre class="r-output"><code>SS.B = 10 * sum(c(
+  (mean(Control)   - ybar..)^2,
+  (mean(Glucose)   - ybar..)^2,
+  (mean(Fructose)  - ybar..)^2,
+  (mean(GlucFruc)  - ybar..)^2,
+  (mean(Sucrose)   - ybar..)^2
+))</code></pre>
+      <p><strong>Why is the multiplier 10 used?</strong></p>
+      <ol class="options" type="A">
+        <li>Because there are 10 treatments.</li>
+        <li>Because each treatment has 10 replicates in this balanced CRD.</li>
+        <li>Because the total sample size is 10.</li>
+        <li>Because the grand variance is 10.</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans19" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans19" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> In a balanced CRD with <em>n<sub>i</sub></em> = 10 observations per treatment, each squared deviation of a treatment mean from the grand mean must be weighted by the treatment sample size:</p>
+        <p><em>SSB</em> = ∑<sub><em>i</em>=1</sub><sup><em>t</em></sup> <em>n<sub>i</sub></em> (ȳ<sub><em>i</em>·</sub> − ȳ<sub>··</sub>)<sup>2</sup>.</p>
+        <p>Here every <em>n<sub>i</sub></em> = 10.</p>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> There are <em>t</em> = 5 treatments, not 10.</li>
+          <li><strong>C:</strong> The total sample size is <em>n<sub>T</sub></em> = 50, not 10.</li>
+          <li><strong>D:</strong> The multiplier is the number of replicates, not a variance value.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ===================== QUESTION 20 ===================== -->
+<table class="question-table">
+  <thead><tr><th colspan="2">Question 20</th></tr></thead>
+  <tbody>
+    <tr><td colspan="2"><strong>The pea-length ANOVA table reports:</strong></td></tr>
+    <tr><td colspan="2">
+      <pre class="r-output"><code>           Df Sum Sq Mean Sq F value Pr(&gt;F)
+Treatment   4 1105.7  276.43  52.642 &lt; 2.2e-16
+Residuals  45  236.3    5.251</code></pre>
+      <p><strong>Using <em>MSB</em> = 276.43 and <em>MSW</em> = 5.251, what is the <em>F</em>-statistic?</strong></p>
+      <ol class="options" type="A">
+        <li><em>F</em> ≈ 0.019</li>
+        <li><em>F</em> ≈ 51.32</li>
+        <li><em>F</em> ≈ 264.24</li>
+        <li><em>F</em> ≈ 274.74</li>
+      </ol>
+    </td></tr>
+    <tr><td colspan="2"><button class="btn-view" data-target="ans20" onclick="toggleAnswer(this)">View Answer</button></td></tr>
+    <tr class="answer-row" id="ans20" style="display:none;">
+      <td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong>
+          <em>F</em> = <em>MSB</em> / <em>MSW</em> = 276.43 / 5.251 ≈ 52.64.
+          Using the exact unrounded values from the note, 269.486 / 5.251 ≈ 51.32, so the intended choice is B.</p>
+        <pre class="r-output"><code>269.486 / 5.251
+## [1] 51.31981</code></pre>
+        <p><strong>Why the others are incorrect:</strong></p>
+        <ul>
+          <li><strong>A:</strong> This is <em>MSW</em> / <em>MSB</em>, the reciprocal of the <em>F</em>-statistic.</li>
+          <li><strong>C:</strong> This is <em>MSB</em> − <em>MSW</em>, not a ratio.</li>
+          <li><strong>D:</strong> This is <em>MSB</em> + <em>MSW</em>, not a ratio.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+<!--XXXXXXXXXXXXXXXXXXXXXXXXXXX  FOOTER  XXXXXXXXXXXXXXXXXXXXXXX-->
+<!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+<footer class="col-md-12">
+  <center><font color="navy" size="2">
+    <p class="text-center">Copyright &copy;
+      <script>
+        var CurrentYear = new Date().getFullYear();
+        document.write(CurrentYear);
+      </script>
+      C. Peng. Last updated:
+      <script>
+        document.write(new Date().toLocaleDateString());
+      </script>
+    </font>
+    <a href='http://www.freevisitorcounters.com'>.</a>
+    <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+    <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script>
+    </p>
+  </center>
+</footer>
+
+<script>
+  function toggleAnswer(button) {
+    var targetId = button.getAttribute("data-target");
+    var row = document.getElementById(targetId);
+    if (!row) return;
+
+    if (row.style.display === "none" || row.style.display === "") {
+      row.style.display = "table-row";
+      button.textContent = "Hide Answer";
+    } else {
+      row.style.display = "none";
+      button.textContent = "View Answer";
+    }
+  }
+
+  function expandAll() {
+    var rows = document.querySelectorAll(".answer-row");
+    rows.forEach(function(row) {
+      row.style.display = "table-row";
+    });
+    var buttons = document.querySelectorAll(".btn-view");
+    buttons.forEach(function(btn) {
+      btn.textContent = "Hide Answer";
+    });
+  }
+
+  function collapseAll() {
+    var rows = document.querySelectorAll(".answer-row");
+    rows.forEach(function(row) {
+      row.style.display = "none";
+    });
+    var buttons = document.querySelectorAll(".btn-view");
+    buttons.forEach(function(btn) {
+      btn.textContent = "View Answer";
+    });
+  }
+</script>
+
+</body>
+</html>

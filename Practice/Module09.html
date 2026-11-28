@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STA200 Practice Exercises – Module 9: Two-Way ANOVA and RBD</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body {
+    background-color: #f5f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .page-header {
+    background: #1f3a5f;
+    color: #ffffff;
+    padding: 28px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+  .page-header h2 { font-size: 1.15rem; font-weight: 300; margin-bottom: 0; }
+  .page-header .instr { font-size: 1rem; color: #cfdcec; }
+
+  .question-table {
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  }
+  .question-table > thead > tr > th {
+    background-color: #dbe7f3;
+    color: #1f3a5f;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .question-table > tbody > tr > td {
+    padding: 12px 14px;
+    vertical-align: top;
+  }
+  .options { margin-bottom: 0; padding-left: 1.4rem; }
+  .options li { margin-bottom: 4px; }
+
+  .answer-row > td {
+    background-color: #eef6ff;
+    border-left: 5px solid #0d6efd;
+  }
+  .answer-row .correct {
+    color: #0a6b2d;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .btn-view { min-width: 130px; }
+
+  .toolbar { margin-bottom: 20px; }
+
+  footer {
+    border-top: 1px solid #d5dde5;
+    padding-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  .note-box {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 25px;
+  }
+
+  [hidden] { display: none !important; }
+
+  .r-output {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    line-height: 1.35;
+    overflow-x: auto;
+    margin: 8px 0;
+  }
+  .answer-row ul { margin-bottom: 0; }
+  .answer-row p { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="container my-4">
+
+  <header class="page-header">
+    <h1>STA200 Statistics II — Practice Exercises</h1>
+    <h2>Module 9: One-Way ANOVA and Randomized Block Designs</h2>
+    <p class="instr mb-0 mt-2">Instructor: Dr. Cheng Peng</p>
+  </header>
+
+  <div class="note-box">
+    <strong>How to use these questions:</strong> Each question is contained in its own box. Work through the calculations or run the R code first, then click the blue <em>View Answer</em> button to reveal the correct answer, a justification based on the note, and explanations for why the other choices are incorrect.
+  </div>
+
+  <div class="toolbar d-flex justify-content-between align-items-center">
+    <div>
+      <button id="toggle-all" class="btn btn-outline-primary">Show All Answers</button>
+    </div>
+    <div class="text-muted small">20 questions</div>
+  </div>
+
+  <!-- ================= QUESTION 1 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 1</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>In the note, what does a randomized block design (RBD) add compared with a completely randomized design (CRD)?</strong></p>
+          <ol class="options" type="A">
+            <li>It removes the need for an ANOVA table.</li>
+            <li>It adds one additional factor variable, so both the additional factor and the treatment effect can be assessed.</li>
+            <li>It replaces the response variable with a block variable.</li>
+            <li>It guarantees that no interaction effect can exist.</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The note states that RBD designs add one additional factor variable and that researchers are interested in assessing the effects of both the additional factor and the treatment effect.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> ANOVA is still used; the RBD simply changes the sum-of-squares decomposition.</li>
+            <li><strong>C:</strong> The response variable remains continuous; the block factor is added.</li>
+            <li><strong>D:</strong> If the RBD has replicates, an interaction effect can be assessed; it is not automatically absent.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 2 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 2</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Which null hypothesis corresponds to the interaction effect in a two-way ANOVA?</strong></p>
+          <ol class="options" type="A">
+            <li>All levels of Factor A have the same mean effect.</li>
+            <li>All levels of Factor B have the same mean effect.</li>
+            <li>There is no interaction between Factor A and Factor B.</li>
+            <li>All group variances are equal.</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: C</p>
+          <p><strong>Justification:</strong> The note defines the interaction hypotheses as <em>H</em><sub>0</sub>: There is no interaction between Factor A and Factor B, versus <em>H</em><sub>a</sub>: There is a significant interaction effect.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> This is the null hypothesis for the main effect of Factor A.</li>
+            <li><strong>B:</strong> This is the null hypothesis for the main effect of Factor B.</li>
+            <li><strong>D:</strong> Equal variances are an assumption, not an ANOVA null hypothesis about means or interaction.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 3 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 3</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>If Factor A has <em>a</em> = 4 levels and Factor B has <em>b</em> = 2 levels, what are the numerator degrees of freedom for the interaction <em>F</em>-test?</strong></p>
+          <ol class="options" type="A">
+            <li>3</li>
+            <li>8</li>
+            <li>5</li>
+            <li>1</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: A</p>
+          <p><strong>Justification:</strong> The interaction test statistic is</p>
+          <p><em>F</em><sub>AB</sub> = MSAB / MSE ~ <em>F</em><sub>(a−1)(b−1), N−ab</sub>.</p>
+          <p>Thus, (<em>a</em> − 1)(<em>b</em> − 1) = (4 − 1)(2 − 1) = 3. The note gives this <em>F</em>-distribution for the interaction effect.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>B:</strong> 8 = <em>ab</em>, which is the number of treatment combinations, not interaction df.</li>
+            <li><strong>C:</strong> 5 = <em>a</em> + <em>b</em> − 1, not the interaction df.</li>
+            <li><strong>D:</strong> 1 = <em>b</em> − 1, which is the df for Factor B, not the interaction.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 4 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 4</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>For a two-way ANOVA with <em>N</em> = 40, <em>a</em> = 4, and <em>b</em> = 2, what is the residual degrees of freedom <em>DF.E</em>?</strong></p>
+          <ol class="options" type="A">
+            <li>32</li>
+            <li>39</li>
+            <li>33</li>
+            <li>36</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: A</p>
+          <p><strong>Justification:</strong> The note gives</p>
+          <p><em>DF.E</em> = <em>N</em> − <em>ab</em>.</p>
+          <p>Therefore, <em>DF.E</em> = 40 − (4)(2) = 40 − 8 = 32. This matches the residual df in the plant-growth output.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>B:</strong> 39 = <em>N</em> − 1, the total df.</li>
+            <li><strong>C:</strong> 33 comes from an incorrect subtraction.</li>
+            <li><strong>D:</strong> 36 does not correspond to any standard df in this design.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 5 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 5</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>The note reports the following two-way ANOVA output for the plant-growth data:</strong></p>
+          <pre class="r-output"><code>summary(growth.aov)
+#             Df Sum Sq Mean Sq F value Pr(&gt;F)
+# sunlight     3 18.765   6.255  23.049 3.9e-08 ***
+# watering     1  0.000   0.000   0.001   0.976
+# sunlight:watering 3 1.011 0.337 1.242 0.311
+# Residuals   32  8.684   0.271</code></pre>
+          <p><strong>At the 5% significance level, which effect is statistically significant?</strong></p>
+          <ol class="options" type="A">
+            <li>Sunlight only</li>
+            <li>Watering only</li>
+            <li>The interaction only</li>
+            <li>All three effects</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: A</p>
+          <p><strong>Justification:</strong> The p-value for sunlight is 3.9 × 10<sup>−8</sup> &lt; 0.05, so the sunlight main effect is significant. The watering p-value is 0.976, and the interaction p-value is 0.311, both greater than 0.05.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>B:</strong> Watering has p = 0.976, so it is not significant.</li>
+            <li><strong>C:</strong> The interaction has p = 0.311, so it is not significant.</li>
+            <li><strong>D:</strong> Only sunlight is significant.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 6 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 6</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>The interaction p-value in the plant-growth ANOVA is 0.311. What is the most appropriate interpretation?</strong></p>
+          <ol class="options" type="A">
+            <li>Sunlight significantly changes plant growth only when watering is daily.</li>
+            <li>There is no significant interaction, so the effect of sunlight does not depend significantly on watering frequency.</li>
+            <li>Watering significantly affects growth only when sunlight is high.</li>
+            <li>The main effects cannot be interpreted at all.</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The note states that the interaction is not significant and concludes that the effect of sunlight does not depend on watering frequency.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> A nonsignificant interaction does not support a conditional effect of sunlight within one watering level.</li>
+            <li><strong>C:</strong> This is also a conditional-effect claim not supported by the nonsignificant interaction.</li>
+            <li><strong>D:</strong> Main effects can still be interpreted when interaction is nonsignificant; the note interprets the significant sunlight main effect.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 7 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 7</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Which R command fits the two-way ANOVA model with an interaction term in the note?</strong></p>
+          <ol class="options" type="A">
+            <li><code>aov(growth ~ sunlight + watering, data = growthData)</code></li>
+            <li><code>aov(growth ~ sunlight * watering, data = growthData)</code></li>
+            <li><code>aov(growth ~ sunlight:watering, data = growthData)</code></li>
+            <li><code>lm(growth ~ sunlight * watering, data = growthData)</code></li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The note uses</p>
+          <pre class="r-output"><code>growth.aov &lt;- aov(growth ~ sunlight*watering, data = growthData)</code></pre>
+          <p>to fit the ANOVA with an interactive effect.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> <code>+</code> includes only main effects, not the interaction.</li>
+            <li><strong>C:</strong> <code>:</code> includes only the interaction, omitting the main effects.</li>
+            <li><strong>D:</strong> <code>lm()</code> fits a linear model, but the note specifies <code>aov()</code> for performing the ANOVA.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 8 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 8</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Using the residual row from the output in Question 5, what is the residual mean square MSE?</strong></p>
+          <ol class="options" type="A">
+            <li>6.255</li>
+            <li>0.337</li>
+            <li>8.684</li>
+            <li>0.271</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: D</p>
+          <p><strong>Justification:</strong> The residual sum of squares is 8.684, and the residual df is 32, so</p>
+          <p>MSE = 8.684 / 32 ≈ 0.271.</p>
+          <p>The output reports Residuals Mean Sq = 0.271.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> 6.255 is the mean square for sunlight, not the residual MSE.</li>
+            <li><strong>B:</strong> 0.337 is the interaction mean square.</li>
+            <li><strong>C:</strong> 8.684 is the residual sum of squares, not the mean square.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 9 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 9</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>To compute the p-value for the sunlight <em>F</em>-statistic 23.049 with <em>df</em><sub>1</sub> = 3 and <em>df</em><sub>2</sub> = 32, which R command is correct?</strong></p>
+          <ol class="options" type="A">
+            <li><code>pf(23.049, 3, 32, lower.tail = TRUE)</code></li>
+            <li><code>pf(23.049, 32, 3, lower.tail = FALSE)</code></li>
+            <li><code>pf(23.049, 3, 32, lower.tail = FALSE)</code></li>
+            <li><code>pf(23.049, 3, 32)</code></li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: C</p>
+          <p><strong>Justification:</strong> The note recommends using</p>
+          <pre class="r-output"><code>pf(F, df1, df2, lower.tail = FALSE)</code></pre>
+          <p>to obtain the upper-tail p-value for an ANOVA <em>F</em>-test.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> <code>lower.tail = TRUE</code> gives the lower-tail probability, not the ANOVA p-value.</li>
+            <li><strong>B:</strong> The degrees of freedom are reversed.</li>
+            <li><strong>D:</strong> The default is <code>lower.tail = TRUE</code>, so this also gives the wrong tail probability.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 10 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 10</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Which <code>rep()</code> command produces the watering labels used in the note: five <code>"Daily"</code> labels followed by five <code>"Weekly"</code> labels, repeated four times?</strong></p>
+          <ol class="options" type="A">
+            <li><code>rep(c("Daily", "Weekly"), 4)</code></li>
+            <li><code>rep(c(rep("Daily", 5), rep("Weekly", 5)), 4)</code></li>
+            <li><code>rep(c(rep("Daily", 5), rep("Weekly", 5)), each = 4)</code></li>
+            <li><code>rep("Daily", 5) + rep("Weekly", 5)</code></li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The note constructs the watering variable as</p>
+          <pre class="r-output"><code>watering &lt;- rep(c(rep("Daily", 5), rep("Weekly", 5)), 4)</code></pre>
+          <p>so the inner pattern is repeated four times.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> This produces only eight labels, not forty.</li>
+            <li><strong>C:</strong> <code>each = 4</code> repeats each individual label four times, changing the pattern.</li>
+            <li><strong>D:</strong> Character vectors cannot be added with <code>+</code>.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 11 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 11</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>In an interaction plot, if the two line graphs are parallel and do not intersect, what does the note suggest?</strong></p>
+          <ol class="options" type="A">
+            <li>The factors definitely have a significant interaction.</li>
+            <li>The factors do not have an interactive effect.</li>
+            <li>The main effects cannot be tested.</li>
+            <li>The residual variance is zero.</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The note states that if the two line graphs are parallel, the factors do not have an interactive effect; otherwise they do have an interactive effect.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> Parallel lines suggest no interaction, not a significant interaction.</li>
+            <li><strong>C:</strong> Main effects can still be assessed.</li>
+            <li><strong>D:</strong> Parallel lines say nothing about residual variance being zero.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 12 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 12</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>What does the note say about the interaction effect when working with RBD data that have no replicates?</strong></p>
+          <ol class="options" type="A">
+            <li>The interaction effect is the only effect that can be tested.</li>
+            <li>The interaction effect is not available.</li>
+            <li>The interaction effect is always significant.</li>
+            <li>The interaction effect replaces the block effect.</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The note states that the interaction effect is not available if working with RBD data with no replicates.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> Main effects can still be assessed; interaction cannot.</li>
+            <li><strong>C:</strong> Interaction is not automatically significant; it is unavailable.</li>
+            <li><strong>D:</strong> The block effect and interaction are distinct.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 13 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 13</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Which assumption does the note describe as hard to test, so researchers usually justify it through the data-collection process?</strong></p>
+          <ol class="options" type="A">
+            <li>Normality</li>
+            <li>Homogeneity of variance</li>
+            <li>Independence of observations</li>
+            <li>Equal sample sizes</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: C</p>
+          <p><strong>Justification:</strong> The note says independence of observations is hard to test and is usually justified by the data-collection process.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> Normality can be checked with formal tests or diagnostic plots.</li>
+            <li><strong>B:</strong> Homogeneity of variance can be checked with formal tests.</li>
+            <li><strong>D:</strong> Equal sample sizes are a design feature, not one of the listed distributional assumptions.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 14 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 14</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>The Tukey HSD output includes:</strong></p>
+          <pre class="r-output"><code>$watering
+#              diff   lwr       upr       p adj
+# Weekly-Daily -0.005 -0.3405535 0.3305535 0.975975</code></pre>
+          <p><strong>What is the appropriate conclusion about the Weekly versus Daily watering difference?</strong></p>
+          <ol class="options" type="A">
+            <li>There is a highly significant difference.</li>
+            <li>There is no statistically significant difference at the 5% level.</li>
+            <li>Daily watering is significantly better than weekly watering.</li>
+            <li>The comparison is invalid because the interaction is nonsignificant.</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The adjusted p-value is 0.975975 &gt; 0.05, so the Weekly–Daily difference is not statistically significant.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> The p-value is close to 1, not small.</li>
+            <li><strong>C:</strong> The confidence interval includes zero, and the p-value is large.</li>
+            <li><strong>D:</strong> Tukey comparisons can still be performed even when interaction is nonsignificant; the note does so.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 15 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 15</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Using the ANOVA table in Question 5, what is the <em>F</em>-statistic for watering closest to?</strong></p>
+          <ol class="options" type="A">
+            <li>23.049</li>
+            <li>1.242</li>
+            <li>0.001</li>
+            <li>0.271</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: C</p>
+          <p><strong>Justification:</strong> The watering mean square is 0.000, and the residual mean square is 0.271, so</p>
+          <p><em>F</em><sub>watering</sub> ≈ 0.000 / 0.271 ≈ 0.000.</p>
+          <p>The output reports <em>F</em> = 0.001 due to rounding.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> 23.049 is the sunlight <em>F</em>-statistic.</li>
+            <li><strong>B:</strong> 1.242 is the interaction <em>F</em>-statistic.</li>
+            <li><strong>D:</strong> 0.271 is the residual mean square, not the <em>F</em>-statistic.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 16 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 16</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>In the plant-growth ANOVA output, the residual df is 32 and there are <em>ab</em> = 8 treatment combinations. What is the total sample size <em>N</em>?</strong></p>
+          <ol class="options" type="A">
+            <li>32</li>
+            <li>40</li>
+            <li>8</li>
+            <li>39</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> Since</p>
+          <p><em>DF.E</em> = <em>N</em> − <em>ab</em>,</p>
+          <p>we have 32 = <em>N</em> − 8 ⇒ <em>N</em> = 40. The note also states that the botanist plants 40 seeds.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> 32 is the residual df, not <em>N</em>.</li>
+            <li><strong>C:</strong> 8 is <em>ab</em>, the number of treatment combinations.</li>
+            <li><strong>D:</strong> 39 = <em>N</em> − 1, not <em>N</em>.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 17 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 17</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>If the data table is in wide format, what must be done before using <code>aov()</code> according to the note?</strong></p>
+          <ol class="options" type="A">
+            <li>Convert the response variable to a factor.</li>
+            <li>Reformat the table into long format with one response column and separate factor-label columns.</li>
+            <li>Remove one factor from the model.</li>
+            <li>Use <code>lm()</code> instead of <code>aov()</code>.</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The note says that if the data table is in wide format, it must be reformatted into a long table, placing all response values in a single column and using separate columns to label each response value with its associated factors.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> The response should remain continuous.</li>
+            <li><strong>C:</strong> Removing a factor changes the model and is not the required reshaping step.</li>
+            <li><strong>D:</strong> <code>aov()</code> can be used once the data are in long format.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 18 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 18</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>What does the following R command compute?</strong></p>
+          <pre class="r-output"><code>aggregate(growth ~ watering + sunlight, data = growthData, mean)</code></pre>
+          <ol class="options" type="A">
+            <li>The ANOVA table</li>
+            <li>The group means for each watering–sunlight combination</li>
+            <li>The Tukey HSD comparisons</li>
+            <li>The residuals of the ANOVA model</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The note uses <code>aggregate()</code> to compute the means of groups defined by the combination of watering and sunlight.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> <code>summary(aov(...))</code> produces the ANOVA table.</li>
+            <li><strong>C:</strong> <code>TukeyHSD()</code> produces the Tukey comparisons.</li>
+            <li><strong>D:</strong> Residuals are obtained from the fitted model, not from this <code>aggregate()</code> call.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 19 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 19</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>If a two-way ANOVA reveals a significant interaction effect, what does the note recommend for post-hoc comparisons?</strong></p>
+          <ol class="options" type="A">
+            <li>Compare only the overall main-effect means and ignore combinations.</li>
+            <li>Compare groups within factor-level combinations and use a simultaneous method such as Tukey’s HSD to control the family-wise error rate.</li>
+            <li>Do not perform any post-hoc comparisons.</li>
+            <li>Use a one-way ANOVA instead.</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The note states that when interaction is significant, the impact of one factor depends on the level of the other, so groups within combinations should be compared, and simultaneous methods such as Tukey’s HSD should be used to control inflated Type I error rates.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> Main-effect means may be misleading when interaction is significant.</li>
+            <li><strong>C:</strong> Post-hoc comparisons are especially important after a significant interaction.</li>
+            <li><strong>D:</strong> A one-way ANOVA would ignore the two-factor structure and interaction.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 20 ================= -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 20</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>The Tukey HSD output for sunlight includes:</strong></p>
+          <pre class="r-output"><code># None-High  -1.48  -2.1111999  -0.8488001  0.0000023</code></pre>
+          <p><strong>What is the appropriate conclusion?</strong></p>
+          <ol class="options" type="A">
+            <li>There is no significant difference between None and High sunlight.</li>
+            <li>None sunlight differs significantly from High sunlight; growth is lower under None sunlight.</li>
+            <li>High sunlight is significantly worse than None sunlight.</li>
+            <li>The comparison cannot be interpreted because the interaction is nonsignificant.</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td class="text-center">
+          <button class="btn btn-primary btn-sm btn-view">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" hidden>
+        <td>
+          <p class="correct">Correct answer: B</p>
+          <p><strong>Justification:</strong> The adjusted p-value is 0.0000023 &lt; 0.05, and the negative difference indicates that the None-sunlight mean is lower than the High-sunlight mean.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><strong>A:</strong> The p-value is very small, so the difference is significant.</li>
+            <li><strong>C:</strong> The sign is negative for None minus High, so None is lower, not higher.</li>
+            <li><strong>D:</strong> Tukey comparisons remain interpretable; the note performs them even when interaction is nonsignificant.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= FOOTER / HIT COUNTER ================= -->
+  <footer class="col-md-12">
+    <center><font color="navy" size="2">
+      <p class="text-center">Copyright &copy;
+        <script>
+          var CurrentYear = new Date().getFullYear()
+          document.write(CurrentYear)
+        </script>
+        C. Peng. Last updated:
+        <script>
+          document.write(new Date().toLocaleDateString());
+        </script>
+      </font>
+      <a href='http://www.freevisitorcounters.com'>.</a>
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script></p>
+    </center>
+  </footer>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Individual answer buttons
+    document.querySelectorAll('.btn-view').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var table = this.closest('table');
+        var answerRow = table.querySelector('.answer-row');
+        answerRow.hidden = !answerRow.hidden;
+
+        if (answerRow.hidden) {
+          this.textContent = 'View Answer';
+          this.classList.add('btn-primary');
+          this.classList.remove('btn-secondary');
+        } else {
+          this.textContent = 'Hide Answer';
+          this.classList.remove('btn-primary');
+          this.classList.add('btn-secondary');
+        }
+      });
+    });
+
+    // Show / hide all answers
+    var toggleAll = document.getElementById('toggle-all');
+    toggleAll.addEventListener('click', function () {
+      var answerRows = Array.prototype.slice.call(document.querySelectorAll('.answer-row'));
+      var anyHidden = answerRows.some(function (row) { return row.hidden; });
+
+      answerRows.forEach(function (row) {
+        row.hidden = !anyHidden;
+      });
+
+      document.querySelectorAll('.btn-view').forEach(function (btn) {
+        if (anyHidden) {
+          btn.textContent = 'Hide Answer';
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-secondary');
+        } else {
+          btn.textContent = 'View Answer';
+          btn.classList.add('btn-primary');
+          btn.classList.remove('btn-secondary');
+        }
+      });
+
+      this.textContent = anyHidden ? 'Hide All Answers' : 'Show All Answers';
+    });
+  });
+</script>
+
+</body>
+</html>

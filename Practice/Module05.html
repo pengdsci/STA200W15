@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STA200 Statistics II — Module #5 Practice Exercises</title>
+
+<!-- Bootstrap (for buttons / table utilities) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+<style>
+  body {
+    background-color: #f5f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .page-header {
+    background: #1f3a5f;
+    color: #ffffff;
+    padding: 28px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+  .page-header h2 { font-size: 1.15rem; font-weight: 300; margin-bottom: 0; }
+  .page-header .instr { font-size: 1rem; color: #cfdcec; }
+
+  .question-table {
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  }
+  .question-table > thead > tr > th {
+    background-color: #dbe7f3;
+    color: #1f3a5f;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .question-table > tbody > tr > td {
+    padding: 12px 14px;
+    vertical-align: top;
+  }
+  .options { margin-bottom: 0; padding-left: 1.4rem; }
+  .options li { margin-bottom: 4px; }
+
+  .answer-row > td {
+    background-color: #eef6ff;
+    border-left: 5px solid #0d6efd;
+  }
+  .answer-row .correct {
+    color: #0a6b2d;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .btn-view { min-width: 130px; }
+
+  .toolbar { margin-bottom: 20px; }
+
+  footer {
+    border-top: 1px solid #d5dde5;
+    padding-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  .note-box {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 25px;
+  }
+  pre.r-code {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    margin: 8px 0;
+    white-space: pre-wrap;
+  }
+  code { color: #b02a37; }
+  pre.r-code code { color: #212529; }
+</style>
+</head>
+<body>
+
+<div class="container py-4">
+
+  <!-- ==================== PAGE HEADER ==================== -->
+  <div class="page-header">
+    <h1>STA200 Statistics II &mdash; Practice Exercises for Module #5</h1>
+    <h2>Practice Exercises for Module #5: Chi-Square Test of Independence</h2>
+    <p class="instr mb-0 mt-2">Instructor: Dr. Cheng Peng</p>
+  </div>
+
+  <!-- ==================== HOW TO USE ==================== -->
+  <div class="note-box">
+    <strong>How to use these questions:</strong>
+    Before viewing the answer, try to solve each question on your own. Whenever possible, work
+    through the calculations manually or run the relevant R code to obtain your answer. Then click
+    <em>View Answer</em> and review the explanation to check your understanding. This approach will
+    help you build both conceptual understanding and practical data analysis skills.
+  </div>
+
+  <!-- ==================== TOOLBAR ==================== -->
+  <div class="toolbar">
+    <button class="btn btn-outline-primary" onclick="showAll()">Show All Answers</button>
+    <button class="btn btn-outline-secondary" onclick="hideAll()">Hide All Answers</button>
+  </div>
+
+  <!-- ==================== QUESTION 1 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 1</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Which study design is described by the following statement?</strong></p>
+          <p><em>“A group of individuals is followed over time to determine how many develop a certain
+          health outcome; the exposure variable splits the population into exposed and unexposed groups.”</em></p>
+          <ol class="options" type="A">
+            <li>Cross-sectional study</li>
+            <li>Randomized controlled trial</li>
+            <li>Prospective cohort study</li>
+            <li>Case-control study</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans1', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans1" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: C. Prospective cohort study</p>
+          <p><strong>Justification:</strong> The note states that a cohort study follows a group over time and that
+          “the exposure variable splits the population in exposed population and unexposed population.”
+          Prospective cohorts follow participants forward in time.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>A cross-sectional study analyses data at a single point in time.</li>
+            <li>A randomized controlled trial randomly assigns participants to intervention or control groups.</li>
+            <li>A case-control study is a retrospective design that traces back in time for exposure information.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 2 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 2</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>In a contingency table for a chi-square test of independence, which variables should be
+          placed in the rows and columns?</strong></p>
+          <ol class="options" type="A">
+            <li>Rows = outcome variable, columns = exposure variable</li>
+            <li>Rows = exposure variable, columns = outcome variable</li>
+            <li>Rows and columns can be assigned arbitrarily</li>
+            <li>Rows = marginal totals, columns = cell counts</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans2', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans2" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: B. Rows = exposure variable, columns = outcome variable</p>
+          <p><strong>Justification:</strong> The note explicitly states: “Column names MUST be the distinct values of
+          the OUTCOME variable and row names MUST be the distinct values of the EXPOSURE variable!!!”</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>A reverses the required layout.</li>
+            <li>C contradicts the explicit instruction in the note.</li>
+            <li>D misrepresents the structure of a contingency table.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 3 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 3</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Two categorical variables are independent if and only if:</strong></p>
+          <ol class="options" type="A">
+            <li>Their joint probabilities equal the product of their marginal probabilities.</li>
+            <li>Their marginal probabilities are equal.</li>
+            <li>Their joint probabilities are all zero.</li>
+            <li>The row totals equal the column totals.</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans3', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans3" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. Their joint probabilities equal the product of their marginal probabilities.</p>
+          <p><strong>Justification:</strong> The note defines independence as: “Two categorical variables are independent
+          if and only if their joint probabilities are equal to the product of their corresponding marginal
+          probabilities.”</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>B describes equal marginals, not independence.</li>
+            <li>C is an extreme case that does not define independence.</li>
+            <li>D is a condition about totals, not about the joint distribution.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 4 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 4</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>The expected frequency for a cell in a contingency table under the null hypothesis of
+          independence is calculated as:</strong></p>
+          <ol class="options" type="A">
+            <li>(Row total × Column total) / Grand total</li>
+            <li>(Row total + Column total) / Grand total</li>
+            <li>(Observed frequency × Grand total) / Row total</li>
+            <li>(Row total × Column total) × Grand total</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans4', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans4" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. (Row total × Column total) / Grand total</p>
+          <p><strong>Justification:</strong> The note gives the generic formula:
+          “Expected Frequency = column total × row total / grand total.”</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>B uses addition instead of multiplication.</li>
+            <li>C is a rearrangement that does not yield the expected count.</li>
+            <li>D multiplies by the grand total instead of dividing.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 5 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 5</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>For a contingency table with 3 rows and 4 columns, the degrees of freedom for the
+          chi-square test of independence is:</strong></p>
+          <ol class="options" type="A">
+            <li>12</li>
+            <li>6</li>
+            <li>7</li>
+            <li>5</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans5', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans5" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: B. 6</p>
+          <p><strong>Justification:</strong> The note states that if the two variables have <em>k</em> and <em>m</em>
+          categories, the test statistic has a chi-square distribution with (<em>k</em> − 1)(<em>m</em> − 1) degrees of
+          freedom. Here <em>k</em> = 3 and <em>m</em> = 4, so (3 − 1)(4 − 1) = 2 × 3 = 6.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>12 is 3 × 4, not the degrees-of-freedom formula.</li>
+            <li>7 and 5 are arithmetic errors.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 6 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 6</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Which measure of association is most appropriate for a case-control study?</strong></p>
+          <ol class="options" type="A">
+            <li>Relative risk</li>
+            <li>Odds ratio</li>
+            <li>Prevalence ratio</li>
+            <li>Risk difference</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans6', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans6" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: B. Odds ratio</p>
+          <p><strong>Justification:</strong> The note provides a table that specifies
+          “Case-Control → Odds Ratio (OR).”</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>Relative risk is recommended for cohort studies.</li>
+            <li>Prevalence ratio is used for cross-sectional studies.</li>
+            <li>Risk difference is not mentioned as the primary measure for case-control designs.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 7 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 7</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>If a relative risk (RR) equals 1, what does this imply?</strong></p>
+          <ol class="options" type="A">
+            <li>The exposure increases risk.</li>
+            <li>The exposure is protective.</li>
+            <li>There is no association between exposure and outcome.</li>
+            <li>The exposure is harmful.</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans7', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans7" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: C. There is no association between exposure and outcome.</p>
+          <p><strong>Justification:</strong> The note interprets RR (or OR) = 1 as “No association.”</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>RR &gt; 1 indicates increased risk.</li>
+            <li>RR &lt; 1 indicates a protective effect.</li>
+            <li>“Harmful” is not the standard interpretation of RR = 1.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 8 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 8</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Which R function performs the chi-square test of independence?</strong></p>
+          <ol class="options" type="A">
+            <li><code>chisq.test()</code></li>
+            <li><code>prop.test()</code></li>
+            <li><code>fisher.test()</code></li>
+            <li><code>t.test()</code></li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans8', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans8" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. <code>chisq.test()</code></p>
+          <p><strong>Justification:</strong> The note indicates that data analysis for the chi-square test is carried
+          out in R. The standard R function for a chi-square test of independence is <code>chisq.test()</code>.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><code>prop.test()</code> is for comparing proportions, not a general chi-square test of independence.</li>
+            <li><code>fisher.test()</code> performs Fisher’s exact test.</li>
+            <li><code>t.test()</code> is for numerical data, not categorical association.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 9 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 9</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Suppose you run the following R code:</strong></p>
+<pre class="r-code"><code>attendance &lt;- matrix(c(25, 2, 8, 15), nrow = 2, byrow = TRUE,
+                     dimnames = list(c("Good", "Poor"), c("Pass", "Fail")))
+chisq.test(attendance, correct = FALSE)</code></pre>
+          <p><strong>The output shows <code>X-squared = 17.75, df = 1, p-value = 2.532e-05</code>.
+          At the 5% significance level, what is the correct conclusion?</strong></p>
+          <ol class="options" type="A">
+            <li>Fail to reject H<sub>0</sub>; attendance and performance are independent.</li>
+            <li>Reject H<sub>0</sub>; attendance and performance are dependent.</li>
+            <li>Accept H<sub>0</sub>; there is no association.</li>
+            <li>The test is invalid because the p-value is too small.</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans9', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans9" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: B. Reject H<sub>0</sub>; attendance and performance are dependent.</p>
+          <p><strong>Justification:</strong> The note states that if the test statistic falls in the rejection region
+          (p-value &lt; α), we reject the null hypothesis of independence. Here p-value ≈ 0.000025 &lt; 0.05, so we
+          reject H<sub>0</sub> and conclude dependence.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>A contradicts the decision rule.</li>
+            <li>C is equivalent to A and is also wrong.</li>
+            <li>D is incorrect; a small p-value is evidence against H<sub>0</sub>, not a sign of invalidity.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 10 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 10</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Using the same attendance data (Good: Pass 25, Fail 2; Poor: Pass 8, Fail 15),
+          what is the expected count for the “Good–Pass” cell?</strong></p>
+          <ol class="options" type="A">
+            <li>18.82</li>
+            <li>15.18</li>
+            <li>7.82</li>
+            <li>9.18</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans10', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans10" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. 18.82</p>
+          <p><strong>Justification:</strong> The expected frequency formula is
+          (row total × column total) / grand total.</p>
+          <ul>
+            <li>Row total for “Good” = 25 + 2 = 27</li>
+            <li>Column total for “Pass” = 25 + 8 = 33</li>
+            <li>Grand total = 50</li>
+            <li>Expected = (27 × 33) / 50 = 891 / 50 = 17.82</li>
+          </ul>
+          <p><strong>Accuracy note:</strong> Applying the formula gives <strong>17.82</strong>, while the note’s
+          Example 8 displays <strong>18.82</strong> for this cell (and correspondingly 9.18, 15.18, and 7.82 for the
+          other cells). The note therefore contains a minor arithmetic inconsistency. The answer key follows the
+          value presented in the note’s Example 8, but you should be able to reproduce the correct computation,
+          17.82, from the formula.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>15.18, 7.82, and 9.18 correspond to the <em>other</em> cells of the expected table in the note’s Example 8.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 11 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 11</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>What is the null hypothesis for a chi-square test of independence?</strong></p>
+          <ol class="options" type="A">
+            <li>The two categorical variables are independent.</li>
+            <li>The two categorical variables are dependent.</li>
+            <li>The means of the two variables are equal.</li>
+            <li>The observed frequencies equal the expected frequencies.</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans11', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans11" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. The two categorical variables are independent.</p>
+          <p><strong>Justification:</strong> The note repeatedly states the null hypothesis as independence, e.g.,
+          “H<sub>0</sub>: attendance is independent of the performance.”</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>B is the alternative hypothesis.</li>
+            <li>C concerns numerical means, not categorical association.</li>
+            <li>D is a consequence of independence but not the formal null statement.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 12 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 12</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>The chi-square test statistic for independence is calculated as:</strong></p>
+          <ol class="options" type="A">
+            <li>Σ (O − E)² / E</li>
+            <li>Σ (O − E) / E</li>
+            <li>Σ (O − E)²</li>
+            <li>Σ O² / E</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans12', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans12" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. Σ (O − E)² / E</p>
+          <p><strong>Justification:</strong> The note describes the test statistic as the standardized “distance”
+          between the observed and expected tables and shows this formula in Example 8.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>B omits the square in the numerator.</li>
+            <li>C omits division by E.</li>
+            <li>D is not the standard formula.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 13 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 13</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>In the context of the chi-square test of independence, what does the expected table
+          represent?</strong></p>
+          <ol class="options" type="A">
+            <li>The frequencies we would expect if the null hypothesis of independence were true.</li>
+            <li>The frequencies actually observed in the sample.</li>
+            <li>The marginal totals of the observed table.</li>
+            <li>The frequencies expected under the alternative hypothesis.</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans13', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans13" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. The frequencies we would expect if the null hypothesis of
+          independence were true.</p>
+          <p><strong>Justification:</strong> The note states that the expected table is constructed
+          “under the null hypothesis of independence.”</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>B describes the observed table.</li>
+            <li>C describes marginal totals, not cell-by-cell expected counts.</li>
+            <li>D is incorrect; the expected table is always built under H<sub>0</sub>.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 14 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 14</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Given the following 2×2 table (Disease + / Disease −): Exposed: 30, 70;
+          Unexposed: 20, 80. What is the odds ratio (OR)?</strong></p>
+          <ol class="options" type="A">
+            <li>1.71</li>
+            <li>1.50</li>
+            <li>0.58</li>
+            <li>2.00</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans14', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans14" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. 1.71</p>
+          <p><strong>Justification:</strong> The note defines OR = (a/b) / (c/d) = ad / bc.</p>
+          <ul>
+            <li>a = 30, b = 70, c = 20, d = 80</li>
+            <li>OR = (30 × 80) / (70 × 20) = 2400 / 1400 ≈ 1.71</li>
+          </ul>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>1.50 would arise from a different arrangement of cells (in fact, it is the relative risk here).</li>
+            <li>0.58 is the inverse (1 / 1.71).</li>
+            <li>2.00 is not the correct calculation.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 15 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 15</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Using the same 2×2 table (Exposed: 30 disease+, 70 disease−; Unexposed: 20 disease+,
+          80 disease−), what is the relative risk (RR) for the exposed group compared with the unexposed
+          group?</strong></p>
+          <ol class="options" type="A">
+            <li>1.50</li>
+            <li>1.71</li>
+            <li>0.67</li>
+            <li>2.00</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans15', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans15" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. 1.50</p>
+          <p><strong>Justification:</strong> The note defines RR = [a/(a+b)] / [c/(c+d)].</p>
+          <ul>
+            <li>Risk in exposed = 30 / (30 + 70) = 0.30</li>
+            <li>Risk in unexposed = 20 / (20 + 80) = 0.20</li>
+            <li>RR = 0.30 / 0.20 = 1.50</li>
+          </ul>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>1.71 is the odds ratio.</li>
+            <li>0.67 is the inverse of RR.</li>
+            <li>2.00 is not the correct calculation.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 16 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 16</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Which R code correctly creates a contingency table for the attendance-performance
+          example (Good: Pass 25, Fail 2; Poor: Pass 8, Fail 15) and performs a chi-square test without
+          continuity correction?</strong></p>
+          <ol class="options" type="A">
+            <li>
+<pre class="r-code"><code>attendance &lt;- matrix(c(25, 2, 8, 15), nrow = 2, byrow = TRUE)
+chisq.test(attendance, correct = FALSE)</code></pre>
+            </li>
+            <li>
+<pre class="r-code"><code>attendance &lt;- data.frame(Pass = c(25, 8), Fail = c(2, 15))
+chisq.test(attendance)</code></pre>
+            </li>
+            <li>
+<pre class="r-code"><code>chisq.test(c(25, 2, 8, 15))</code></pre>
+            </li>
+            <li>
+<pre class="r-code"><code>prop.test(c(25, 8), c(27, 23))</code></pre>
+            </li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans16', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans16" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A.</p>
+          <p><strong>Justification:</strong> The note’s example uses a 2×2 table with row names “Good” and “Poor”
+          and column names “Pass” and “Fail.” Option A correctly creates the matrix and calls
+          <code>chisq.test()</code> with <code>correct = FALSE</code> to match the note’s test statistic of 17.75.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>B passes a data frame rather than a contingency table, so <code>chisq.test()</code> does not treat
+            it as a table of counts in the intended way.</li>
+            <li>C passes a plain vector, not a matrix.</li>
+            <li>D uses <code>prop.test()</code>, which tests proportions rather than independence.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 17 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 17</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>After running <code>chisq.test(attendance, correct = FALSE)</code>, how can you extract
+          the expected frequencies in R?</strong></p>
+          <ol class="options" type="A">
+            <li><code>chisq.test(attendance)$expected</code></li>
+            <li><code>chisq.test(attendance)$observed</code></li>
+            <li><code>chisq.test(attendance)$residuals</code></li>
+            <li><code>expected(attendance)</code></li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans17', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans17" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. <code>chisq.test(attendance)$expected</code></p>
+          <p><strong>Justification:</strong> The <code>chisq.test()</code> object stores the expected counts in the
+          <code>$expected</code> component.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li><code>$observed</code> returns the observed table.</li>
+            <li><code>$residuals</code> returns Pearson residuals.</li>
+            <li><code>expected()</code> is not a base R function for this purpose.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 18 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 18</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>If a chi-square test of independence yields a p-value of 0.03 and the significance level is
+          0.05, what should you conclude?</strong></p>
+          <ol class="options" type="A">
+            <li>Reject H<sub>0</sub>; there is evidence of an association.</li>
+            <li>Fail to reject H<sub>0</sub>; there is no evidence of an association.</li>
+            <li>Accept H<sub>0</sub>; the variables are independent.</li>
+            <li>The result is inconclusive.</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans18', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans18" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: A. Reject H<sub>0</sub>; there is evidence of an association.</p>
+          <p><strong>Justification:</strong> The note states that if the test statistic falls in the rejection region
+          (p-value &lt; α), we reject the null hypothesis of independence.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>B would be correct only if the p-value were ≥ α.</li>
+            <li>C is equivalent to B and is wrong.</li>
+            <li>D is incorrect; the decision rule is clear.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 19 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 19</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>Which measure of association is typically reported for a cross-sectional study?</strong></p>
+          <ol class="options" type="A">
+            <li>Odds ratio</li>
+            <li>Relative risk</li>
+            <li>Prevalence ratio</li>
+            <li>Risk difference</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans19', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans19" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: C. Prevalence ratio</p>
+          <p><strong>Justification:</strong> The note’s table lists “Cross-Sectional → Prevalence Ratio.”</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>Odds ratio is primarily for case-control studies.</li>
+            <li>Relative risk is for cohort studies.</li>
+            <li>Risk difference is not the primary measure highlighted for cross-sectional designs in the note.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ==================== QUESTION 20 ==================== -->
+  <table class="table question-table">
+    <thead>
+      <tr><th>Question 20</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p><strong>In the chi-square test of independence, what does a large test statistic indicate?</strong></p>
+          <ol class="options" type="A">
+            <li>The observed frequencies are close to the expected frequencies.</li>
+            <li>The observed frequencies deviate substantially from the expected frequencies.</li>
+            <li>The null hypothesis is true.</li>
+            <li>The variables are independent.</li>
+          </ol>
+          <button class="btn btn-primary btn-view mt-3" onclick="toggleAnswer('ans20', this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans20" style="display:none;">
+        <td>
+          <p class="correct">Correct answer: B. The observed frequencies deviate substantially from the expected
+          frequencies.</p>
+          <p><strong>Justification:</strong> The test statistic measures the standardized “distance” between the
+          observed and expected tables. A large statistic means a large discrepancy, leading to rejection of
+          independence.</p>
+          <p><strong>Why the other choices are incorrect:</strong></p>
+          <ul>
+            <li>A would produce a small test statistic.</li>
+            <li>C and D are conclusions that become less likely as the test statistic increases.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+  <!--XXXXXXXXXXXXXXXXXXXXXXXXXXX  FOOTER  XXXXXXXXXXXXXXXXXXXXXXX-->
+  <!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+  <footer class="col-md-12">
+    <center><font color="navy" size="2">
+      <p class="text-center">Copyright &copy;
+        <script>
+          var CurrentYear = new Date().getFullYear()
+          document.write(CurrentYear)
+        </script>
+        C. Peng. Last updated:
+        <script>
+          document.write(new Date().toLocaleDateString());
+        </script>
+      </font>
+      <a href='http://www.freevisitorcounters.com'>.</a>
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script></p>
+    </center>
+  </footer>
+
+</div><!-- /container -->
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+  function toggleAnswer(id, btn) {
+    var row = document.getElementById(id);
+    if (row.style.display === 'none' || row.style.display === '') {
+      row.style.display = 'table-row';
+      btn.textContent = 'Hide Answer';
+      btn.classList.remove('btn-primary');
+      btn.classList.add('btn-secondary');
+    } else {
+      row.style.display = 'none';
+      btn.textContent = 'View Answer';
+      btn.classList.remove('btn-secondary');
+      btn.classList.add('btn-primary');
+    }
+  }
+
+  function showAll() {
+    document.querySelectorAll('.answer-row').forEach(function (row) {
+      row.style.display = 'table-row';
+    });
+    document.querySelectorAll('.btn-view').forEach(function (btn) {
+      btn.textContent = 'Hide Answer';
+      btn.classList.remove('btn-primary');
+      btn.classList.add('btn-secondary');
+    });
+  }
+
+  function hideAll() {
+    document.querySelectorAll('.answer-row').forEach(function (row) {
+      row.style.display = 'none';
+    });
+    document.querySelectorAll('.btn-view').forEach(function (btn) {
+      btn.textContent = 'View Answer';
+      btn.classList.remove('btn-secondary');
+      btn.classList.add('btn-primary');
+    });
+  }
+</script>
+
+</body>
+</html>

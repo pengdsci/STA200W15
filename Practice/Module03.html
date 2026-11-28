@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STA200 Statistics II &mdash; Practice Exercises for Module #3</title>
+
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- MathJax -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+<style>
+  body {
+    background-color: #f5f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .page-header {
+    background: #1f3a5f;
+    color: #ffffff;
+    padding: 28px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+  .page-header h2 { font-size: 1.15rem; font-weight: 300; margin-bottom: 0; }
+  .page-header .instr { font-size: 1rem; color: #cfdcec; }
+
+  .question-table {
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  }
+  .question-table > thead > tr > th {
+    background-color: #dbe7f3;
+    color: #1f3a5f;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .question-table > tbody > tr > td {
+    padding: 12px 14px;
+    vertical-align: top;
+  }
+  .options { margin-bottom: 0; padding-left: 1.4rem; }
+  .options li { margin-bottom: 4px; }
+
+  .answer-row > td {
+    background-color: #eef6ff;
+    border-left: 5px solid #0d6efd;
+  }
+  .answer-row .correct {
+    color: #0a6b2d;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .btn-view { min-width: 130px; }
+
+  .toolbar { margin-bottom: 20px; }
+
+  footer {
+    border-top: 1px solid #d5dde5;
+    padding-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  .note-box {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 25px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container col-md-10 py-4">
+
+  <!-- ===================== HEADER ===================== -->
+  <div class="page-header">
+    <h1>STA200 Statistics II</h1>
+    <div class="instr">Instructor: Dr. Cheng Peng</div>
+    <h2>Practice Exercises for Module #3 &mdash; Review of Linear Regression</h2>
+  </div>
+
+  <div class="note-box">
+    <strong>How to use these questions:</strong> Before viewing the answer, try to solve each question on
+    your own. Whenever possible, work through the calculations manually or run the relevant R code to
+    obtain your answer. Then click <em>View Answer</em> to reveal the solution and check your understanding.
+    This approach will help you build both conceptual understanding and practical data analysis skills.
+  </div>
+
+  <div class="toolbar text-center">
+    <button class="btn btn-outline-primary btn-sm" onclick="showAll(true)">Show All Answers</button>
+    <button class="btn btn-outline-secondary btn-sm" onclick="showAll(false)">Hide All Answers</button>
+  </div>
+
+  <!-- ===================== QUESTION 1 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 1</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>What is the structural form of the simple linear regression model as described in the note?</p>
+        <ol class="options" type="A">
+          <li>\(Y = \beta_0 + \beta_1X\)</li>
+          <li>\(Y = \beta_0 + \beta_1X + \epsilon\)</li>
+          <li>\(Y = b_0 + b_1X + e\)</li>
+          <li>\(\hat{Y} = \beta_0 + \beta_1X\)</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans1', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans1" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. \(Y = \beta_0 + \beta_1X + \epsilon\)</p>
+        <p><strong>Justification:</strong> The note explicitly states the simple linear regression model is
+        represented as \(Y = \beta_0 + \beta_1X + \epsilon\), where \(\epsilon\) is the random error term
+        assumed to follow \(N(0, \sigma^2)\).</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A omits the random error term \(\epsilon\), which is essential to the statistical model.</li>
+          <li>C uses estimated coefficients (\(b_0, b_1\)) and residual \(e\), which describe the fitted
+          model, not the population model.</li>
+          <li>D represents the estimated regression line (fitted model), not the theoretical model with
+          random error.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 2 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 2</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>In the simple linear regression model, what does the slope parameter \(\beta_1\) represent?</p>
+        <ol class="options" type="A">
+          <li>The predicted value of \(Y\) when \(X = 0\)</li>
+          <li>The change in \(Y\) for a one-unit increase in \(X\)</li>
+          <li>The correlation between \(X\) and \(Y\)</li>
+          <li>The residual standard error</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans2', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans2" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B</p>
+        <p><strong>Justification:</strong> The note defines \(\beta_1\) as &ldquo;the slope (the change in
+        \(Y\) per unit change in \(X\))&rdquo;. The summary section reiterates: &ldquo;Slope (\(\beta_1\)):
+        Change in \(Y\) per unit increase in \(X\)&rdquo;.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A describes the intercept \(\beta_0\), not the slope.</li>
+          <li>C is the Pearson correlation coefficient \(r\), not \(\beta_1\).</li>
+          <li>D is a measure of model fit (residual standard error), not the slope.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 3 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 3</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>Which assumption of simple linear regression states that the variance of the errors is constant
+        across all values of \(X\)?</p>
+        <ol class="options" type="A">
+          <li>Linearity</li>
+          <li>Independence</li>
+          <li>Homoscedasticity</li>
+          <li>Normality</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans3', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans3" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: C. Homoscedasticity</p>
+        <p><strong>Justification:</strong> The note lists the assumptions and states:
+        &ldquo;Homoscedasticity: Constant variance of errors across \(X\)&rdquo;. It further clarifies
+        that the variance of \(Y\) is the same as the residual \(\epsilon\).</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A (Linearity) assumes the relationship between \(X\) and \(Y\) is linear.</li>
+          <li>B (Independence) assumes errors are uncorrelated.</li>
+          <li>D (Normality) assumes errors are normally distributed.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 4 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 4</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>Which graphical tool is recommended in the note for checking the normality assumption of
+        residuals?</p>
+        <ol class="options" type="A">
+          <li>Scatter plot of \(Y\) vs. \(X\)</li>
+          <li>Residuals vs. Fitted plot</li>
+          <li>Q-Q plot</li>
+          <li>Cook&rsquo;s distance plot</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans4', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans4" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: C. Q-Q plot</p>
+        <p><strong>Justification:</strong> The note states: &ldquo;Normality: Errors are normally
+        distributed&hellip; In practice, we only use visual checks for normality. QQ-plot
+        (quantile-quantile plot) is a commonly used visual tool&rdquo;.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A is used to check linearity.</li>
+          <li>B is used to check homoscedasticity and non-linearity.</li>
+          <li>D is used to detect influential observations.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 5 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 5</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>In the note&rsquo;s example (course grade vs. study hours), what are the degrees of freedom for
+        the \(t\)-test on the slope?</p>
+        <ol class="options" type="A">
+          <li>\(n - 1 = 9\)</li>
+          <li>\(n - 2 = 8\)</li>
+          <li>\(n = 10\)</li>
+          <li>\(n + 1 = 11\)</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans5', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans5" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. \(n - 2 = 8\)</p>
+        <p><strong>Justification:</strong> The note states: &ldquo;The degrees of freedom of the t-test in
+        linear regression is defined to be: df = n - # coefficients!&rdquo; and for the example with
+        \(n = 10\) and two coefficients (intercept and slope), \(df = 10 - 2 = 8\).</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A would be correct only if there were one coefficient (e.g., a one-sample \(t\)-test).</li>
+          <li>C is the sample size, not the degrees of freedom.</li>
+          <li>D is not a valid formula for regression \(t\)-tests.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 6 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 6</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>Refer to the R output for the course grade vs. study hours example. The slope estimate is
+        2.4364 with standard error 0.1007. What is the value of the \(t\)-statistic for testing
+        \(H_0: \beta_1 = 0\)?</p>
+        <ol class="options" type="A">
+          <li>2.4364</li>
+          <li>0.1007</li>
+          <li>24.02</li>
+          <li>0.0413</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans6', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans6" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: C. 24.02</p>
+        <p><strong>Justification:</strong> The note computes the test statistic as</p>
+        <p>\[ TS = \frac{b_1 - 0}{SE(b_1)} = \frac{2.4364}{0.1007} \approx 24.02. \]</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A is the slope estimate itself, not the test statistic.</li>
+          <li>B is the standard error.</li>
+          <li>D is the reciprocal of the test statistic.</li>
+        </ul>
+        <p><strong>R illustration:</strong></p>
+<pre class="bg-white p-2 border rounded"><code>2.4364 / 0.1007
+#&gt; [1] 24.19464   # approximately 24.02 in the note's rounded display</code></pre>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 7 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 7</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>For the course grade example, the \(p\)-value for the slope is \(9.07 \times 10^{-9}\). At
+        \(\alpha = 0.05\), what is the correct conclusion?</p>
+        <ol class="options" type="A">
+          <li>Fail to reject \(H_0\); study hours do not significantly affect grade.</li>
+          <li>Reject \(H_0\); study hours significantly affect grade.</li>
+          <li>Accept \(H_0\); the slope is zero.</li>
+          <li>The result is inconclusive because the \(p\)-value is too small.</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans7', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans7" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. Reject \(H_0\); study hours significantly affect grade.</p>
+        <p><strong>Justification:</strong> The decision rule is to reject \(H_0\) when the \(p\)-value is
+        less than or equal to \(\alpha\). Since \(9.07 \times 10^{-9} < 0.05\), we reject
+        \(H_0: \beta_1 = 0\). The note&rsquo;s intended conclusion is that study hours influence the course
+        grade significantly. (The note contains a wording slip when it says &ldquo;fail to reject&rdquo;
+        next to a tiny \(p\)-value; the numerical evidence clearly supports rejection.)</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A contradicts the \(p\)-value rule.</li>
+          <li>C is incorrect because the evidence strongly supports a non-zero slope.</li>
+          <li>D is not true; a small \(p\)-value provides clear evidence against \(H_0\).</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 8 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 8</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>Which R command extracts the estimated fitted values (\(\hat{Y}\)) from a fitted linear model
+        object named <code>model</code>?</p>
+        <ol class="options" type="A">
+          <li><code>resid(model)</code></li>
+          <li><code>fitted(model)</code></li>
+          <li><code>summary(model)</code></li>
+          <li><code>coef(model)</code></li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans8', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans8" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. <code>fitted(model)</code></p>
+        <p><strong>Justification:</strong> The note states: &ldquo;In R, we can extract estimated
+        \(\hat{Y}\) and residuals using R commands <code>fitted(model.name)</code> and
+        <code>resid(model.name)</code>&rdquo;.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A extracts residuals, not fitted values.</li>
+          <li>C provides a summary of the model.</li>
+          <li>D extracts coefficients.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 9 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 9</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>In the note&rsquo;s Table of diagnostic measures, which measure is used to detect an influential
+        point?</p>
+        <ol class="options" type="A">
+          <li>Standardized residuals</li>
+          <li>Leverage measure</li>
+          <li>Cook&rsquo;s distance</li>
+          <li>Q-Q plot</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans9', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans9" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: C. Cook&rsquo;s distance</p>
+        <p><strong>Justification:</strong> The note&rsquo;s table states: &ldquo;Influence &hellip;
+        Cook&rsquo;s Distance&rdquo;. It defines an influential point as one that significantly alters the
+        regression coefficients if removed, and Cook&rsquo;s distance detects such observations.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A detects outliers (atypical \(Y\) values).</li>
+          <li>B detects leverage (extreme \(X\) values).</li>
+          <li>D checks normality, not influence.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 10 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 10</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>What is the 95% confidence interval for the slope in the course grade example, given
+        \(b_1 = 2.4364\), \(SE(b_1) = 0.1007\), and \(t_{0.975,8} = 2.306\)?</p>
+        <ol class="options" type="A">
+          <li>\((2.2042,\; 2.6686)\)</li>
+          <li>\((2.4364,\; 2.6686)\)</li>
+          <li>\((2.2042,\; 2.4364)\)</li>
+          <li>\((2.3364,\; 2.5364)\)</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans10', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans10" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: A. \((2.2042,\; 2.6686)\)</p>
+        <p><strong>Justification:</strong> The note computes the interval as</p>
+        <p>\[ b_1 \pm t_{df,1-\alpha/2} \times SE(b_1)
+        = 2.4364 \pm 2.306 \times 0.1007
+        = (2.204186,\; 2.668614). \]</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>B uses only the upper bound with the point estimate.</li>
+          <li>C uses only the lower bound with the point estimate.</li>
+          <li>D is not the correct calculation.</li>
+        </ul>
+        <p><strong>R illustration:</strong></p>
+<pre class="bg-white p-2 border rounded"><code>2.4364 + c(-1, 1) * qt(0.975, 8) * 0.1007
+#&gt; [1] 2.204186 2.668614</code></pre>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 11 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 11</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>Which R function is used to fit a simple linear regression model in the note?</p>
+        <ol class="options" type="A">
+          <li><code>t.test()</code></li>
+          <li><code>lm()</code></li>
+          <li><code>cor.test()</code></li>
+          <li><code>prop.test()</code></li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans11', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans11" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. <code>lm()</code></p>
+        <p><strong>Justification:</strong> The note&rsquo;s summary lists:
+        &ldquo;Fit model: <code>lm(Y ~ X, data)</code>&rdquo;. The example also uses
+        <code>lm(formula = course_grade ~ study_hours, data = example.data)</code>.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A is for \(t\)-tests.</li>
+          <li>C is for correlation tests.</li>
+          <li>D is for proportion tests.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 12 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 12</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>In the note&rsquo;s example, what does the residual standard error of 0.9145 represent?</p>
+        <ol class="options" type="A">
+          <li>The standard deviation of the predictor variable \(X\).</li>
+          <li>The estimated standard deviation of the error term \(\epsilon\).</li>
+          <li>The standard error of the slope coefficient.</li>
+          <li>The mean of the residuals.</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans12', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans12" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. The estimated standard deviation of the error term
+        \(\epsilon\).</p>
+        <p><strong>Justification:</strong> The R output shows &ldquo;Residual standard error: 0.9145 on 8
+        degrees of freedom&rdquo;. This is the estimated standard deviation of the residuals, which
+        estimates \(\sigma\), the standard deviation of the error term \(\epsilon\).</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A describes the standard deviation of \(X\), not the residual standard error.</li>
+          <li>C is \(SE(b_1)\), shown separately as 0.1007.</li>
+          <li>D is not a measure of spread; the mean of residuals is approximately zero.</li>
+        </ul>
+        <p><strong>Representative R output:</strong></p>
+<pre class="bg-white p-2 border rounded"><code>Residual standard error: 0.9145 on 8 degrees of freedom</code></pre>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 13 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 13</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>Which plot is used in the note to check for non-linearity and heteroscedasticity?</p>
+        <ol class="options" type="A">
+          <li>Histogram of residuals</li>
+          <li>Residuals vs. Fitted plot</li>
+          <li>Q-Q plot</li>
+          <li>Cook&rsquo;s distance plot</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans13', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans13" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. Residuals vs. Fitted plot</p>
+        <p><strong>Justification:</strong> The note states: &ldquo;Residual Plots &ndash; Residuals vs
+        Fitted: Checking for non-linearity &amp; heteroscedasticity&rdquo;.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A checks the distribution shape but not systematically for non-linearity or
+          heteroscedasticity.</li>
+          <li>C checks normality.</li>
+          <li>D detects influential observations.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 14 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 14</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>In the context of regression diagnostics, what is leverage?</p>
+        <ol class="options" type="A">
+          <li>An observation with an unusual \(Y\) value.</li>
+          <li>A measure of how far an independent variable value deviates from its mean.</li>
+          <li>An observation that significantly changes the regression coefficients when removed.</li>
+          <li>The ratio of residual variance to total variance.</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans14', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans14" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. A measure of how far an independent variable value deviates
+        from its mean.</p>
+        <p><strong>Justification:</strong> The note defines leverage as a measure of how far an independent
+        variable (\(X\)) value deviates from its mean. High leverage points have unusual \(X\) values and
+        can potentially influence the fitted regression line.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A describes an outlier (an unusual \(Y\) value), not leverage.</li>
+          <li>C describes an influential point, which is related to but not the same as leverage.</li>
+          <li>D is not the definition of leverage.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 15 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 15</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>Using the note&rsquo;s output, what is the value of the \(F\)-statistic for the overall
+        regression model?</p>
+        <ol class="options" type="A">
+          <li>24.20</li>
+          <li>585.5</li>
+          <li>0.9865</li>
+          <li>9.075e-09</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans15', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans15" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. 585.5</p>
+        <p><strong>Justification:</strong> The R output shows &ldquo;F-statistic: 585.5 on 1 and 8 DF,
+        p-value: 9.075e-09&rdquo;.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A is the \(t\)-statistic for the slope.</li>
+          <li>C is the multiple R-squared.</li>
+          <li>D is the \(p\)-value for the \(F\)-statistic.</li>
+        </ul>
+        <p><strong>Representative R output:</strong></p>
+<pre class="bg-white p-2 border rounded"><code>F-statistic: 585.5 on 1 and 8 DF,  p-value: 9.075e-09</code></pre>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 16 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 16</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>What does the multiple R-squared value of 0.9865 indicate in the course grade example?</p>
+        <ol class="options" type="A">
+          <li>The model explains 98.65% of the variability in study hours.</li>
+          <li>The model explains 98.65% of the variability in course grade.</li>
+          <li>The slope is statistically significant at the 1% level.</li>
+          <li>The residual standard error is 98.65% of the total variance.</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans16', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans16" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. The model explains 98.65% of the variability in course
+        grade.</p>
+        <p><strong>Justification:</strong> The note states: &ldquo;R-squared: Proportion of variance
+        explained by \(X\)&rdquo;. In the example, \(R^2 = 0.9865\) means the predictor (study hours)
+        explains 98.65% of the variance in the response (course grade).</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A reverses the roles of \(X\) and \(Y\).</li>
+          <li>C relates to the \(p\)-value, not \(R^2\).</li>
+          <li>D is not a correct interpretation of \(R^2\).</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 17 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 17</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>Which R command is used to compute the critical value \(t_{0.975,8}\) for a 95% confidence
+        interval of the slope?</p>
+        <ol class="options" type="A">
+          <li><code>qnorm(0.975)</code></li>
+          <li><code>qt(0.975, 8)</code></li>
+          <li><code>pt(0.975, 8)</code></li>
+          <li><code>pnorm(0.975)</code></li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans17', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans17" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: B. <code>qt(0.975, 8)</code></p>
+        <p><strong>Justification:</strong> The note states: &ldquo;The critical value can be found using the
+        R command <code>qt(0.975,8)</code>, which gives 2.306&rdquo;.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A gives the normal critical value (1.96), not the \(t\) critical value.</li>
+          <li>C gives a probability, not a quantile.</li>
+          <li>D gives a normal probability, not a \(t\) quantile.</li>
+        </ul>
+        <p><strong>R illustration:</strong></p>
+<pre class="bg-white p-2 border rounded"><code>qt(0.975, 8)
+#&gt; [1] 2.306004</code></pre>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 18 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 18</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>In the note&rsquo;s example, the residuals are extracted using <code>resid(model)</code>. If an
+        observation has a large positive residual, what does this indicate?</p>
+        <ol class="options" type="A">
+          <li>The observed \(Y\) is much larger than the fitted \(\hat{Y}\).</li>
+          <li>The observed \(Y\) is much smaller than the fitted \(\hat{Y}\).</li>
+          <li>The observation has high leverage.</li>
+          <li>The observation is influential.</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans18', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans18" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: A. The observed \(Y\) is much larger than the fitted
+        \(\hat{Y}\).</p>
+        <p><strong>Justification:</strong> The note defines residuals as \(e = Y - \hat{Y}\). A large
+        positive residual means \(Y\) is greater than \(\hat{Y}\).</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>B would correspond to a large negative residual.</li>
+          <li>C is about the \(X\) value, not the residual.</li>
+          <li>D requires Cook&rsquo;s distance, not just residual magnitude.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 19 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 19</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>According to the note, which of the following is <strong>NOT</strong> one of the four assumptions
+        of simple linear regression?</p>
+        <ol class="options" type="A">
+          <li>Linearity</li>
+          <li>Independence</li>
+          <li>Multicollinearity</li>
+          <li>Normality</li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans19', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans19" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: C. Multicollinearity</p>
+        <p><strong>Justification:</strong> The note lists the assumptions as: Linearity, Independence,
+        Homoscedasticity, and Normality. Multicollinearity is not mentioned.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>A, B, and D are all explicitly listed as assumptions.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 20 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead>
+      <tr><th>Question 20</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+        <p>In the note&rsquo;s summary, what is the recommended R function to obtain a comprehensive
+        summary of a fitted linear model?</p>
+        <ol class="options" type="A">
+          <li><code>summary(model)</code></li>
+          <li><code>fitted(model)</code></li>
+          <li><code>resid(model)</code></li>
+          <li><code>coef(model)</code></li>
+        </ol>
+      </td></tr>
+      <tr><td class="text-center">
+        <button class="btn btn-primary btn-view" onclick="toggleAns('ans20', this)">View Answer</button>
+      </td></tr>
+      <tr id="ans20" class="answer-row" style="display:none"><td>
+        <p class="correct">Correct Answer: A. <code>summary(model)</code></p>
+        <p><strong>Justification:</strong> The note&rsquo;s summary states:
+        &ldquo;Summarize: <code>summary(model)</code>&rdquo;.</p>
+        <p><strong>Why other choices are incorrect:</strong></p>
+        <ul>
+          <li>B extracts fitted values.</li>
+          <li>C extracts residuals.</li>
+          <li>D extracts coefficients only, not a full summary.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+  <!--XXXXXXXXXXXXXXXXXXXXXXXXXXX  FOOTER  XXXXXXXXXXXXXXXXXXXXXXX-->
+  <!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+  <footer class="col-md-12">
+  <center><font color = "navy" size =2>
+      <p class="text-center">Copyright &copy; 
+          <script>
+              var CurrentYear = new Date().getFullYear()
+              document.write(CurrentYear)
+          </script>
+         C. Peng. Last updated: 
+           <script> 
+              document.write(new Date().toLocaleDateString()); 
+           </script> 
+        </font>
+   <a href='http://www.freevisitorcounters.com'>.</a> 
+  <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+  <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script></p>
+  <center>
+  </footer>
+
+</div><!-- /container -->
+
+<!-- Bootstrap JS (optional) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  function toggleAns(id, btn) {
+    var row = document.getElementById(id);
+    if (!row) return;
+    if (row.style.display === "none" || row.style.display === "") {
+      row.style.display = "table-row";
+      btn.textContent = "Hide Answer";
+      btn.classList.remove("btn-primary");
+      btn.classList.add("btn-secondary");
+    } else {
+      row.style.display = "none";
+      btn.textContent = "View Answer";
+      btn.classList.remove("btn-secondary");
+      btn.classList.add("btn-primary");
+    }
+  }
+
+  function showAll(show) {
+    for (var i = 1; i <= 20; i++) {
+      var row = document.getElementById("ans" + i);
+      if (!row) continue;
+      var btn = document.querySelector('button[onclick*="ans' + i + '"]');
+      row.style.display = show ? "table-row" : "none";
+      if (btn) {
+        btn.textContent = show ? "Hide Answer" : "View Answer";
+        btn.classList.toggle("btn-primary", !show);
+        btn.classList.toggle("btn-secondary", show);
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

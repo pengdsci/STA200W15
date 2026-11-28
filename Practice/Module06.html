@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Exercises – SLR Approach to One-Sample Test</title>
+
+  <!-- Bootstrap for basic table/layout utilities -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- MathJax: only \( ... \) is treated as inline math so R dollar signs are safe -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']] }
+    };
+  </script>
+  <script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    body {
+      background-color: #f5f7fa;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .page-header {
+      background: #1f3a5f;
+      color: #ffffff;
+      padding: 28px 20px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+    .page-header h2 { font-size: 1.15rem; font-weight: 300; margin-bottom: 0; }
+    .page-header .instr { font-size: 1rem; color: #cfdcec; }
+
+    .question-table {
+      background-color: #ffffff;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    }
+    .question-table > thead > tr > th {
+      background-color: #dbe7f3;
+      color: #1f3a5f;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 10px 14px;
+    }
+    .question-table > tbody > tr > td {
+      padding: 12px 14px;
+      vertical-align: top;
+    }
+    .options { margin-bottom: 0; padding-left: 1.4rem; }
+    .options li { margin-bottom: 4px; }
+
+    .answer-row > td {
+      background-color: #eef6ff;
+      border-left: 5px solid #0d6efd;
+    }
+    .answer-row .correct {
+      color: #0a6b2d;
+      font-weight: 700;
+      font-size: 1.02rem;
+    }
+    .btn-view {
+      min-width: 130px;
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+      color: #fff;
+    }
+    .btn-view:hover {
+      background-color: #0b5ed7;
+      border-color: #0a58ca;
+      color: #fff;
+    }
+
+    .toolbar { margin-bottom: 20px; }
+
+    footer {
+      border-top: 1px solid #d5dde5;
+      padding-top: 15px;
+      margin-top: 30px;
+      margin-bottom: 20px;
+    }
+    .note-box {
+      background: #fff8e1;
+      border-left: 5px solid #ffb300;
+      padding: 12px 16px;
+      border-radius: 4px;
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+<div class="container py-4">
+
+  <header class="page-header">
+    <h1>STA200 Statistics II – Practice Exercises</h1>
+    <h2>Module #6: SLR Approach to One-Sample Test</h2>
+    <p class="instr mb-0 mt-2">Instructor: Dr. Cheng Peng</p>
+  </header>
+
+  <div class="note-box">
+    <strong>How to use these questions:</strong>
+    Before viewing the answer, try to solve each question on your own. Whenever possible, work through
+    the calculations manually or run the relevant R code. Then reveal the solution and review the
+    explanation to check your understanding.
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-primary btn-sm" type="button" onclick="showAllAnswers()">Show All Answers</button>
+    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="hideAllAnswers()">Hide All Answers</button>
+  </div>
+
+  <!-- ================= QUESTION 1 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 1</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>The note creates a toy data frame <code>my.toy.data</code> with a variable <code>salary</code>. Which R command correctly extracts the <code>salary</code> variable?</p>
+        <ol class="options" type="A">
+          <li><code>my.toy.data$Salary</code></li>
+          <li><code>my.toy.data$salary</code></li>
+          <li><code>my.toy.data$sAlaRy</code></li>
+          <li><code>my.toy.data@salary</code></li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans1', this)">View Answer</button></td></tr>
+      <tr id="ans1" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note explicitly warns that R is case sensitive; <code>my.toy.data$salary</code> is the correct extraction, whereas <code>$Salary</code> or <code>$sAlaRy</code> will produce errors.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A and C use incorrect capitalization; R will not recognise the column.</li>
+          <li>D uses the <code>@</code> slot operator, which is not used for extracting columns from a data frame.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 2 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 2</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>Which statement about the assumptions of the one-sample t-test is <strong>true</strong> according to the note?</p>
+        <ol class="options" type="A">
+          <li>The sample size must be at least 30.</li>
+          <li>The population must be normally distributed, and observations must be independent.</li>
+          <li>The population standard deviation must be known.</li>
+          <li>The data must be ordinal.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans2', this)">View Answer</button></td></tr>
+      <tr id="ans2" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states that the basic assumptions are that the population is normal \(N(\mu,\sigma)\) and that the data are independently taken from that population. It also explicitly notes that “small sample size is not an assumption for t-test”.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A is false; small samples are allowed if normality holds.</li>
+          <li>C is false; the t-test is used when \(\sigma\) is unknown.</li>
+          <li>D is false; the t-test is for continuous numerical data, not ordinal data.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 3 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 3</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>The note performs a manual one-sample t-test on BMI with \(H_0:\mu=30\) and obtains the following R output:</p>
+        <pre><code>      xbar       TS d.f.      p.value
+[1,] 33.08622 8.694805  391 9.708976e-17</code></pre>
+        <p>At \(\alpha=0.05\), what is the correct conclusion?</p>
+        <ol class="options" type="A">
+          <li>Fail to reject \(H_0\); the mean BMI is 30.</li>
+          <li>Reject \(H_0\); the mean BMI is not 30.</li>
+          <li>Accept \(H_0\); there is no evidence of a difference.</li>
+          <li>The test is invalid because the p-value is too small.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans3', this)">View Answer</button></td></tr>
+      <tr id="ans3" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The p-value is essentially 0, so \(H_0:\mu=30\) is rejected. The note states, “The p-value is close to 0, the null hypothesis \(H_0:\mu=30\) is rejected!”</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A and C would be correct only if the p-value were large.</li>
+          <li>D is nonsensical; a very small p-value is evidence against \(H_0\), not a sign of invalidity.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 4 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 4</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>The built-in <code>t.test</code> for BMI gives:</p>
+        <pre><code>t = 8.6948, df = 391, p-value &lt; 2.2e-16
+95 percent confidence interval:
+ 32.38837 33.78407
+sample estimates:
+mean of x
+ 33.08622</code></pre>
+        <p>Which interpretation of the 95% confidence interval is correct?</p>
+        <ol class="options" type="A">
+          <li>There is a 95% probability that the sample mean lies between 32.388 and 33.784.</li>
+          <li>We are 95% confident that the true population mean BMI lies between 32.388 and 33.784.</li>
+          <li>95% of the BMI observations lie between 32.388 and 33.784.</li>
+          <li>The interval contains 30, so \(H_0:\mu=30\) cannot be rejected.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans4', this)">View Answer</button></td></tr>
+      <tr id="ans4" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The output is a confidence interval for the population mean. The note presents this interval as part of the <code>t.test</code> output for \(\mu\).</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A confuses the sample mean (a fixed value) with the population mean.</li>
+          <li>C describes a prediction interval, not a confidence interval for the mean.</li>
+          <li>D is false; the interval does not contain 30, consistent with rejecting \(H_0\).</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 5 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 5</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>In the regression approach to the one-sample t-test, the note uses:</p>
+        <pre><code>lm(I(BMI - 30) ~ 1, data = PimaIndiaDiabetes)</code></pre>
+        <p>What is the purpose of subtracting 30 inside <code>I()</code>?</p>
+        <ol class="options" type="A">
+          <li>To standardise the BMI values.</li>
+          <li>To test \(H_0:\mu=30\) by testing whether the intercept of the shifted response is 0.</li>
+          <li>To remove outliers from the data.</li>
+          <li>To convert BMI into a categorical variable.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans5', this)">View Answer</button></td></tr>
+      <tr id="ans5" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note explains that testing \(H_0:\mu=\mu_0\) is equivalent to testing \(H_0:\beta_0-\mu_0=0\) in the model \(y-\mu_0=(\beta_0-\mu_0)+\epsilon\). The <code>I()</code> function allows the expression \(y-\mu_0\) to be used in the model formula.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A is not the goal; standardisation would divide by the standard deviation.</li>
+          <li>C is unrelated; shifting does not remove outliers.</li>
+          <li>D is false; BMI remains numeric.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 6 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 6</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>The regression output is:</p>
+        <pre><code>Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  3.086     0.355    8.695   &lt;2e-16</code></pre>
+        <p>What does the intercept estimate 3.086 represent?</p>
+        <ol class="options" type="A">
+          <li>The sample mean BMI.</li>
+          <li>The difference between the sample mean BMI and the hypothesised mean 30.</li>
+          <li>The standard deviation of BMI.</li>
+          <li>The p-value of the test.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans6', this)">View Answer</button></td></tr>
+      <tr id="ans6" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note interprets the intercept as \(\bar{y}-\mu_0\). Here \(\bar{y}=33.086\), so \(33.086-30=3.086\).</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A is the sample mean, 33.086, not 3.086.</li>
+          <li>C is the residual standard error, not the intercept.</li>
+          <li>D is a probability, not an estimate of a mean difference.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 7 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 7</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>Which statement best describes the relationship between the one-sample t-test and the regression model \(y=\beta_0+\epsilon\)?</p>
+        <ol class="options" type="A">
+          <li>The t-test tests \(\beta_1=0\), while regression tests \(\beta_0=0\).</li>
+          <li>The one-sample t-test is a special case of regression with no predictor, testing whether the intercept equals a hypothesised value.</li>
+          <li>Regression requires a predictor, so the two methods are unrelated.</li>
+          <li>The t-test is only valid when the regression slope is zero.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans7', this)">View Answer</button></td></tr>
+      <tr id="ans7" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states that for a one-sample t-test there is no independent variable \(x\), and fitting \(y=\beta_0+\epsilon\) is equivalent to estimating \(\beta_0\) as the mean of \(Y\). Testing \(H_0:\mu=\mu_0\) is equivalent to testing \(H_0:\beta_0=\mu_0\) in the intercept-only model.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A confuses intercept and slope.</li>
+          <li>C is false; an intercept-only regression is still a regression model.</li>
+          <li>D is irrelevant; there is no slope in a one-sample setting.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 8 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 8</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>In the sign test, under \(H_0\), the test statistic \(S\) (number of positive signs) follows which distribution?</p>
+        <ol class="options" type="A">
+          <li>Normal distribution with mean 0 and variance 1.</li>
+          <li>\(t\)-distribution with \(n-1\) degrees of freedom.</li>
+          <li>Binomial distribution with \(n\) trials and success probability 0.5.</li>
+          <li>Chi-square distribution with \(n-1\) degrees of freedom.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans8', this)">View Answer</button></td></tr>
+      <tr id="ans8" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: C</p>
+        <p><strong>Justification:</strong> The note states that under \(H_0\), the sign-test statistic follows a binomial distribution: \(S \sim \text{Binom}(n, p=0.5)\).</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A is the large-sample approximation, not the exact null distribution.</li>
+          <li>B is the null distribution for the t-test, not the sign test.</li>
+          <li>D is unrelated to the sign test.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 9 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 9</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>The sign test is most appropriate when:</p>
+        <ol class="options" type="A">
+          <li>The population is known to be normal and the sample size is large.</li>
+          <li>The data are ordinal, skewed, or contain outliers.</li>
+          <li>The population standard deviation is known.</li>
+          <li>You want to test a population mean with a large sample.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans9', this)">View Answer</button></td></tr>
+      <tr id="ans9" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note lists the primary uses of the sign test: ordinal or continuous but non-normal data, small samples, and data with outliers.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A describes ideal conditions for a t-test, not the sign test.</li>
+          <li>C is irrelevant; the sign test does not use the standard deviation.</li>
+          <li>D describes a z-test or t-test, not the sign test.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 10 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 10</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>In the sign test, what is done with observations equal to the hypothesised median \(M_0\)?</p>
+        <ol class="options" type="A">
+          <li>They are counted as positive signs.</li>
+          <li>They are counted as negative signs.</li>
+          <li>They are excluded from the analysis, and \(n\) is reduced accordingly.</li>
+          <li>They are replaced by the sample mean.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans10', this)">View Answer</button></td></tr>
+      <tr id="ans10" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: C</p>
+        <p><strong>Justification:</strong> The note explicitly says “Zeros: Exclude all zeros (if any)” and defines \(n\) as the number of non-zero differences.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A and B would bias the test.</li>
+          <li>D is not part of the sign-test procedure.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 11 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 11</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>For the <code>reaction.time</code> data, the differences from 250 are:</p>
+        <pre><code>-20 -5  2 -2  5 10 -15 -10  0 -8 -12  8 -5 -2  3</code></pre>
+        <p>How many positive signs, negative signs, and zeros are there?</p>
+        <ol class="options" type="A">
+          <li>Positive = 5, negative = 9, zeros = 1.</li>
+          <li>Positive = 6, negative = 8, zeros = 1.</li>
+          <li>Positive = 5, negative = 10, zeros = 0.</li>
+          <li>Positive = 4, negative = 10, zeros = 1.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans11', this)">View Answer</button></td></tr>
+      <tr id="ans11" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: A</p>
+        <p><strong>Justification:</strong> The note computes <code>pos.sign = 5</code>, <code>neg.sign = 9</code>, and <code>zeros = 1</code> for these data.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>B, C, and D miscount the signs or the zero.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 12 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 12</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>Which R command produces the exact binomial sign test corresponding to \(H_0:M=250\) vs \(H_a:M\neq250\) for the <code>reaction.time</code> data, with 5 positive signs and 14 non-zero differences?</p>
+        <ol class="options" type="A">
+          <li><code>t.test(reaction.time, mu = 250)</code></li>
+          <li><code>binom.test(5, 14, p = 0.5, alternative = "two.sided")</code></li>
+          <li><code>wilcox.test(reaction.time, mu = 250)</code></li>
+          <li><code>SIGN.test(reaction.time, md = 250, alternative = "two.sided")</code> (but <code>binom.test</code> is requested)</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans12', this)">View Answer</button></td></tr>
+      <tr id="ans12" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note uses <code>binom.test(pos.sign, n = pos.sign + neg.sign, p = 0.5, alternative = "two.sided")</code> to perform the exact binomial sign test.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A performs a one-sample t-test, not a sign test.</li>
+          <li>C performs a Wilcoxon signed-rank test, which is a different nonparametric test.</li>
+          <li>D performs a sign test via <code>SIGN.test</code>, but the question asks for the exact binomial command; <code>binom.test</code> is the exact binomial test.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 13 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 13</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>The <code>binom.test</code> output for the sign test gives:</p>
+        <pre><code>95 percent confidence interval:
+ 0.1275984 0.6486199</code></pre>
+        <p>What does this interval estimate?</p>
+        <ol class="options" type="A">
+          <li>The confidence interval for the population median.</li>
+          <li>The confidence interval for the proportion of negative signs.</li>
+          <li>The confidence interval for the population mean.</li>
+          <li>The confidence interval for the difference between the sample median and 250.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans13', this)">View Answer</button></td></tr>
+      <tr id="ans13" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note warns that the <code>binom.test</code> output reports a confidence interval for the proportion of negative signs, <strong>not</strong> for the median of the original population.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A is the interval reported by <code>SIGN.test</code>, not <code>binom.test</code>.</li>
+          <li>C is a t-test interval.</li>
+          <li>D is not produced by <code>binom.test</code>.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 14 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 14</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>The <code>SIGN.test</code> output for the <code>reaction.time</code> data includes:</p>
+        <pre><code>s = 5, p-value = 0.424
+95 percent confidence interval:
+ 240.3563 252.8218
+sample estimates:
+median of x
+       248</code></pre>
+        <p>Which interpretation is correct?</p>
+        <ol class="options" type="A">
+          <li>We are 95% confident that the population median is between 240.356 and 252.822.</li>
+          <li>We are 95% confident that the proportion of positive signs is between 240.356 and 252.822.</li>
+          <li>The sample mean is 248.</li>
+          <li>The p-value 0.424 proves that the median is exactly 250.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans14', this)">View Answer</button></td></tr>
+      <tr id="ans14" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: A</p>
+        <p><strong>Justification:</strong> The note explains that <code>SIGN.test</code> reports a confidence interval for the population median and an estimate of the median (248).</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>B confuses the median interval with a proportion interval.</li>
+          <li>C is wrong; 248 is the median, not the mean.</li>
+          <li>D is false; a large p-value does not prove equality.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 15 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 15</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>When the number of non-zero differences \(n\) is at least 25, the sign-test statistic can be approximated by a normal distribution using:</p>
+        <p>\[
+          Z = \frac{S - 0.5n}{0.5\sqrt{n}} \sim N(0,1).
+        \]</p>
+        <p>Which statement about this approximation is correct?</p>
+        <ol class="options" type="A">
+          <li>It is used because the exact binomial distribution is always normal.</li>
+          <li>It is a large-sample approximation to the binomial distribution.</li>
+          <li>It should be used only when \(n < 25\).</li>
+          <li>It replaces the need to check any assumptions.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans15', this)">View Answer</button></td></tr>
+      <tr id="ans15" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states that if \(n\ge25\), the standardised statistic \(Z=(S-0.5n)/(0.5\sqrt{n})\) can be approximated by \(N(0,1)\).</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A is false; the binomial is not always normal, only approximately normal for large \(n\).</li>
+          <li>C is the opposite of the rule.</li>
+          <li>D is false; the sign test still requires independent observations.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 16 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 16</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>What does the R command <code>pbinom(3, size = 10, prob = 0.5, lower.tail = FALSE)</code> compute?</p>
+        <ol class="options" type="A">
+          <li>\(P(X \le 3)\) for \(X \sim \text{Binom}(10,0.5)\).</li>
+          <li>\(P(X > 3)\) for \(X \sim \text{Binom}(10,0.5)\).</li>
+          <li>The 3rd percentile of \(\text{Binom}(10,0.5)\).</li>
+          <li>The probability of exactly 3 successes.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans16', this)">View Answer</button></td></tr>
+      <tr id="ans16" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note explains that <code>pbinom(q, size, prob, lower.tail = FALSE)</code> returns \(P(X>q)\). The output in the note is <code>0.828125</code>, which is \(P(X>3)\).</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A uses <code>lower.tail = TRUE</code>.</li>
+          <li>C uses <code>qbinom</code>, not <code>pbinom</code>.</li>
+          <li>D uses <code>dbinom</code>.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 17 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 17</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>The sign test for \(H_0:M=250\) vs \(H_a:M\neq250\) gives a p-value of 0.424. At \(\alpha=0.05\), what is the correct conclusion?</p>
+        <ol class="options" type="A">
+          <li>Reject \(H_0\); the median differs from 250.</li>
+          <li>Fail to reject \(H_0\); there is insufficient evidence that the median differs from 250.</li>
+          <li>Accept \(H_0\); the median is exactly 250.</li>
+          <li>The test is invalid because the p-value is greater than 0.05.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans17', this)">View Answer</button></td></tr>
+      <tr id="ans17" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note reports the p-value 0.424 and does not reject \(H_0\). A large p-value means there is insufficient evidence against \(H_0\).</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A would require a small p-value.</li>
+          <li>C is too strong; failing to reject does not prove equality.</li>
+          <li>D is false; a large p-value is a valid result.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 18 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 18</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>For the <code>reaction.time</code> data, the <code>SIGN.test</code> output reports:</p>
+        <pre><code>sample estimates:
+median of x
+       248</code></pre>
+        <p>What is the sample median?</p>
+        <ol class="options" type="A">
+          <li>250</li>
+          <li>248</li>
+          <li>245</li>
+          <li>252</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans18', this)">View Answer</button></td></tr>
+      <tr id="ans18" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The output directly states <code>median of x = 248</code>.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>250 is the hypothesised median, not the sample median.</li>
+          <li>245 and 252 are not the reported median.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 19 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 19</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>Which of the following is a nonparametric test for a population median?</p>
+        <ol class="options" type="A">
+          <li>One-sample t-test</li>
+          <li>Sign test</li>
+          <li>Regression with intercept only</li>
+          <li>z-test for a mean</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans19', this)">View Answer</button></td></tr>
+      <tr id="ans19" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note introduces the sign test as a nonparametric method for the population median that does not assume any specific distribution.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A and D are parametric tests for means.</li>
+          <li>C is a parametric regression approach equivalent to the t-test.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================= QUESTION 20 ================= -->
+  <table class="table question-table">
+    <thead><tr><th colspan="2">Question 20</th></tr></thead>
+    <tbody>
+      <tr><td colspan="2">
+        <p>What is a primary advantage of the sign test over the one-sample t-test?</p>
+        <ol class="options" type="A">
+          <li>It has more statistical power when the population is normal.</li>
+          <li>It is robust to outliers and does not require normality.</li>
+          <li>It requires a larger sample size.</li>
+          <li>It tests the mean instead of the median.</li>
+        </ol>
+      </td></tr>
+      <tr><td colspan="2"><button class="btn btn-primary btn-view" type="button" onclick="toggleAnswer('ans20', this)">View Answer</button></td></tr>
+      <tr id="ans20" class="answer-row" style="display:none;"><td colspan="2">
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states that the sign test “does not assume any specific distribution (e.g., normality) and is robust to outliers”.</p>
+        <p><strong>Why others are incorrect:</strong></p>
+        <ul>
+          <li>A is false; the sign test generally has less power when normality holds.</li>
+          <li>C is false; the sign test is often used for small samples.</li>
+          <li>D is false; the sign test targets the median, not the mean.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+  <!--XXXXXXXXXXXXXXXXXXXXXXXXXXX  FOOTER  XXXXXXXXXXXXXXXXXXXXXXX-->
+  <!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+  <footer class="col-md-12">
+    <center><font color="navy" size="2">
+      <p class="text-center">Copyright &copy;
+        <script>
+          var CurrentYear = new Date().getFullYear()
+          document.write(CurrentYear)
+        </script>
+        C. Peng. Last updated:
+        <script>
+          document.write(new Date().toLocaleDateString());
+        </script>
+      </font>
+      <a href='http://www.freevisitorcounters.com'>.</a>
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script></p>
+    </center>
+  </footer>
+
+</div>
+
+<script>
+  function toggleAnswer(id, btn) {
+    var row = document.getElementById(id);
+    if (!row) return;
+    if (row.style.display === 'none' || row.style.display === '') {
+      row.style.display = 'table-row';
+      btn.textContent = 'Hide Answer';
+    } else {
+      row.style.display = 'none';
+      btn.textContent = 'View Answer';
+    }
+  }
+
+  function showAllAnswers() {
+    for (var i = 1; i <= 20; i++) {
+      var row = document.getElementById('ans' + i);
+      if (row) row.style.display = 'table-row';
+    }
+    var buttons = document.querySelectorAll('.btn-view');
+    buttons.forEach(function(btn) { btn.textContent = 'Hide Answer'; });
+  }
+
+  function hideAllAnswers() {
+    for (var i = 1; i <= 20; i++) {
+      var row = document.getElementById('ans' + i);
+      if (row) row.style.display = 'none';
+    }
+    var buttons = document.querySelectorAll('.btn-view');
+    buttons.forEach(function(btn) { btn.textContent = 'View Answer'; });
+  }
+</script>
+</body>
+</html>

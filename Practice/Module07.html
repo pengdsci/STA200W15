@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STA200 Module 7 – Practice Exercises</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body {
+    background-color: #f5f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .page-header {
+    background: #1f3a5f;
+    color: #ffffff;
+    padding: 28px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+  .page-header h2 { font-size: 1.15rem; font-weight: 300; margin-bottom: 0; }
+  .page-header .instr { font-size: 1rem; color: #cfdcec; }
+
+  .question-table {
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  }
+  .question-table > thead > tr > th {
+    background-color: #dbe7f3;
+    color: #1f3a5f;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .question-table > tbody > tr > td {
+    padding: 12px 14px;
+    vertical-align: top;
+  }
+  .options { margin-bottom: 0; padding-left: 1.4rem; }
+  .options li { margin-bottom: 4px; }
+
+  .answer-row > td {
+    background-color: #eef6ff;
+    border-left: 5px solid #0d6efd;
+  }
+  .answer-row .correct {
+    color: #0a6b2d;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .btn-view { min-width: 130px; }
+
+  .toolbar { margin-bottom: 20px; }
+
+  footer {
+    border-top: 1px solid #d5dde5;
+    padding-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  .note-box {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 25px;
+  }
+
+  .part-title { color: #1f3a5f; font-weight: 700; margin: 35px 0 15px; padding-bottom: 6px; border-bottom: 2px solid #1f3a5f; }
+  .code-block { background: #f4f6f8; border: 1px solid #d5dde5; border-radius: 4px; padding: 10px 12px; font-size: 0.88rem; overflow-x: auto; }
+  .formula { font-size: 1.05rem; text-align: center; background: #f8fafc; padding: 8px; border-radius: 4px; }
+  .question-table code { color: #8a1c4a; }
+  .code-block code { color: #212529; }
+</style>
+</head>
+<body>
+<div class="container py-4">
+
+  <div class="page-header text-center">
+    <h1>STA200 Statistics II</h1>
+    <h2>Practice Exercises for Module #7: Two-Sample Tests and Linear Regression Approach</h2>
+    <p class="instr mt-2 mb-0">Instr. Dr. Cheng Peng</p>
+  </div>
+
+  <div class="note-box">
+    <p class="mb-2">The following 20 multiple-choice questions are designed to reinforce the concepts and methods covered in the note on the <em>Principles of DOE</em>. Each question includes the correct answer, a justification based on the notes, and an explanation of why the other choices are incorrect. When appropriate, R commands and representative output are provided to illustrate how the methods are applied in practice.</p>
+    <p class="mb-0"><strong>How to use these questions:</strong> Before viewing the answer, try to solve each question on your own. Whenever possible, work through the calculations manually or run the relevant R code to obtain your answer. Then click <em>View Answer</em> and review the explanation to check your understanding.</p>
+  </div>
+
+  <div class="toolbar">
+    <button type="button" class="btn btn-primary" onclick="setAll(true)">Show All Answers</button>
+    <button type="button" class="btn btn-outline-primary" onclick="setAll(false)">Hide All Answers</button>
+  </div>
+
+  <h4 class="part-title">Part 1. Introduction &amp; Accessing Data in R</h4>
+  <table class="table table-bordered question-table" id="q1">
+    <thead>
+      <tr><th>Question 1</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>According to the note, which statement correctly distinguishes parametric from nonparametric two-sample tests?</p>
+          <ol type="A" class="options">
+            <li>Parametric tests make fewer assumptions about the data distribution</li>
+            <li>Parametric tests assume data follows a specific distribution (usually normal) and compare parameters like means or variances; nonparametric tests make fewer distributional assumptions and are used when parametric assumptions are violated</li>
+            <li>Nonparametric tests can only be used for paired samples</li>
+            <li>Parametric tests require the population variances to be known</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans1" onclick="toggleAnswer(1, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans1" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note’s introduction classifies two-sample tests into parametric tests, which “assume data follows a specific distribution (usually normal) and compare parameters like means or variances,” and nonparametric tests, which “make fewer assumptions about the data distribution and are used when parametric assumptions are violated.”</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> reverses the definitions — it is the <em>nonparametric</em> tests that make fewer assumptions.</li>
+            <li><strong>C</strong> is false — the note uses nonparametric tests (Wilcoxon rank sum) for <em>independent</em> samples as well as paired ones.</li>
+            <li><strong>D</strong> is false — the two-sample t-test explicitly assumes the population variances are <em>unknown</em> (they are estimated by pooling).</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q2">
+    <thead>
+      <tr><th>Question 2</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>Given the toy data frame <code>my.toy.data</code> shown below, what does the command <code>my.toy.data[2, 3]</code> return?</p>
+          <pre class="code-block"><code>   salary gender    role Yr.edu Yr.exp
+1   56230      F analyst     12      4
+2   73450      M manager     16      8
+3   47520      M analyst     14      3
+...</code></pre>
+          <ol type="A" class="options">
+            <li>The entire second row</li>
+            <li>“manager” — the value at the intersection of row 2 and column 3</li>
+            <li>The third column for all rows</li>
+            <li>An error, because character values cannot be extracted with numeric indices</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans2" onclick="toggleAnswer(2, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans2" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note demonstrates that <code>my.toy.data[2,3]</code> returns <code>[1] "manager"</code>: single indices select a single cell at the intersection of the given row and column. Rows come first, columns second, inside the square brackets.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> would require <code>my.toy.data[2, ]</code> (row 2, all columns — a blank column index selects all).</li>
+            <li><strong>C</strong> would require <code>my.toy.data[, 3]</code> (all rows, column 3).</li>
+            <li><strong>D</strong> is false — R happily returns character values selected by numeric indices.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q3">
+    <thead>
+      <tr><th>Question 3</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>The note separates male and female employees with the code below. Which statement about this code is correct?</p>
+          <pre class="code-block"><code>male.id &lt;- which(my.toy.data$gender == &quot;M&quot;)
+male.salary   &lt;- my.toy.data[male.id, ]
+female.salary &lt;- my.toy.data[-male.id, ]</code></pre>
+          <ol type="A" class="options">
+            <li>A single <code>=</code> may be used interchangeably with <code>==</code> in the <code>which()</code> condition</li>
+            <li><code>which()</code> returns the row indices of male employees; the minus sign in <code>-male.id</code> <em>excludes</em> those rows, leaving the female rows</li>
+            <li><code>which()</code> returns the actual salary values of male employees</li>
+            <li><code>female.salary</code> will contain 0 rows because no condition was given for females</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans3" onclick="toggleAnswer(3, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans3" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note’s comments state that <code>which(my.toy.data$gender == "M")</code> “will return the row indexes of male employees,” and that <code>-male.id</code> means “not male ⇒ female indexes.” The <code>==</code> is a logical test, <code>which()</code> converts the TRUE/FALSE vector into positions, and negative indexing drops those positions.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> is explicitly warned against in the note: “CAUTION: double equal sign (==) MUST be used in conditional testing!!!” — a single <code>=</code> is assignment, not comparison.</li>
+            <li><strong>C</strong> confuses indices with values — <code>which()</code> returns <em>positions</em> (row numbers), which are then used to subset.</li>
+            <li><strong>D</strong> is wrong because <code>-male.id</code> selects all rows <em>except</em> the male ones, i.e., exactly the 4 female rows.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q4">
+    <thead>
+      <tr><th>Question 4</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>Which command selects the <code>salary</code>, <code>gender</code>, and <code>role</code> columns (all rows) from <code>my.toy.data</code>?</p>
+          <ol type="A" class="options">
+            <li><code>my.toy.data["salary", "gender", "role"]</code></li>
+            <li><code>my.toy.data[, c("salary", "gender", "role")]</code></li>
+            <li><code>my.toy.data[c("salary", "gender", "role")]</code></li>
+            <li><code>my.toy.data$salary, $gender, $role</code></li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans4" onclick="toggleAnswer(4, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans4" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note shows <code>my.toy.data[, c("salary", "gender", "role")]</code> with the comment “vector with character values in quotes!” — a blank row index selects all rows, and <code>c()</code> collects the quoted column names into a vector.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> passes multiple strings as separate arguments — this is an error for <code>[</code> (and would not select columns anyway).</li>
+            <li><strong>C</strong> supplies a character vector in the <em>row</em> position, selecting rows whose row names match — not what is intended for these column names.</li>
+            <li><strong>D</strong> mixes three separate expressions with commas — syntactically invalid outside a function call; the <code>$</code> operator also extracts only one column at a time.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 class="part-title">Part 2. The Two-Sample t-Test</h4>
+  <table class="table table-bordered question-table" id="q5">
+    <thead>
+      <tr><th>Question 5</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>What are the two assumptions of the two-sample (pooled) t-test recalled from introductory statistics?</p>
+          <ol type="A" class="options">
+            <li>Both populations are normally distributed; both population variances are unknown but equal</li>
+            <li>Both samples have the same size; both populations have the same mean</li>
+            <li>The data are paired; the differences are normally distributed</li>
+            <li>Both populations are normally distributed; the variances are known constants</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans5" onclick="toggleAnswer(5, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans5" style="display:none;">
+        <td>
+          <p class="correct">Answer: A</p>
+          <p><strong>Justification:</strong> The note states the assumptions directly: “Both populations are normally distributed” and “Both population variances are unknown but equal.” The equal-variance assumption is what justifies pooling the two samples into a single estimate <em>s</em><sub>pool</sub>.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>B</strong> — equal sample sizes are not required, and equal means is the <em>null hypothesis</em> being tested, not an assumption.</li>
+            <li><strong>C</strong> describes the <strong>paired</strong> t-test setting (assumptions on the <em>differences</em>), a different design covered later in the note.</li>
+            <li><strong>D</strong> — the variances are assumed <em>unknown</em>; known variances would call for a z-test.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q6">
+    <thead>
+      <tr><th>Question 6</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>Two independent samples have <em>n</em>₁ = 10, <em>s</em>₁ = 6 and <em>n</em>₂ = 15, <em>s</em>₂ = 4. Using the pooling formula below, the pooled standard deviation equals approximately:</p>
+          <p class="formula"><em>s</em><sub>pool</sub> = √[ ((<em>n</em>₁ − 1)<em>s</em>₁² + (<em>n</em>₂ − 1)<em>s</em>₂²) / (<em>n</em>₁ + <em>n</em>₂ − 2) ]</p>
+          <ol type="A" class="options">
+            <li>5.10</li>
+            <li>4.88</li>
+            <li>5.00</li>
+            <li>4.68</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans6" onclick="toggleAnswer(6, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans6" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> <em>s</em><sub>pool</sub>² = (9·36 + 14·16)/23 = (324 + 224)/23 = 548/23 ≈ 23.83, so <em>s</em><sub>pool</sub> ≈ √23.83 ≈ <strong>4.88</strong>. The weights are the degrees of freedom (<em>n</em><sub>i</sub> − 1), and the divisor is the pooled degrees of freedom <em>n</em>₁ + <em>n</em>₂ − 2.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> (5.10) comes from the unweighted root-mean-square √((36 + 16)/2) = √26 — it ignores the degrees-of-freedom weights.</li>
+            <li><strong>C</strong> (5.00) is the simple arithmetic mean (6 + 4)/2 — standard deviations are <em>not</em> averaged directly.</li>
+            <li><strong>D</strong> (4.68) results from dividing by <em>n</em>₁ + <em>n</em>₂ = 25 instead of <em>n</em>₁ + <em>n</em>₂ − 2 = 23 — the wrong denominator.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q7">
+    <thead>
+      <tr><th>Question 7</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>Under the two-sample t-test assumptions, the test statistic below follows which distribution, and with what degrees of freedom (as applied to the Pima diabetes data, where the output reports df = 390)?</p>
+          <p class="formula">TS = (<em>x̄</em>₁ − <em>x̄</em>₂) / ( <em>s</em><sub>pool</sub> · √(1/<em>n</em>₁ + 1/<em>n</em>₂) )</p>
+          <ol type="A" class="options">
+            <li>Standard normal N(0,1), with df = <em>n</em>₁ + <em>n</em>₂</li>
+            <li>t-distribution with <em>n</em>₁ + <em>n</em>₂ − 2 degrees of freedom (so <em>n</em>₁ + <em>n</em>₂ = 392 for the Pima data)</li>
+            <li>t-distribution with <em>n</em>₁ + <em>n</em>₂ − 1 degrees of freedom</li>
+            <li>F-distribution with 1 and <em>n</em>₁ + <em>n</em>₂ − 2 degrees of freedom</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans7" onclick="toggleAnswer(7, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans7" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note gives the sampling distribution as TS ~ <em>t</em><sub><em>n</em>₁+<em>n</em>₂−2</sub>, and the Pima output confirms “df = 390,” i.e., <em>n</em>₁ + <em>n</em>₂ − 2 = 390, so the two samples total 392 observations. Estimating the two sample means costs one degree of freedom each, so two are lost from <em>n</em>₁ + <em>n</em>₂.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> — the standard normal applies only with <em>known</em> σ; here σ is estimated by <em>s</em><sub>pool</sub>, giving a t-distribution.</li>
+            <li><strong>C</strong> subtracts only one degree of freedom — there are two sample means being estimated.</li>
+            <li><strong>D</strong> — the <em>F</em> distribution arises in the regression/ANOVA formulation (e.g., F = 30.7 in the lm output); the two-sample t statistic itself is t-distributed (though t² = F with 1 numerator df).</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q8">
+    <thead>
+      <tr><th>Question 8</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>The manual R calculation for the Pima data ends with the code and output below. Why is the p-value computed as <code>2*pt(abs.TS, ..., lower.tail = FALSE)</code>?</p>
+          <pre class="code-block"><code>p.value &lt;- 2*pt(abs.TS, df = n1+n2-2, lower.tail = FALSE)
+cbind(TS = TS, df = n1 +n2 - 2, p.value = p.value)
+
+            TS  df      p.value
+[1,]  5.540362 390 5.563221e-08</code></pre>
+          <ol type="A" class="options">
+            <li><code>lower.tail = FALSE</code> gives the right-tail probability; doubling it accounts for the two-sided alternative H<sub>a</sub>: μ₁ − μ₂ ≠ 0</li>
+            <li>The factor 2 corrects for the two samples, and <code>lower.tail = FALSE</code> selects the left tail</li>
+            <li><code>pt()</code> always returns negative values, so the absolute value and factor 2 are needed to make it positive</li>
+            <li>Doubling converts the t-distribution to the F-distribution</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans8" onclick="toggleAnswer(8, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans8" style="display:none;">
+        <td>
+          <p class="correct">Answer: A</p>
+          <p><strong>Justification:</strong> The code comment says “p-value: 2 times the right-tail area for a two-sample test,” and <code>lower.tail = FALSE</code> specifies the right tail. Because the alternative is two-sided (H<sub>a</sub>: μ₁ − μ₂ ≠ 0), evidence against H₀ in <em>either</em> direction counts, so the one-tail area is doubled. With p = 5.56×10⁻⁸ &lt; 0.05, the note concludes there is strong evidence the mean BMIs differ.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>B</strong> — <code>lower.tail = FALSE</code> is the <em>right</em> tail, not the left.</li>
+            <li><strong>C</strong> — <code>pt()</code> returns valid probabilities in [0, 1]; <code>abs()</code> is used because the two-sided p-value depends only on |TS|.</li>
+            <li><strong>D</strong> — nothing here converts distributions; squaring (not doubling) relates t to F.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q9">
+    <thead>
+      <tr><th>Question 9</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>The built-in test produces the output below. Which statement is correct?</p>
+          <pre class="code-block"><code>t.test(diabetes.pop$mass, no.diabetes.pop$mass, alternative = &quot;two.sided&quot;, var.equal = TRUE)
+
+t = 5.5404, df = 390, p-value = 5.563e-08
+95 percent confidence interval:
+ 2.597924 5.455934
+sample estimates:
+mean of x mean of y
+ 35.77769  31.75076</code></pre>
+          <ol type="A" class="options">
+            <li>The argument <code>var.equal = TRUE</code> requests Welch’s approximate (unequal-variance) procedure</li>
+            <li>The confidence interval (2.598, 5.456) is for the diabetes group mean alone; its midpoint 4.027 confirms normality</li>
+            <li>Setting <code>var.equal = TRUE</code> invokes the pooled two-sample t-test, and the interval’s midpoint (2.597924 + 5.455934)/2 = 4.0269 equals <em>x̄</em>₁ − <em>x̄</em>₂ = 35.77769 − 31.75076 — matching the manual calculation exactly</li>
+            <li>The p-value 5.563e-08 exceeds 0.05, so the mean BMIs are not significantly different</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans9" onclick="toggleAnswer(9, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans9" style="display:none;">
+        <td>
+          <p class="correct">Answer: C</p>
+          <p><strong>Justification:</strong> The note states the built-in function “produces the same results” as the manual calculation (TS = 5.5404, df = 390, p = 5.563e-08). The interval is for μ₁ − μ₂, and its midpoint is exactly the estimated difference 4.0269. <code>var.equal = TRUE</code> is what selects the pooled procedure under the equal-variance assumption.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> reverses the meaning of the argument — the unequal-variance case (Welch–Satterthwaite) is <em>not</em> used here and is deferred to later notes.</li>
+            <li><strong>B</strong> misidentifies the estimand — the interval estimates the <em>difference</em> of means, and an interval midpoint says nothing about normality.</li>
+            <li><strong>D</strong> misreads the conclusion — 5.563×10⁻⁸ is far <em>below</em> 0.05, so H₀ is rejected; the note calls this “clear strong evidence” of a difference.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 class="part-title">Part 3. Regression Approach to the Two-Sample t-Test</h4>
+  <table class="table table-bordered question-table" id="q10">
+    <thead>
+      <tr><th>Question 10</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>The regression approach uses <code>lm(mass ~ factor(diabetes), data = PimaIndiaDiabetes)</code> and yields the output below. Which mapping between regression output and the two-sample t-test is <strong>not</strong> correct?</p>
+          <pre class="code-block"><code>Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)          31.7508     0.4186   75.86  &lt; 2e-16 ***
+factor(diabetes)pos   4.0269     0.7268    5.54 5.56e-08 ***
+...
+Residual standard error: 6.775 on 390 degrees of freedom
+F-statistic: 30.7 on 1 and 390 DF,  p-value: 5.563e-08</code></pre>
+          <ol type="A" class="options">
+            <li>Intercept 31.7508 = <em>x̄</em>₂ (the baseline, diabetes-free mean)</li>
+            <li><code>factor(diabetes)pos</code> estimate 4.0269 = <em>x̄</em>₁ − <em>x̄</em>₂ = 35.77769 − 31.75076</li>
+            <li>Residual standard error 6.775 on 390 df = the pooled standard deviation <em>s</em><sub>pool</sub> with df = <em>n</em>₁ + <em>n</em>₂ − 2</li>
+            <li>The regression F-statistic 30.7 equals the t-statistic 5.54, because F and t are the same test</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans10" onclick="toggleAnswer(10, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans10" style="display:none;">
+        <td>
+          <p class="correct">Answer: D</p>
+          <p><strong>Justification:</strong> Options A–C are exactly the correspondences annotated in the note (<em>x̄</em>₁ − <em>x̄</em>₂ = 4.0269; df = <em>n</em>₁ + <em>n</em>₂ − 2 = 390). Option D is wrong in its claimed <em>equality</em>: the correct relationship is <strong>t² = F</strong> — indeed 5.54² ≈ 30.7. The F and t tests are equivalent here, but the two statistics are not numerically equal.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> is a correct correspondence — the intercept is the baseline-group mean.</li>
+            <li><strong>B</strong> is a correct correspondence — the slope is the difference in group means.</li>
+            <li><strong>C</strong> is a correct correspondence — the residual standard error is the pooled standard deviation. (The F-test p-value 5.563e-08 matches the t-test p-value, confirming the equivalence.)</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 class="part-title">Part 4. Wilcoxon Rank Sum (Mann–Whitney U) Test</h4>
+  <table class="table table-bordered question-table" id="q11">
+    <thead>
+      <tr><th>Question 11</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>Which statement about the Wilcoxon Rank Sum Test is consistent with the note?</p>
+          <ol type="A" class="options">
+            <li>It tests whether the two population <em>medians</em> are equal, regardless of distribution shape</li>
+            <li>It assesses whether the two population <em>distributions</em> are equal; interpreting it as a median test is valid only if the distributions are symmetric and differ only in location</li>
+            <li>It assumes both populations are normal with equal variances</li>
+            <li>It requires the data to be paired</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans11" onclick="toggleAnswer(11, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans11" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note states the test “assesses whether the two population distributions are equal” and warns that the common misconception that it compares medians “is <strong>only true if the distributions are symmetric and differ only in location</strong>.” The accompanying figure shows two distributions with the same mean but different shapes — the test can reject H₀ even when location parameters coincide.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> is precisely the “common misconception” the note debunks — different shapes (skewness, variance) can drive rejection even with equal medians.</li>
+            <li><strong>C</strong> describes the parametric t-test assumptions; the rank sum test is introduced precisely for cases where normality/equal-variance assumptions are violated.</li>
+            <li><strong>D</strong> describes the paired design; the rank sum test is for two <strong>independent</strong> samples.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q12">
+    <thead>
+      <tr><th>Question 12</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>Group A = (10, 12, 14, 16), Group B = (15, 18, 20, 22). After combining and sorting (10, 12, 14, 15, 16, 18, 20, 22) and assigning ranks 1–8, what are the rank sums?</p>
+          <ol type="A" class="options">
+            <li>R<sub>A</sub> = 10, R<sub>B</sub> = 26</li>
+            <li>R<sub>A</sub> = 11, R<sub>B</sub> = 25</li>
+            <li>R<sub>A</sub> = 14, R<sub>B</sub> = 22</li>
+            <li>R<sub>A</sub> = 12, R<sub>B</sub> = 24</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans12" onclick="toggleAnswer(12, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans12" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> Group A’s values receive ranks 1 (for 10), 2 (for 12), 3 (for 14), and 5 (for 16, since 15 takes rank 4): R<sub>A</sub> = 1+2+3+5 = <strong>11</strong>. Group B receives ranks 4, 6, 7, 8: R<sub>B</sub> = <strong>25</strong>. Sanity check: R<sub>A</sub> + R<sub>B</sub> = 36 = 8(8+1)/2, the sum of ranks 1 through 8.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> would require Group A to hold ranks 1, 2, 3, 4 (the four smallest values), but rank 4 belongs to Group B’s value 15.</li>
+            <li><strong>C</strong> does not match the ranks actually assigned — Group A’s ranks are 1, 2, 3, 5, which sum to 11, not 14.</li>
+            <li><strong>D</strong> also fails the check — Group A’s ranks sum to 11; no assignment of A’s values yields 12.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q13">
+    <thead>
+      <tr><th>Question 13</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>Using R<sub>A</sub> = 11, R<sub>B</sub> = 25, and <em>n</em>₁ = <em>n</em>₂ = 4, compute the U statistics:</p>
+          <ol type="A" class="options">
+            <li>U₁ = 1, U₂ = 15, U = 1</li>
+            <li>U₁ = 15, U₂ = 1, U = 1</li>
+            <li>U₁ = 15, U₂ = 1, U = 15</li>
+            <li>U₁ = 11, U₂ = 25, U = 11</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans13" onclick="toggleAnswer(13, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans13" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> U₁ = 4·4 + 4·5/2 − 11 = 16 + 10 − 11 = <strong>15</strong>; U₂ = 16 + 10 − 25 = <strong>1</strong>; U = min{15, 1} = <strong>1</strong>, matching the note’s worked example (and R’s output W = 1).</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> swaps which U belongs to which group — group 1 (A) has the smaller rank sum (11), and a <em>smaller</em> rank sum gives a <em>larger</em> U, so U₁ must be 15.</li>
+            <li><strong>C</strong> correctly computes U₁ and U₂ but takes the maximum instead of the minimum — the note defines U = min{U₁, U₂}.</li>
+            <li><strong>D</strong> merely repeats the rank sums rather than applying the U formulas. (Consistency check: U₁ + U₂ = 16 = <em>n</em>₁<em>n</em>₂ ✓.)</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q14">
+    <thead>
+      <tr><th>Question 14</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>For <em>n</em>₁ = <em>n</em>₂ = 4 at α = 0.05 (one-tailed), the note’s U-table gives critical value CV = 0, with the decision rule: <em>reject H₀ if U &lt; CV or U &gt; n₁n₂ − CV; fail to reject H₀ if CV &lt; U &lt; n₁n₂ − CV</em>. With U = 1, the conclusion is:</p>
+          <ol type="A" class="options">
+            <li>Reject H₀, because U = 1 is smaller than <em>n</em>₁<em>n</em>₂ = 16</li>
+            <li>Fail to reject H₀, because 0 = CV &lt; U = 1 &lt; 16 = <em>n</em>₁<em>n</em>₂ − CV; the distributions are not significantly different</li>
+            <li>Reject H₀, because U is below the mean μ<sub>U</sub> = <em>n</em>₁<em>n</em>₂/2 = 8</li>
+            <li>The test cannot be performed, because exact tables require <em>n</em>₁, <em>n</em>₂ &gt; 20</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans14" onclick="toggleAnswer(14, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans14" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note applies the rule directly: “0 = CV<sub>0.05</sub> &lt; U &lt; 16, we fail to reject the null hypothesis H₀. That is, the two distributions are <strong>not significantly different</strong>.” This matches the R result (p-value = 0.05714 &gt; 0.05).</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> misapplies the rule — rejection requires U <em>outside</em> the interval (CV, <em>n</em>₁<em>n</em>₂ − CV); being small relative to 16 is not the criterion.</li>
+            <li><strong>C</strong> — lying below μ<sub>U</sub> shows a <em>direction</em> of difference but does not define the rejection region; the critical-value boundaries do.</li>
+            <li><strong>D</strong> reverses the conditions — exact tables are for <em>small</em> samples (<em>n</em>₁, <em>n</em>₂ ≤ 20); the normal approximation is used when both exceed 20.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q15">
+    <thead>
+      <tr><th>Question 15</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>The Pima Wilcoxon analysis uses the code and output below. Why is <code>exact = FALSE</code> appropriate here, and what is the conclusion?</p>
+          <pre class="code-block"><code>wilcox.test(diabetes.BMI, no.diabetes.BMI, alternative = &quot;two.sided&quot;, exact = FALSE)
+
+Wilcoxon rank sum test with continuity correction
+W = 22608, p-value = 1.287e-07</code></pre>
+          <ol type="A" class="options">
+            <li>Both samples exceed 20 observations, so the normal approximation is used; p ≈ 0 &lt; 0.05, so the BMI distributions differ</li>
+            <li>The exact method is only valid for paired data, so it must be switched off</li>
+            <li><code>exact = FALSE</code> forces the t-distribution, giving a more conservative test</li>
+            <li>The sample is too small for any test, so the p-value is unreliable and H₀ is retained</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans15" onclick="toggleAnswer(15, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans15" style="display:none;">
+        <td>
+          <p class="correct">Answer: A</p>
+          <p><strong>Justification:</strong> The note says: “Since both sample sizes are larger than 20, we will use the approximation approach for the p-value,” consistent with the normal approximation being valid when <em>n</em>₁ &gt; 20 and <em>n</em>₂ &gt; 20. It concludes that the null hypothesis is rejected (p ≈ 0), meaning the distributions of BMIs in the two groups are different, supported by the overlaid density curves.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>B</strong> — <code>exact</code> concerns how the null distribution is computed (exact vs. approximate), not the independent/paired distinction; that is controlled by <code>paired = FALSE</code> (the default).</li>
+            <li><strong>C</strong> — the approximation is the <em>normal</em> (with continuity correction, per the output title), not the t-distribution.</li>
+            <li><strong>D</strong> reverses the logic — large samples justify the approximation, and p = 1.287×10⁻⁷ leads to <em>rejection</em> of H₀, not retention.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 class="part-title">Part 5. Paired-Sample Tests</h4>
+  <table class="table table-bordered question-table" id="q16">
+    <thead>
+      <tr><th>Question 16</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>A clinical trial measures systolic blood pressure in the <strong>same 10 patients</strong> before and after 4 weeks of medication. Why are the independent two-sample tests of the earlier sections inappropriate, and what is the remedy?</p>
+          <ol type="A" class="options">
+            <li>They are inappropriate because the sample size is too small; the remedy is to collect more patients</li>
+            <li>Each pair of measurements comes from the same patient and is therefore correlated (dependent); taking the within-patient difference converts the two-correlated-sample problem into a one-sample problem</li>
+            <li>They are inappropriate because blood pressure is not normally distributed; the remedy is a log transformation</li>
+            <li>They are inappropriate because the two time points have different variances; the remedy is Welch’s test</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans16" onclick="toggleAnswer(16, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans16" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note explains that because each pair of measurements is taken from the same patient and is therefore correlated (dependent), the two-sample tests of previous sections cannot be used. Taking the difference between each pair gives each subject a single value, which “transforms the two-correlated-sample problem into a one-sample situation.”</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> — small size affects power and normality checks, but the fundamental problem is the <em>dependence</em> between paired measurements, which violates the independent-samples design regardless of <em>n</em>.</li>
+            <li><strong>C</strong> — normality of BP is not the stated obstacle; the paired design is the issue, and no transformation is proposed.</li>
+            <li><strong>D</strong> — unequal variances are not the reason; the dependence structure is, and the remedy is differencing, not Welch’s procedure.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q17">
+    <thead>
+      <tr><th>Question 17</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>For the blood pressure data, the output below was obtained. Which conclusion follows at α = 0.05?</p>
+          <pre class="code-block"><code>differences &lt;- after - before
+t.test(differences)
+
+One Sample t-test
+t = -6.9374, df = 9, p-value = 6.779e-05
+95 percent confidence interval:
+ -6.497808 -3.302192
+sample estimates:
+mean of x
+     -4.9</code></pre>
+          <ol type="A" class="options">
+            <li>The medication has no significant effect, since the p-value is less than 0.05</li>
+            <li>The mean difference (after − before) is −4.9 mmHg, and p ≈ 0 implies a significant treatment effect — systolic BP decreased</li>
+            <li>The confidence interval (−6.50, −3.30) contains 0, so the effect is not significant</li>
+            <li>df = 9 indicates that 10 independent patients were measured in each of two groups</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans17" onclick="toggleAnswer(17, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans17" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note concludes that a p-value approximately equal to 0 implies a significant treatment effect. The mean difference is −4.9 (BP lower after treatment), t = −6.9374 with df = 9 (10 differences ⇒ df = 10 − 1), and the interval lies entirely below 0, ruling out “no change.”</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> reverses the decision rule — a <em>small</em> p-value (6.779×10⁻⁵ &lt; 0.05) means <em>reject</em> H₀, i.e., a significant effect.</li>
+            <li><strong>C</strong> is factually wrong — the interval (−6.50, −3.30) does <strong>not</strong> contain 0; it is entirely negative, which is exactly why the effect is significant.</li>
+            <li><strong>D</strong> misreads the design — df = 9 comes from <em>one</em> sample of 10 paired differences, not two groups of 10.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q18">
+    <thead>
+      <tr><th>Question 18</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>The assumptions of the paired-sample t-test, as stated in the note, are:</p>
+          <ol type="A" class="options">
+            <li>The before and after measurements are each normally distributed; the variances of before and after are equal</li>
+            <li>The <strong>differences</strong> are normally distributed; the standard deviation of the population of differences is unknown</li>
+            <li>The differences follow a symmetric distribution; the sample size must exceed 20</li>
+            <li>The ranks of the absolute differences are uniformly distributed</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans18" onclick="toggleAnswer(18, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans18" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note lists the assumptions as: “The differences are normally distributed” and “The standard deviation of the population of <strong>differences</strong> is unknown.” This mirrors the one-sample t-test applied to the differenced data.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> states the <em>independent</em> two-sample t-test assumptions applied to the raw measurements; the paired procedure works on the differences and assumes nothing directly about the raw measurements’ variances.</li>
+            <li><strong>C</strong> — symmetry plus a large-sample condition describes a nonparametric route, not the paired t-test; no <em>n</em> &gt; 20 requirement exists here (the example uses <em>n</em> = 10).</li>
+            <li><strong>D</strong> describes machinery of the signed-rank test (ranking absolute differences), not the assumptions of the paired t-test.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q19">
+    <thead>
+      <tr><th>Question 19</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>In the pain-relief example, differences (after − before) are computed and Patient 2’s difference of 0 is removed, leaving <em>n</em> = 9. The absolute differences are ranked with ties handled as follows: five 1s share average rank (1+2+3+4+5)/5 = 3, and the two 2s share (6+7)/2 = 6.5. The sum of ranks for the positive differences (+1, +1) is 3 + 3 = 6, and the test statistic is the smaller rank sum, W = 6. From the Wilcoxon critical value table at α = 0.05 for <em>n</em> = 9, the critical value is 5. Which statement is accurate?</p>
+          <ol type="A" class="options">
+            <li>W = 6 is the sum of the <em>signed</em> ranks, including zeros</li>
+            <li>Zero differences must be excluded before ranking; tied absolute values receive their average rank; with R’s <code>wilcox.test(paired = TRUE)</code> returning V = 39 and p = 0.04639 &lt; 0.05, H₀ (median difference = 0) is rejected</li>
+            <li>Because the five 1s all received rank 3, the ranking is invalid — each observation needs a distinct rank</li>
+            <li>W = 6 exceeds the critical value 5, so by the table the treatment is ineffective</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans19" onclick="toggleAnswer(19, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans19" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note’s steps are: (1) exclude zero differences (Patient 2 is removed, leaving <em>n</em> = 9); (2) rank the absolute differences, with tied values receiving the average rank (five 1s → 3; two 2s → 6.5); (3) the test statistic W is the smaller rank sum, 6. The R output of <code>wilcox.test(before, after, paired = TRUE, exact = FALSE, correct = FALSE)</code> gives V = 39, p = 0.04639, and the note concludes that p &lt; 0.05, so the null hypothesis is rejected. The hypotheses concern the median difference (the signed-rank test “assesses whether the median difference between pairs is zero”).<br><br><strong>Side note:</strong> W = 6 is only one unit above the table value of 5, so this case is borderline — the exact-table comparison and the normal-approximation p-value (0.046) sit close to the 0.05 boundary. The decision in this note follows the R p-value.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> — zeros are <em>excluded</em>, not included, and ranks are assigned to <em>absolute</em> differences (signs are used only to split the rank sums afterwards).</li>
+            <li><strong>C</strong> — average ranks for ties are the note’s explicit convention (also used in the rank-sum procedure).</li>
+            <li><strong>D</strong> bases the decision on a bare comparison of W with a table value and declares the treatment “ineffective”; the note’s conclusion follows the R p-value (0.04639 &lt; 0.05), which rejects H₀.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-bordered question-table" id="q20">
+    <thead>
+      <tr><th>Question 20</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <p>Which statement correctly contrasts the two nonparametric tests in this note?</p>
+          <ol type="A" class="options">
+            <li><code>wilcox.test(x, y, paired = FALSE)</code> performs the signed-rank test on independent samples</li>
+            <li>The Wilcoxon <strong>rank sum</strong> test is for two independent samples and tests equality of distributions; the Wilcoxon <strong>signed-rank</strong> test is for paired samples and tests whether the median difference is zero — the latter being the nonparametric alternative to the paired t-test</li>
+            <li>The signed-rank test requires normality of the differences, while the rank sum test does not</li>
+            <li>Both tests require the populations to be normally distributed with equal variances</li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <button type="button" class="btn btn-primary btn-view" aria-expanded="false" aria-controls="ans20" onclick="toggleAnswer(20, this)">View Answer</button>
+        </td>
+      </tr>
+      <tr class="answer-row" id="ans20" style="display:none;">
+        <td>
+          <p class="correct">Answer: B</p>
+          <p><strong>Justification:</strong> The note introduces the rank sum test (Mann–Whitney U) for independent samples with H₀: “the two population distributions are equal,” implemented with <code>paired = FALSE</code> (the default). It introduces the signed-rank test as “a nonparametric alternative to the paired t-test, used when comparing two related (paired) samples where data is not normally distributed,” which assesses whether the median difference between pairs is zero, implemented with <code>paired = TRUE</code>.</p>
+          <p class="mb-1"><strong>Why the other options are incorrect:</strong></p>
+          <ul>
+            <li><strong>A</strong> reverses the argument mapping — <code>paired = FALSE</code> gives the independent-samples rank sum test.</li>
+            <li><strong>C</strong> reverses the assumption logic — the signed-rank test is used precisely when the differences are <em>not</em> normal; normality of differences is the paired t-test’s assumption.</li>
+            <li><strong>D</strong> describes the parametric t-test assumptions; both Wilcoxon procedures were introduced for situations where those assumptions fail.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <div class="row">
+<!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+<!--XXXXXXXXXXXXXXXXXXXXXXXXXXX  FOOTER  XXXXXXXXXXXXXXXXXXXXXXX-->
+<!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+<footer class="col-md-12">
+<center><font color = "navy" size =2>
+    <p class="text-center">Copyright &copy; 
+        <script>
+            var CurrentYear = new Date().getFullYear()
+            document.write(CurrentYear)
+        </script>
+       C. Peng. Last updated: 
+         <script> 
+            document.write(new Date().toLocaleDateString()); 
+         </script> 
+      </font>
+ <a href='http://www.freevisitorcounters.com'>.</a> 
+<script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+<script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script></p>
+</center>
+</footer>
+  </div>
+
+</div>
+
+<script>
+  function toggleAnswer(n, btn) {
+    var row = document.getElementById("ans" + n);
+    var show = row.style.display === "none";
+    row.style.display = show ? "table-row" : "none";
+    btn.textContent = show ? "Hide Answer" : "View Answer";
+    btn.setAttribute("aria-expanded", show);
+  }
+  function setAll(show) {
+    for (var n = 1; n <= 20; n++) {
+      var row = document.getElementById("ans" + n);
+      var btn = document.querySelector("#q" + n + " .btn-view");
+      row.style.display = show ? "table-row" : "none";
+      btn.textContent = show ? "Hide Answer" : "View Answer";
+      btn.setAttribute("aria-expanded", show);
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STA200 Practice Exercises &mdash; Module #4: Chi-Square Goodness-of-Fit</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body {
+    background-color: #f5f7fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .page-header {
+    background: #1f3a5f;
+    color: #ffffff;
+    padding: 28px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+  .page-header h2 { font-size: 1.15rem; font-weight: 300; margin-bottom: 0; }
+  .page-header .instr { font-size: 1rem; color: #cfdcec; }
+
+  .question-table {
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  }
+  .question-table > thead > tr > th {
+    background-color: #dbe7f3;
+    color: #1f3a5f;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .question-table > tbody > tr > td {
+    padding: 12px 14px;
+    vertical-align: top;
+  }
+  .options { margin-bottom: 0; padding-left: 1.4rem; }
+  .options li { margin-bottom: 4px; }
+
+  .answer-row > td {
+    background-color: #eef6ff;
+    border-left: 5px solid #0d6efd;
+  }
+  .answer-row .correct {
+    color: #0a6b2d;
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .btn-view { min-width: 130px; }
+
+  .toolbar { margin-bottom: 20px; }
+
+  footer {
+    border-top: 1px solid #d5dde5;
+    padding-top: 15px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  .note-box {
+    background: #fff8e1;
+    border-left: 5px solid #ffb300;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 25px;
+  }
+  pre.r-output {
+    background-color: #f1f3f5;
+    border-left: 4px solid #6c757d;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    margin: 10px 0;
+    white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="container my-4">
+
+  <!-- ===================== PAGE HEADER ===================== -->
+  <header class="page-header">
+    <h1>STA200 Statistics II</h1>
+    <h2>Practice Exercises for Module #4 &mdash; Chi-Square Goodness-of-Fit</h2>
+    <p class="instr mb-0">Instructor: Dr. Cheng Peng &nbsp;|&nbsp; 20 multiple-choice questions with worked answers</p>
+  </header>
+
+  <!-- ===================== HOW-TO NOTE ===================== -->
+  <div class="note-box">
+    <strong>How to use these questions:</strong> Before viewing an answer, try to solve each question on your own.
+    Whenever possible, work through the calculations manually or run the relevant R code to obtain your answer.
+    Then click <em>View Answer</em> and review the explanation to check your understanding.
+  </div>
+
+  <!-- ===================== TOOLBAR ===================== -->
+  <div class="toolbar">
+    <button type="button" class="btn btn-outline-primary btn-sm" onclick="showAll(true)">Show All Answers</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="showAll(false)">Hide All Answers</button>
+  </div>
+
+  <!-- ===================== QUESTION 1 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 1</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>Which statement best describes the shape of a Chi-square (&chi;<sup>2</sup>) distribution as the degrees of freedom increase?</p>
+        <ol class="options" type="A">
+          <li>It becomes more skewed to the right.</li>
+          <li>It becomes more symmetric.</li>
+          <li>It becomes perfectly normal.</li>
+          <li>It becomes skewed to the left.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states that the &chi;<sup>2</sup> distribution is &ldquo;Skewed right, but becomes more symmetric as degrees of freedom (df) increase.&rdquo;</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> The skewness decreases, not increases, with larger df.</li>
+          <li><strong>C:</strong> It never becomes exactly normal, though it approaches symmetry.</li>
+          <li><strong>D:</strong> The &chi;<sup>2</sup> distribution is always non-negative and right-skewed; it never becomes left-skewed.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 2 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 2</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>What is the support (set of possible values) of a Chi-square random variable?</p>
+        <ol class="options" type="A">
+          <li>All real numbers.</li>
+          <li>Only positive integers.</li>
+          <li>Non-negative real numbers (<em>x</em> &ge; 0).</li>
+          <li>Only values between 0 and 1.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: C</p>
+        <p><strong>Justification:</strong> The note states: &ldquo;Support: Defined only for non-negative values (<em>x</em> &ge; 0).&rdquo;</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> The &chi;<sup>2</sup> distribution does not take negative values.</li>
+          <li><strong>B:</strong> It is continuous, so it can take any non-negative real value, not just integers.</li>
+          <li><strong>D:</strong> The range is not restricted to [0, 1]; it extends to infinity.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 3 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 3</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>Which parameter fully determines a Chi-square distribution?</p>
+        <ol class="options" type="A">
+          <li>The mean.</li>
+          <li>The variance.</li>
+          <li>The degrees of freedom (df).</li>
+          <li>The sample size.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: C</p>
+        <p><strong>Justification:</strong> The note states: &ldquo;Parameter: Degrees of freedom (df), typically a positive integer.&rdquo; Both the mean (= df) and the variance (= 2&middot;df) are derived from df, so df alone determines the distribution.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A and B:</strong> Mean and variance are derived from df, not independent parameters.</li>
+          <li><strong>D:</strong> Sample size is not a parameter of the &chi;<sup>2</sup> distribution itself.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 4 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 4</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>In a goodness-of-fit test for a categorical variable with <em>k</em> categories, what are the degrees of freedom for the Chi-square test statistic?</p>
+        <ol class="options" type="A">
+          <li><em>k</em></li>
+          <li><em>k</em> &minus; 1</li>
+          <li><em>n</em> &minus; 1 (where <em>n</em> is the sample size)</li>
+          <li><em>n</em> &minus; <em>k</em></li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states: &ldquo;The degrees of freedom are always (<em>k</em> &minus; 1) if the categorical factor variable has <em>k</em> levels.&rdquo;</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> Using <em>k</em> would overstate the df; one df is lost because the probabilities must sum to 1.</li>
+          <li><strong>C:</strong> <em>n</em> &minus; 1 is the df for a one-sample test of a proportion, not for a multi-category goodness-of-fit test.</li>
+          <li><strong>D:</strong> <em>n</em> &minus; <em>k</em> is not used in this context.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 5 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 5</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>Why is the Chi-square goodness-of-fit test always a right-tailed test?</p>
+        <ol class="options" type="A">
+          <li>Because the &chi;<sup>2</sup> distribution is symmetric.</li>
+          <li>Because the test statistic measures discrepancy, and large values indicate lack of fit.</li>
+          <li>Because the alternative hypothesis is always &ldquo;less than.&rdquo;</li>
+          <li>Because the <em>p</em>-value is always the left-tail area.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> &ldquo;All &chi;<sup>2</sup> tests are right-tailed since the test statistic measures the discrepancy between two distributions.&rdquo; A small <em>G</em><sup>2</sup> indicates lack of evidence against <em>H</em><sub>0</sub>; a large <em>G</em><sup>2</sup> falls in the right tail.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> The &chi;<sup>2</sup> distribution is skewed, not symmetric.</li>
+          <li><strong>C:</strong> The alternative is typically &ldquo;not equal&rdquo; or &ldquo;the distribution is different,&rdquo; not &ldquo;less than.&rdquo;</li>
+          <li><strong>D:</strong> The <em>p</em>-value is the right-tail area, not the left-tail area.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 6 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 6</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>The R command <code>pchisq(5, df = 10)</code> returns</p>
+<pre class="r-output">&gt; pchisq(5, df = 10)
+## [1] 0.108822</pre>
+        <p>What probability does this represent?</p>
+        <ol class="options" type="A">
+          <li>P(<em>X</em> &ge; 5) for a &chi;<sup>2</sup> distribution with 10 df.</li>
+          <li>P(<em>X</em> &le; 5) for a &chi;<sup>2</sup> distribution with 10 df.</li>
+          <li>P(<em>X</em> = 5) for a &chi;<sup>2</sup> distribution with 10 df.</li>
+          <li>The 5th percentile of a &chi;<sup>2</sup> distribution with 10 df.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> By default <code>pchisq(x, df)</code> returns the lower-tail probability P(<em>X</em> &le; <em>x</em>). The note explicitly shows this example: <code>pchisq(5, df = 10)</code> gives 0.108822.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> The upper-tail probability would require <code>lower.tail = FALSE</code>.</li>
+          <li><strong>C:</strong> The &chi;<sup>2</sup> distribution is continuous, so the probability of an exact value is 0.</li>
+          <li><strong>D:</strong> A percentile would be obtained with <code>qchisq()</code>, not <code>pchisq()</code>.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 7 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 7</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>To compute P(<em>X</em> &ge; 15) for a &chi;<sup>2</sup> random variable with 10 degrees of freedom, which R command is correct?</p>
+        <ol class="options" type="A">
+          <li><code>pchisq(15, df = 10)</code></li>
+          <li><code>pchisq(15, df = 10, lower.tail = FALSE)</code></li>
+          <li><code>qchisq(15, df = 10)</code></li>
+          <li><code>pchisq(15, df = 10, lower.tail = TRUE)</code></li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states that <code>pchisq(x, df, lower.tail = FALSE)</code> returns the upper-tail area P(<em>X</em> &ge; <em>x</em>). Example 2 shows <code>pchisq(15, df = 10, lower.tail = FALSE)</code> giving 0.1320619.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A and D:</strong> <code>lower.tail = TRUE</code> (the default) gives P(<em>X</em> &le; 15), not P(<em>X</em> &ge; 15).</li>
+          <li><strong>C:</strong> <code>qchisq()</code> returns quantiles, not probabilities.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 8 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 8</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>In the fair-die example, the die is rolled 60 times. Under the null hypothesis that the die is fair, what is the expected frequency for each face?</p>
+        <ol class="options" type="A">
+          <li>6</li>
+          <li>10</li>
+          <li>12</li>
+          <li>60</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states: &ldquo;Under the null hypothesis, we have expected frequencies of the 6 categories to be equal to 10&rdquo; because 60 &times; (1/6) = 10.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> 6 is the number of faces, not the expected count.</li>
+          <li><strong>C:</strong> 12 is one of the observed frequencies, not the expected.</li>
+          <li><strong>D:</strong> 60 is the total number of rolls.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 9 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 9</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>Using the fair-die example (60 rolls, expected frequency 10 for each face), the observed frequencies are 12, 7, 14, 15, 4, 8. What is the value of the Chi-square test statistic <em>G</em><sup>2</sup>?</p>
+        <ol class="options" type="A">
+          <li>5.0</li>
+          <li>9.4</li>
+          <li>12.0</li>
+          <li>15.0</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note computes</p>
+        <p><em>G</em><sup>2</sup> = (12&minus;10)<sup>2</sup>/10 + (7&minus;10)<sup>2</sup>/10 + (14&minus;10)<sup>2</sup>/10 + (15&minus;10)<sup>2</sup>/10 + (4&minus;10)<sup>2</sup>/10 + (8&minus;10)<sup>2</sup>/10<br>
+        = 0.4 + 0.9 + 1.6 + 2.5 + 3.6 + 0.4 = <strong>9.4</strong>.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A, C, D:</strong> These are not the result of the correct calculation.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 10 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 10</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>For a Chi-square distribution with 5 degrees of freedom, what is the critical value at the 0.05 significance level?</p>
+        <ol class="options" type="A">
+          <li>1.145</li>
+          <li>11.071</li>
+          <li>15.086</li>
+          <li>3.841</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note explicitly gives CV = &chi;<sup>2</sup><sub>5, 0.05</sub> = 11.071.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> 1.145 is not the 5% critical value for df = 5 (the 5% critical value for df = 1 is 3.841).</li>
+          <li><strong>C:</strong> 15.086 is the critical value for df = 5 at &alpha; = 0.01.</li>
+          <li><strong>D:</strong> 3.841 is the critical value for df = 1 at &alpha; = 0.05.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 11 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 11</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>In the grade-distribution example (five categories: A, B, C, D, F), what are the degrees of freedom for the Chi-square goodness-of-fit test?</p>
+        <ol class="options" type="A">
+          <li>5</li>
+          <li>4</li>
+          <li>99</li>
+          <li>100</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> With <em>k</em> = 5 categories, df = <em>k</em> &minus; 1 = 4.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> Using 5 overstates the df by one, because the cell probabilities must sum to 1 (one constraint).</li>
+          <li><strong>C and D:</strong> These involve the sample size, which is not used for df in this test.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 12 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 12</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>What does the null hypothesis in a Chi-square goodness-of-fit test specify?</p>
+        <ol class="options" type="A">
+          <li>The population mean.</li>
+          <li>The cell probabilities (the hypothesised distribution).</li>
+          <li>The sample frequencies.</li>
+          <li>The degrees of freedom.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> &ldquo;For a single categorical variable, the null hypothesis should specify the cell probabilities&hellip; (<em>p</em><sub>1</sub>, <em>p</em><sub>2</sub>, &hellip;, <em>p</em><sub>k</sub>) must be specified in the null hypothesis.&rdquo;</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> The test concerns categorical distributions, not means.</li>
+          <li><strong>C:</strong> Sample frequencies are the observed data, not the null hypothesis.</li>
+          <li><strong>D:</strong> Degrees of freedom are a property of the test, not the hypothesis itself.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 13 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 13</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>A Chi-square goodness-of-fit test yields <em>G</em><sup>2</sup> = 2.97 with 5 df and a <em>p</em>-value of 0.705. What does a <em>small</em> <em>G</em><sup>2</sup> indicate?</p>
+        <ol class="options" type="A">
+          <li>Strong evidence against <em>H</em><sub>0</sub>.</li>
+          <li>Little evidence against <em>H</em><sub>0</sub> (fail to reject <em>H</em><sub>0</sub>).</li>
+          <li>The expected frequencies are too small.</li>
+          <li>The test is invalid.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> &ldquo;A small <em>G</em><sup>2</sup> indicates a lack of evidence for rejecting the null hypothesis.&rdquo;</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> Large <em>G</em><sup>2</sup> values provide evidence against <em>H</em><sub>0</sub>; small values do not.</li>
+          <li><strong>C:</strong> A small <em>G</em><sup>2</sup> does not imply small expected frequencies.</li>
+          <li><strong>D:</strong> A small <em>G</em><sup>2</sup> does not invalidate the test.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 14 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 14</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>Which R function performs a Chi-square goodness-of-fit test directly?</p>
+        <ol class="options" type="A">
+          <li><code>pchisq()</code></li>
+          <li><code>chisq.test()</code></li>
+          <li><code>qchisq()</code></li>
+          <li><code>chisq.goftest()</code></li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note states: &ldquo;The package {stats} &hellip; has a function <code>chisq.test()</code> to perform the chi-square test.&rdquo;</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> <code>pchisq()</code> computes probabilities, not a test.</li>
+          <li><strong>C:</strong> <code>qchisq()</code> computes quantiles.</li>
+          <li><strong>D:</strong> No such base-R function exists.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 15 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 15</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>When using <code>chisq.test()</code> for a goodness-of-fit test, what must the <code>p</code> argument contain?</p>
+        <ol class="options" type="A">
+          <li>The observed frequencies.</li>
+          <li>The expected frequencies.</li>
+          <li>The hypothesised probabilities.</li>
+          <li>The degrees of freedom.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: C</p>
+        <p><strong>Justification:</strong> &ldquo;CAUTION: the second argument must be in the form of: <code>p = hypothetical probabilities</code>! &hellip; OTHERWISE, R will perform independence tests.&rdquo;</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> Observed frequencies are the first argument (<code>x</code>).</li>
+          <li><strong>B:</strong> Expected frequencies are computed internally from the probabilities and total count.</li>
+          <li><strong>D:</strong> Degrees of freedom are computed automatically from the data.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 16 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 16</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>The R output below comes from a goodness-of-fit test:</p>
+<pre class="r-output">## Chi-squared test for given probabilities
+##
+## data:  observed
+## X-squared = 2.9667, df = 5, p-value = 0.7051</pre>
+        <p>At &alpha; = 0.05, what is the correct conclusion?</p>
+        <ol class="options" type="A">
+          <li>Reject <em>H</em><sub>0</sub>; the distribution is significantly different.</li>
+          <li>Fail to reject <em>H</em><sub>0</sub>; there is not enough evidence to say the distribution differs.</li>
+          <li>Accept <em>H</em><sub>0</sub>; the distribution is exactly as hypothesised.</li>
+          <li>The test is inconclusive because the <em>p</em>-value is too large.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> Because the <em>p</em>-value (0.7051) is greater than 0.05, we do not reject <em>H</em><sub>0</sub>. The note states: &ldquo;Since the <em>p</em>-value is greater than 0.05, the null hypothesis is not rejected.&rdquo;</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> Rejection would require <em>p</em> &lt; 0.05.</li>
+          <li><strong>C:</strong> We never &ldquo;accept&rdquo; <em>H</em><sub>0</sub>; we only fail to reject it.</li>
+          <li><strong>D:</strong> A large <em>p</em>-value is not inconclusive; it simply indicates insufficient evidence against <em>H</em><sub>0</sub>.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 17 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 17</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>In a right-tailed Chi-square test, what does the <em>p</em>-value represent?</p>
+        <ol class="options" type="A">
+          <li>The area to the left of the test statistic.</li>
+          <li>The area to the right of the test statistic.</li>
+          <li>The probability that <em>H</em><sub>0</sub> is true.</li>
+          <li>The probability of a Type I error.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> &ldquo;The <em>p</em>-value of a &chi;<sup>2</sup> test is always the area of the tail region to the right-hand side of the test statistic.&rdquo;</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> The left-tail area is not the <em>p</em>-value for a right-tailed test.</li>
+          <li><strong>C:</strong> The <em>p</em>-value is not the probability that <em>H</em><sub>0</sub> is true.</li>
+          <li><strong>D:</strong> The Type I error rate is &alpha;, not the <em>p</em>-value.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 18 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 18</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>How are the expected frequencies computed under the null hypothesis in a goodness-of-fit test?</p>
+        <ol class="options" type="A">
+          <li>By taking the average of the observed frequencies.</li>
+          <li>By multiplying the total sample size by the hypothesised probabilities.</li>
+          <li>By using the observed proportions.</li>
+          <li>By dividing the total sample size by the number of categories.</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: B</p>
+        <p><strong>Justification:</strong> The note shows in R: <code>expected.counts &lt;- tot * expected.props</code>, i.e., total count times hypothesised probabilities.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> The average of observed frequencies ignores the hypothesised probabilities.</li>
+          <li><strong>C:</strong> Observed proportions are not the null hypothesis.</li>
+          <li><strong>D:</strong> Dividing by the number of categories assumes equal probabilities, which is not always the case.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 19 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 19</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>What is the general formula for the Chi-square goodness-of-fit test statistic?</p>
+        <ol class="options" type="A">
+          <li>&Sigma;(<em>O</em><sub>i</sub> &minus; <em>E</em><sub>i</sub>)<sup>2</sup></li>
+          <li>&Sigma;|<em>O</em><sub>i</sub> &minus; <em>E</em><sub>i</sub>|</li>
+          <li>&Sigma;(<em>O</em><sub>i</sub> &minus; <em>E</em><sub>i</sub>)<sup>2</sup> / <em>E</em><sub>i</sub></li>
+          <li>&Sigma;(<em>O</em><sub>i</sub> / <em>E</em><sub>i</sub>)</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: C</p>
+        <p><strong>Justification:</strong> The note defines</p>
+        <p><em>G</em><sup>2</sup> = (<em>O</em><sub>1</sub> &minus; <em>E</em><sub>1</sub>)<sup>2</sup>/<em>E</em><sub>1</sub> + (<em>O</em><sub>2</sub> &minus; <em>E</em><sub>2</sub>)<sup>2</sup>/<em>E</em><sub>2</sub> + &hellip; + (<em>O</em><sub>k</sub> &minus; <em>E</em><sub>k</sub>)<sup>2</sup>/<em>E</em><sub>k</sub>.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>A:</strong> Omits the division by <em>E</em><sub>i</sub>.</li>
+          <li><strong>B:</strong> Uses absolute differences instead of squared differences.</li>
+          <li><strong>D:</strong> Is not the &chi;<sup>2</sup> statistic.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== QUESTION 20 ===================== -->
+  <table class="table table-bordered question-table">
+    <thead><tr><th scope="col">Question 20</th></tr></thead>
+    <tbody>
+      <tr><td>
+        <p>In the motivational example about STEM majors (<em>H</em><sub>0</sub>: <em>p</em> = 0.30, <em>n</em> = 100, observed STEM = 33, non-STEM = 67), what is the value of the Chi-square test statistic?</p>
+        <ol class="options" type="A">
+          <li>0.43</li>
+          <li>0.86</li>
+          <li>1.00</li>
+          <li>2.00</li>
+        </ol>
+        <button type="button" class="btn btn-primary btn-view" onclick="toggleAnswer(this)">View Answer</button>
+      </td></tr>
+      <tr class="answer-row" style="display:none;"><td>
+        <p class="correct">Correct answer: A</p>
+        <p><strong>Justification:</strong> Under <em>H</em><sub>0</sub>, the expected counts are <em>E</em><sub>STEM</sub> = 100 &times; 0.30 = 30 and <em>E</em><sub>non-STEM</sub> = 100 &times; 0.70 = 70. Therefore</p>
+        <p>TS = (33 &minus; 30)<sup>2</sup>/30 + (67 &minus; 70)<sup>2</sup>/70 = 9/30 + 9/70 = 0.300 + 0.129 &asymp; <strong>0.43</strong>.</p>
+        <p class="mb-1"><strong>Why the other choices are incorrect:</strong></p>
+        <ul class="mb-0">
+          <li><strong>B:</strong> 0.86 is about twice the correct value and does not follow from the data.</li>
+          <li><strong>C:</strong> 1.00 comes from the arithmetic slip (67 &minus; 70)<sup>2</sup> = 49 (instead of 9), which would give 9/30 + 49/70 = 0.3 + 0.7 = 1.0. But (67 &minus; 70)<sup>2</sup> = (&minus;3)<sup>2</sup> = 9.</li>
+          <li><strong>D:</strong> 2.00 has no basis in these data.</li>
+        </ul>
+      </td></tr>
+    </tbody>
+  </table>
+
+  <!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+  <!--XXXXXXXXXXXXXXXXXXXXXXXXXXX  FOOTER  XXXXXXXXXXXXXXXXXXXXXXX-->
+  <!--MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
+  <footer class="col-md-12">
+    <center><font color="navy" size="2">
+      <p class="text-center">Copyright &copy;
+        <script>
+          var CurrentYear = new Date().getFullYear()
+          document.write(CurrentYear)
+        </script>
+        C. Peng. Last updated:
+        <script>
+          document.write(new Date().toLocaleDateString());
+        </script>
+      </font>
+      <a href='http://www.freevisitorcounters.com'>.</a>
+      <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=bdd86ca03bf3709e4523bf44ac939417956604f4'></script>
+      <script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/832947/t/5"></script></p>
+    </center>
+  </footer>
+
+</div><!-- /container -->
+
+<script>
+  function toggleAnswer(btn) {
+    var table = btn.closest('table');
+    var row = table.querySelector('.answer-row');
+    var hidden = (row.style.display === 'none' || row.style.display === '');
+    row.style.display = hidden ? 'table-row' : 'none';
+    btn.textContent = hidden ? 'Hide Answer' : 'View Answer';
+  }
+
+  function showAll(show) {
+    document.querySelectorAll('.answer-row').forEach(function (row) {
+      row.style.display = show ? 'table-row' : 'none';
+    });
+    document.querySelectorAll('.btn-view').forEach(function (btn) {
+      btn.textContent = show ? 'Hide Answer' : 'View Answer';
+    });
+  }
+</script>
+
+</body>
+</html>
